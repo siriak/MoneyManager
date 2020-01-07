@@ -11,7 +11,7 @@ namespace Core
 {
     public class PrivatTransactionsImporter
     {
-        public async IAsyncEnumerable<Transaction> ImportTransactions(string cardNumber, string merchantPassword)
+        public async void ImportTransactions(string cardNumber, string merchantPassword, Action<List<Transaction>> handler)
         {
             var year = DateTime.Now.Year;
             var month = DateTime.Now.Month;
@@ -20,10 +20,7 @@ namespace Core
             {
                 for (; day > 0; day--)
                 {
-                    await foreach (var transaction in LoadData(year, month, day, cardNumber, merchantPassword))
-                    {
-                        yield return transaction;
-                    }
+                    handler(await LoadData(year, month, day, cardNumber, merchantPassword));
                 }
             }
 
@@ -34,16 +31,13 @@ namespace Core
                 {
                     for (day = 31; day > 0; day--)
                     {
-                        await foreach (var transaction in LoadData(year, month, day, cardNumber, merchantPassword))
-                        {
-                            yield return transaction;
-                        }
+                        handler(await LoadData(year, month, day, cardNumber, merchantPassword));
                     }
                 }
             }
         }
 
-        private async IAsyncEnumerable<Transaction> LoadData(int year, int month, int day, string cardNumber, string merchantPassword)
+        private async Task<List<Transaction>> LoadData(int year, int month, int day, string cardNumber, string merchantPassword)
         {           
             var data = $"<oper>cmt</oper><wait>60</wait><payment><prop name=\"sd\" value=\"{day}.{month}.{year}\"/><prop name=\"ed\" value=\"{day}.{month}.{year}\"/><prop name=\"card\" value=\"{cardNumber}\"/></payment>";
             var md5 = MD5.Create();
@@ -74,10 +68,12 @@ namespace Core
             string xpath = "response/data/info/statements/statement";
             var nodes = xmlDoc.SelectNodes(xpath);
             
+            var list = new List<Transaction>();
             foreach (XmlNode childrenNode in nodes)
             {
-                yield return GetTransactionFromXml(childrenNode);
+                list.Add(GetTransactionFromXml(childrenNode));
             }
+            return list;
         }
 
         private static string ByteArrayToString(byte[] ba)
