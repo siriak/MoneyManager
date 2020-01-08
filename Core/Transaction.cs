@@ -32,7 +32,6 @@ namespace Core
 }
 
 //TODO: implement sequence analyzer
-//TODO: load config from file
 //TODO: create categories for transaction and classificator
 //TODO: UI
 //TODO: save setups 
