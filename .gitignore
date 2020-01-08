@@ -8,5 +8,5 @@
 bin/
 obj/
 
-# Nuget Packages
+# NuGet packages
 packages/
