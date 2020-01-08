@@ -11,7 +11,7 @@ namespace Core
 {
     public class PrivatTransactionsImporter
     {
-        public async void ImportTransactions(string cardNumber, string merchantPassword, Action<List<Transaction>> handler)
+        public async void ImportTransactions(Credentials credentials, Action<List<Transaction>> handler)
         {
             var year = DateTime.Now.Year;
             var month = DateTime.Now.Month;
@@ -20,7 +20,7 @@ namespace Core
             {
                 for (; day > 0; day--)
                 {
-                    handler(await LoadData(year, month, day, cardNumber, merchantPassword));
+                    handler(await LoadData(year, month, day, credentials));
                 }
             }
 
@@ -31,19 +31,19 @@ namespace Core
                 {
                     for (day = 31; day > 0; day--)
                     {
-                        handler(await LoadData(year, month, day, cardNumber, merchantPassword));
+                        handler(await LoadData(year, month, day, credentials));
                     }
                 }
             }
         }
 
-        private async Task<List<Transaction>> LoadData(int year, int month, int day, string cardNumber, string merchantPassword)
+        private async Task<List<Transaction>> LoadData(int year, int month, int day, Credentials credentials)
         {           
-            var data = $"<oper>cmt</oper><wait>60</wait><payment><prop name=\"sd\" value=\"{day}.{month}.{year}\"/><prop name=\"ed\" value=\"{day}.{month}.{year}\"/><prop name=\"card\" value=\"{cardNumber}\"/></payment>";
+            var data = $"<oper>cmt</oper><wait>60</wait><payment><prop name=\"sd\" value=\"{day}.{month}.{year}\"/><prop name=\"ed\" value=\"{day}.{month}.{year}\"/><prop name=\"card\" value=\"{credentials.CardNumber}\"/></payment>";
             var md5 = MD5.Create();
             var sha1 = SHA1.Create();
 
-            var secret = data + merchantPassword;
+            var secret = data + credentials.MerchantPassword;
             var bytes = Encoding.UTF8.GetBytes(secret);
             var md5h = md5.ComputeHash(bytes);
             var md5hs = ByteArrayToString(md5h);
@@ -55,7 +55,7 @@ namespace Core
             {
                 Method = HttpMethod.Get,
                 RequestUri = new Uri("https://api.privatbank.ua/p24api/rest_fiz"),
-                Content = new StringContent($"<?xml version=\"1.0\" encoding=\"UTF-8\"?><request version=\"1.0\"><merchant><id>154628</id><signature>{signature}</signature></merchant><data>{data}</data></request>",
+                Content = new StringContent($"<?xml version=\"1.0\" encoding=\"UTF-8\"?><request version=\"1.0\"><merchant><id>{credentials.MerchantId}</id><signature>{signature}</signature></merchant><data>{data}</data></request>",
                     Encoding.Default, "application/xml"),
             };
             var res = await client.SendAsync(request);
