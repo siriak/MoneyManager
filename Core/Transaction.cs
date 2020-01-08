@@ -36,3 +36,4 @@ namespace Core
 //TODO: create categories for transaction and classificator
 //TODO: UI
 //TODO: save setups 
+//TODO: transaction -> time series for each day -> exponensial smoothing
