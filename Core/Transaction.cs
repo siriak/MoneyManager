@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Core
 {
@@ -29,8 +29,6 @@ namespace Core
             Amount = amount;
             Descriprtion = description;
         }
-
-        //ctor
     }
 }
 
