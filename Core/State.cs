@@ -3,29 +3,30 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Core
 {
     public static class State
     {
-        public static ConcurrentBag<Transaction> Transactions { get; } = new ConcurrentBag<Transaction>();
+        public static SortedSet<Transaction> Transactions { get; } = new SortedSet<Transaction>();
+
+        //comparer
 
         public static void Init()
         {
             var credentials = ConfigManager.GetCredentials();
-            var transactions = new List<Transaction>();
 
-            credentials.Select(c => PrivatTransactionsImporter.ImportTransactions(c, OnTransactionsLoaded));
+            initTask = Task.WhenAll(
+            credentials.Select(c => PrivatTransactionsImporter.ImportTransactions(c, (ts) =>
+            {
+                Transactions.UnionWith(ts);
+                OnStateUpdated?.Invoke();
+            })));
         }
 
-        private static void OnTransactionsLoaded(List<Transaction> transactions)
-        {
-            //(ts, d) => {
-            //                transactions.AddRange(ts);
-            //                rtb.Invoke(new Action(() => rtb.Items.AddRange(ts.Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Descriprtion}").ToArray())));
-            //                label.Text = d.ToString();
-            //        }
-            //    }
-        }
+        public static event Action OnStateUpdated;
+
+        private static Task initTask;
     }
 }

@@ -10,45 +10,53 @@ namespace testforms
 {
     internal class MainForm : Form
     {       
-        private Button btn;
-        private ListBox rtb;
-        private Label label;
+        private Button btn_loadTrans;
+        private Button btn_quit;
 
         public MainForm()
         {
             InitializeComponent();
-        }
-        
+        }        
+
+        //btn load trans
+        //btn quit
+
+        //btn to main menu
+        //select period
+
         private void InitializeComponent()
         {
             Text = "Money Manager";
+            Size = new Size(1000, 800);
+            btn_loadTrans = new Button { Text = "Load Transactions", Location = new Point(10, 10) };
+            btn_quit = new Button { Text = "Quit", Location = new Point(200, 10) };
 
-            Size = new Size(1000, 800);            
-            btn = new Button { Text = "Load Transactions", Location = new Point(10, 10) };
-            rtb = new ListBox { Text = "Load Transactions", Location = new Point(10, 50), Width = 800, Height = 500 };
-            label = new Label { Location = new Point(200, 15) };            
-            //btn.Click += LoadTransactions;
-            Load += LoadTransactions;
+            btn_loadTrans.Click += ShowTransactionsForm;
+            btn_quit.Click += CloseApp;
 
-            Controls.Add(btn);
-            Controls.Add(rtb);
-            Controls.Add(label);
+            State.Init();
+
+            Controls.Add(btn_loadTrans);
+            Controls.Add(btn_quit);
         }
 
-        async void LoadTransactions(object sender, EventArgs e)
+        void ShowTransactionsForm(object sender, EventArgs e)
         {
-            btn.Enabled = false;
+            var transForm = new TransactionsForm();
+            this.Hide();
+            transForm.Show();
 
-            var credentials = ConfigManager.GetCredentials();
-            var transactions = new List<Transaction>();
+            transForm.FormClosed += TransForm_FormClosed;
+        }
 
-            await Task.WhenAll(credentials.Select(c => PrivatTransactionsImporter.ImportTransactions(c, (ts, d) => {
-                transactions.AddRange(ts);
-                rtb.Invoke(new Action(() => rtb.Items.AddRange(ts.Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Descriprtion}").ToArray())));
-                label.Text = d.ToString();
-            })));
+        private void TransForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Show();
+        }
 
-            btn.Enabled = true;
+        void CloseApp(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
 
         private void RenderCategory(Index index)

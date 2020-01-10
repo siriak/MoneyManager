@@ -2,9 +2,9 @@
 {
     public struct Money
     {
-        public Money(string amount, string currency) : this()
+        public Money(decimal amount, string currency) : this()
         {
-            Amount = decimal.Parse(amount);
+            Amount = amount;
             Currency = currency;
         }
 
