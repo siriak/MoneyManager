@@ -1,10 +1,12 @@
-# Visual Studio cache/options directory
+# Visual Studio cache/options
 .vs/
 
-# Rider cache/options directory
+# Rider cache/options
 .idea/
 
 # Build results
 bin/
 obj/
-TestResults/
+
+# NuGet packages
+packages/

@@ -30,8 +30,8 @@ namespace testforms
         
         async void Btn_Click(object sender, EventArgs e)
         {
-            
-        }       
+            var cred = ConfigManager.GetCredentials();
+        }
 
         private void RenderCategory(Index index)
         {

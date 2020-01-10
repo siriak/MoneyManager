@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
+using System;
 
 namespace Core
 {
@@ -32,7 +29,6 @@ namespace Core
 }
 
 //TODO: implement sequence analyzer
-//TODO: load config from file
 //TODO: create categories for transaction and classificator
 //TODO: UI
 //TODO: save setups 
