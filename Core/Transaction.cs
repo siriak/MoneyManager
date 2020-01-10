@@ -23,7 +23,13 @@ namespace Core
         private Money rest;
         private string terminal;
         private string descriprion;
-        
+
+        public Transaction(Money amount, string description)
+        {
+            Amount = amount;
+            Descriprtion = description;
+        }
+
         //ctor
     }
 }
