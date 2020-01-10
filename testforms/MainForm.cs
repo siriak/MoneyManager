@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace testforms
         {
             Text = "Money Manager";
 
-            Size = new Size(1000, 800);            
+            Size = new Size(1000, 800);
             btn = new Button { Text = "Load Transactions", Location = new Point(10, 10) };
             rtb = new ListBox { Text = "Load Transactions", Location = new Point(10, 50), Width = 800, Height = 500 };
             label = new Label { Location = new Point(200, 15) };            
