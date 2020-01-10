@@ -27,7 +27,7 @@ namespace testforms
 
             rtb = new ListBox { Text = "Load Transactions", Location = new Point(10, 50), Width = 800, Height = 500 };
             State.OnStateUpdated += RefreshList;
-            rtb.Items.AddRange(State.Transactions.Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Descriprtion}").ToArray());
+            rtb.Items.AddRange(State.Transactions.Reverse().Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Descriprtion}").ToArray());
             
             label = new Label { Location = new Point(200, 15) };            
 
@@ -47,7 +47,7 @@ namespace testforms
             rtb.Invoke(new Action(() => 
             {
                 rtb.Items.Clear();
-                rtb.Items.AddRange(State.Transactions.Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Descriprtion}").ToArray());
+                rtb.Items.AddRange(State.Transactions.Reverse().Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Descriprtion}").ToArray());
             }));
         }
     }

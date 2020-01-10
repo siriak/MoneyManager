@@ -71,7 +71,13 @@ namespace Core
 
         private static Transaction GetTransactionFromXml(XmlNode node)
         {
-            return new Transaction(new Money(decimal.Parse(node.Attributes["amount"].Value.Split(' ').First()), node.Attributes["amount"].Value.Split(' ').Last()), node.Attributes["description"].Value);
+            return new Transaction(node.Attributes["card"].Value,
+                node.Attributes["appcode"].Value,
+                DateTimeOffset.Parse(node.Attributes["trandate"].Value + " " + node.Attributes["trantime"].Value),
+                new Money(decimal.Parse(node.Attributes["amount"].Value.Split(' ').First()), node.Attributes["amount"].Value.Split(' ').Last()),
+                new Money(decimal.Parse(node.Attributes["rest"].Value.Split(' ').First()), node.Attributes["rest"].Value.Split(' ').Last()),
+                node.Attributes["terminal"].Value,
+                node.Attributes["description"].Value);
         }
     }
 }

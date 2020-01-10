@@ -34,14 +34,13 @@ namespace testforms
             btn_loadTrans.Click += ShowTransactionsForm;
             btn_quit.Click += CloseApp;
 
-            State.Init();
-
             Controls.Add(btn_loadTrans);
             Controls.Add(btn_quit);
         }
 
         void ShowTransactionsForm(object sender, EventArgs e)
         {
+
             var transForm = new TransactionsForm();
             this.Hide();
             transForm.Show();

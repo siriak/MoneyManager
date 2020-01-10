@@ -10,23 +10,20 @@ namespace Core
     public static class State
     {
         public static SortedSet<Transaction> Transactions { get; } = new SortedSet<Transaction>();
-
-        //comparer
+        public static event Action OnStateUpdated;
+        public static bool IsUpdating => task.Status == TaskStatus.Running; 
+        private static Task task; 
 
         public static void Init()
         {
             var credentials = ConfigManager.GetCredentials();
 
-            initTask = Task.WhenAll(
+            task = Task.WhenAll(
             credentials.Select(c => PrivatTransactionsImporter.ImportTransactions(c, (ts) =>
             {
                 Transactions.UnionWith(ts);
                 OnStateUpdated?.Invoke();
             })));
         }
-
-        public static event Action OnStateUpdated;
-
-        private static Task initTask;
     }
 }
