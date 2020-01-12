@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace Core
 {
@@ -74,8 +72,8 @@ namespace Core
             return new Transaction(node.Attributes["card"].Value,
                 node.Attributes["appcode"].Value,
                 DateTimeOffset.Parse(node.Attributes["trandate"].Value + " " + node.Attributes["trantime"].Value),
-                new Money(decimal.Parse(node.Attributes["amount"].Value.Split(' ').First()), node.Attributes["amount"].Value.Split(' ').Last()),
-                new Money(decimal.Parse(node.Attributes["rest"].Value.Split(' ').First()), node.Attributes["rest"].Value.Split(' ').Last()),
+                new Money(decimal.Parse(node.Attributes["amount"].Value.Split(' ').First()), (Currency)Enum.Parse(typeof(Currency), node.Attributes["amount"].Value.Split(' ').Last())),
+                new Money(decimal.Parse(node.Attributes["rest"].Value.Split(' ').First()), (Currency)Enum.Parse(typeof(Currency), node.Attributes["rest"].Value.Split(' ').Last())),
                 node.Attributes["terminal"].Value,
                 node.Attributes["description"].Value);
         }
