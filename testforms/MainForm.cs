@@ -15,11 +15,7 @@ namespace testforms
             InitializeComponent();
         }        
 
-        //btn load trans
-        //btn quit
-
-        //btn to main menu
-        //select period
+        //TODO: select period
 
         private void InitializeComponent()
         {
@@ -37,7 +33,6 @@ namespace testforms
 
         void ShowTransactionsForm(object sender, EventArgs e)
         {
-
             var transForm = new TransactionsForm();
             this.Hide();
             transForm.Show();

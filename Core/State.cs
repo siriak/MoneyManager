@@ -17,11 +17,11 @@ namespace Core
             var credentials = ConfigManager.GetCredentials();
 
             task = Task.WhenAll(
-            credentials.Select(c => PrivatTransactionsImporter.ImportTransactions(c, (ts) =>
-            {
-                Transactions.UnionWith(ts);
-                OnStateUpdated?.Invoke();
-            })));
+                credentials.Select(c => PrivatTransactionsImporter.ImportTransactions(c, (ts) =>
+                {
+                    Transactions.UnionWith(ts);
+                    OnStateUpdated?.Invoke();
+                })));
         }
     }
 }
