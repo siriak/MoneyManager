@@ -25,13 +25,13 @@ namespace testforms
             btn_quit = new Button { Text = "Quit", Location = new Point(200, 10) };
 
             btn_loadTrans.Click += ShowTransactionsForm;
-            btn_quit.Click += CloseApp;
+            btn_quit.Click += ButtonQuitClick;
 
             Controls.Add(btn_loadTrans);
             Controls.Add(btn_quit);
         }
 
-        void ShowTransactionsForm(object sender, EventArgs e)
+        private void ShowTransactionsForm(object sender, EventArgs e)
         {
             var transForm = new TransactionsForm();
             this.Hide();
@@ -45,7 +45,7 @@ namespace testforms
             Show();
         }
 
-        void CloseApp(object sender, EventArgs e)
+        private void ButtonQuitClick(object sender, EventArgs e)
         {
             Application.Exit();
         }
