@@ -5,7 +5,7 @@ using Core;
 
 namespace testforms
 {
-    internal class MainForm : Form
+    public partial class MainForm : Form
     {
         private Button btnOpenTransactionsForm;
         private Button btnQuit;
@@ -13,12 +13,7 @@ namespace testforms
         public MainForm()
         {
             InitializeComponent();
-        }        
-
-        //TODO: select period
-
-        private void InitializeComponent()
-        {
+            
             Text = "Money Manager";
             Size = new Size(1000, 800);
             btnOpenTransactionsForm = new Button { Text = "Load Transactions", Location = new Point(10, 10) };
@@ -32,6 +27,9 @@ namespace testforms
             Controls.Add(btnOpenTransactionsForm);
             Controls.Add(btnQuit);
         }
+
+        //TODO: select period
+
 
         private void ShowTransactionsForm(object sender, EventArgs e)
         {
