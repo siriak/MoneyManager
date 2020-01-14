@@ -7,8 +7,8 @@ namespace testforms
 {
     internal class MainForm : Form
     {       
-        private Button btn_loadTrans;
-        private Button btn_quit;
+        private Button btnLoadTrans;
+        private Button btnQuit;
 
         public MainForm()
         {
@@ -21,14 +21,16 @@ namespace testforms
         {
             Text = "Money Manager";
             Size = new Size(1000, 800);
-            btn_loadTrans = new Button { Text = "Load Transactions", Location = new Point(10, 10) };
-            btn_quit = new Button { Text = "Quit", Location = new Point(200, 10) };
+            btnLoadTrans = new Button { Text = "Load Transactions", Location = new Point(10, 10) };
+            btnQuit = new Button { Text = "Quit", Location = new Point(200, 10) };
 
-            btn_loadTrans.Click += ShowTransactionsForm;
-            btn_quit.Click += ButtonQuitClick;
+            btnLoadTrans.Click += ShowTransactionsForm;
+            btnQuit.Click += ButtonQuitClick;
 
-            Controls.Add(btn_loadTrans);
-            Controls.Add(btn_quit);
+            State.Init();
+
+            Controls.Add(btnLoadTrans);
+            Controls.Add(btnQuit);
         }
 
         private void ShowTransactionsForm(object sender, EventArgs e)
