@@ -6,8 +6,8 @@ using Core;
 namespace testforms
 {
     internal class MainForm : Form
-    {       
-        private Button btnLoadTrans;
+    {
+        private Button btnOpenTransactionsForm;
         private Button btnQuit;
 
         public MainForm()
@@ -21,15 +21,15 @@ namespace testforms
         {
             Text = "Money Manager";
             Size = new Size(1000, 800);
-            btnLoadTrans = new Button { Text = "Load Transactions", Location = new Point(10, 10) };
+            btnOpenTransactionsForm = new Button { Text = "Load Transactions", Location = new Point(10, 10) };
             btnQuit = new Button { Text = "Quit", Location = new Point(200, 10) };
 
-            btnLoadTrans.Click += ShowTransactionsForm;
+            btnOpenTransactionsForm.Click += ShowTransactionsForm;
             btnQuit.Click += ButtonQuitClick;
 
             State.Init();
 
-            Controls.Add(btnLoadTrans);
+            Controls.Add(btnOpenTransactionsForm);
             Controls.Add(btnQuit);
         }
 

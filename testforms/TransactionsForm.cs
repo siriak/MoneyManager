@@ -8,8 +8,7 @@ namespace testforms
 {
     public partial class TransactionsForm : Form
     {
-        private ListBox rtb;
-        private Label label;
+        private ListBox lbTransactions;
 
         public TransactionsForm()
         {
@@ -17,32 +16,29 @@ namespace testforms
             Text = "Transactions";
             Size = new Size(1000, 800);
             
-            var btn_back = new Button { Text = "Back to menu", Location = new Point(10, 10) };
-            btn_back.Click += OnBtnBack;
+            var btnBackToMenu = new Button { Text = "Back to menu", Location = new Point(10, 10) };
+            btnBackToMenu.Click += OnBtnBack;
 
-            rtb = new ListBox { Text = "Load Transactions", Location = new Point(10, 50), Width = 800, Height = 500 };
+            lbTransactions = new ListBox { Text = "Load Transactions", Location = new Point(10, 50), Width = 800, Height = 500 };
             State.OnStateUpdated += RefreshList;
-            rtb.Items.AddRange(State.Transactions.Reverse().Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Descriprtion}").ToArray());
-            
-            label = new Label { Location = new Point(200, 15) };            
+            lbTransactions.Items.AddRange(State.Transactions.Reverse().Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Descriprtion}").ToArray());
 
-            Controls.Add(btn_back);
-            Controls.Add(rtb);
-            Controls.Add(label);
+            Controls.Add(btnBackToMenu);
+            Controls.Add(lbTransactions);
         }
 
         void OnBtnBack(object sender, EventArgs e)
         {
-            this.Close();            
             State.OnStateUpdated -= RefreshList;
+            this.Close();
         }
 
         void RefreshList()
         {
-            rtb.Invoke(new Action(() => 
+            lbTransactions.Invoke(new Action(() => 
             {
-                rtb.Items.Clear();
-                rtb.Items.AddRange(State.Transactions.Reverse().Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Descriprtion}").ToArray());
+                lbTransactions.Items.Clear();
+                lbTransactions.Items.AddRange(State.Transactions.Reverse().Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Descriprtion}").ToArray());
             }));
         }
     }
