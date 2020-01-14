@@ -37,12 +37,7 @@ namespace testforms
             this.Hide();
             transForm.Show();
 
-            transForm.FormClosed += TransForm_FormClosed;
-        }
-
-        private void TransForm_FormClosed(object sender, FormClosedEventArgs e)
-        {
-            Show();
+            transForm.FormClosed += (o, e) => { Show(); };
         }
 
         private void ButtonQuitClick(object sender, EventArgs e)
