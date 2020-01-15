@@ -1,6 +1,6 @@
 using System.Windows.Forms;
 
-namespace testforms
+namespace WinFormsUI
 {
     public class Program
     {

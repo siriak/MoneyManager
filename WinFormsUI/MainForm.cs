@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Core;
 
-namespace testforms
+namespace WinFormsUI
 {
     public partial class MainForm : Form
     {

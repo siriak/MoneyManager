@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace testforms
+namespace WinFormsUI
 {
     public partial class TransactionsForm : Form
     {
