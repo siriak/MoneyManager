@@ -2,11 +2,11 @@ using System;
 
 namespace Core
 {
-    public class Transaction
+    public class Transaction : IComparable<Transaction>
     {
         public string CardNumber { get; }
         public string ApplicationCode { get; }
-        public DateTimeOffset Time { get; }
+        public DateTimeOffset TimeStamp { get; }
         public Money Amount { get; }
         public bool IsIncome => isIncome;
         public bool IsExpence => !isIncome;
@@ -23,8 +23,22 @@ namespace Core
         private Money rest;
         private string terminal;
         private string descriprion;
-        
-        //ctor
+
+        public Transaction(string cardNumber, string appCode, DateTimeOffset timeStamp, Money amount, Money rest, string terminal, string description)
+        {
+            CardNumber = cardNumber;
+            ApplicationCode = appCode;
+            TimeStamp = timeStamp;
+            Amount = amount;
+            Rest = rest;
+            Terminal = terminal;
+            Descriprtion = description;
+        }
+
+        public int CompareTo(Transaction other)
+        {
+            return TimeStamp.CompareTo(other.TimeStamp);
+        }
     }
 }
 

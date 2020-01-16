@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -10,35 +11,17 @@ namespace Core
 {
     public class PrivatTransactionsImporter
     {
-        public async void ImportTransactions(Credentials credentials, Action<List<Transaction>> handler)
+        public static async Task ImportTransactions(Credentials credentials, Action<List<Transaction>> handler)
         {
-            var year = DateTime.Now.Year;
-            var month = DateTime.Now.Month;
-            var day = DateTime.Now.Day;
-            for (; month > 0; month--)
+            for (var date = DateTime.Now.ToDate(); date.Year > 2015; date -= TimeSpan.FromDays(1))
             {
-                for (; day > 0; day--)
-                {
-                    handler(await LoadData(year, month, day, credentials));
-                }
-            }
-
-            year--;
-            for (; year > 2015; year--)
-            {
-                for (month = 12; month > 0; month--)
-                {
-                    for (day = 31; day > 0; day--)
-                    {
-                        handler(await LoadData(year, month, day, credentials));
-                    }
-                }
+                handler(await LoadData(date, credentials));
             }
         }
 
-        private async Task<List<Transaction>> LoadData(int year, int month, int day, Credentials credentials)
+        private static async Task<List<Transaction>> LoadData(Date date, Credentials credentials)
         {           
-            var data = $"<oper>cmt</oper><wait>60</wait><payment><prop name=\"sd\" value=\"{day}.{month}.{year}\"/><prop name=\"ed\" value=\"{day}.{month}.{year}\"/><prop name=\"card\" value=\"{credentials.CardNumber}\"/></payment>";
+            var data = $"<oper>cmt</oper><wait>60</wait><payment><prop name=\"sd\" value=\"{date.Day}.{date.Month}.{date.Year}\"/><prop name=\"ed\" value=\"{date.Day}.{date.Month}.{date.Year}\"/><prop name=\"card\" value=\"{credentials.CardNumber}\"/></payment>";
             var md5 = MD5.Create();
             var sha1 = SHA1.Create();
 
@@ -49,7 +32,8 @@ namespace Core
             var sha1h = sha1.ComputeHash(Encoding.UTF8.GetBytes(md5hs));
             var signature = ByteArrayToString(sha1h);
 
-            HttpClient client = new HttpClient();
+            var handler = new WinHttpHandler();
+            HttpClient client = new HttpClient(handler);
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
@@ -85,8 +69,13 @@ namespace Core
 
         private static Transaction GetTransactionFromXml(XmlNode node)
         {
-            // rtb.Items.Add($"{day:d2}.{month:d2}.{year}) [{childrenNode.Attributes["cardamount"].Value}] {childrenNode.Attributes["description"].Value}");
-            throw new NotImplementedException();
+            return new Transaction(node.Attributes["card"].Value,
+                node.Attributes["appcode"].Value,
+                DateTimeOffset.Parse(node.Attributes["trandate"].Value + " " + node.Attributes["trantime"].Value),
+                new Money(decimal.Parse(node.Attributes["amount"].Value.Split(' ').First()), (Currency)Enum.Parse(typeof(Currency), node.Attributes["amount"].Value.Split(' ').Last())),
+                new Money(decimal.Parse(node.Attributes["rest"].Value.Split(' ').First()), (Currency)Enum.Parse(typeof(Currency), node.Attributes["rest"].Value.Split(' ').Last())),
+                node.Attributes["terminal"].Value,
+                node.Attributes["description"].Value);
         }
     }
 }
