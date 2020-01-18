@@ -39,6 +39,12 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="TimeSeriesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimeSeriesForm.Designer.cs">
+      <DependentUpon>TimeSeriesForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="TransactionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -192,6 +198,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Drawing" />
     <Reference Include="System" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml.ReaderWriter, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -212,6 +219,14 @@
       <Project>{4170828d-b20c-4aeb-89b1-12caeb51a469}</Project>
       <Name>Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimeSeriesForm.resx">
+      <DependentUpon>TimeSeriesForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

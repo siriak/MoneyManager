@@ -7,29 +7,26 @@ namespace WinFormsUI
 {
     public partial class MainForm : Form
     {
-        private Button btnOpenTransactionsForm;
-        private Button btnQuit;
-
         public MainForm()
         {
             InitializeComponent();
-            
-            Text = "Money Manager";
-            Size = new Size(1000, 800);
-            btnOpenTransactionsForm = new Button { Text = "Load Transactions", Location = new Point(10, 10) };
-            btnQuit = new Button { Text = "Quit", Location = new Point(200, 10) };
 
             btnOpenTransactionsForm.Click += ShowTransactionsForm;
+            btnOpenChart.Click += ShowTimeSeriesForm;
             btnQuit.Click += ButtonQuitClick;
 
             State.Init();
-
-            Controls.Add(btnOpenTransactionsForm);
-            Controls.Add(btnQuit);
         }
 
         //TODO: select period
+        private void ShowTimeSeriesForm(object sender, EventArgs e)
+        {
+            var timeSeriesForm = new TimeSeriesForm();
+            this.Hide();
+            timeSeriesForm.Show();
 
+            timeSeriesForm.FormClosed += (o, e) => { Show(); };
+        }
 
         private void ShowTransactionsForm(object sender, EventArgs e)
         {
