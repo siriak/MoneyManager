@@ -34,9 +34,9 @@ namespace WinFormsUI
 
             State.OnStateUpdated += RefreshChart;
 
-            for (var i = State.TimeSeries.Start.Day; i < State.TimeSeries.End.Day; i++)
+            for (var i = State.TimeSeries.Start; i < State.TimeSeries.End; i.AddDays(1))
             {
-                series.Points.AddXY(State.TimeSeries.Series[i].Date.ToString(), State.TimeSeries.Series[i].Value);
+                series.Points.AddXY(State.TimeSeries[i].Date.ToString(), State.TimeSeries[i].Value);
             }
 
             chartSeries.Series.Add(series);
@@ -55,9 +55,9 @@ namespace WinFormsUI
                 ChartType = SeriesChartType.Line
             };
 
-            for (var i = State.TimeSeries.Start.Day; i < State.TimeSeries.End.Day; i++)
+            for (var i = State.TimeSeries.Start; i < State.TimeSeries.End; i.AddDays(1))
             {
-                series.Points.AddXY(State.TimeSeries.Series[i].Date.ToString(), State.TimeSeries.Series[i].Value);
+                series.Points.AddXY(State.TimeSeries[i].Date.ToString(), State.TimeSeries[i].Value);
             }
             chartSeries.Series.Add(series);
         }
