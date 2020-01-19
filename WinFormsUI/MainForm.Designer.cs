@@ -35,30 +35,33 @@
             // 
             // btnOpenChart
             // 
-            this.btnOpenChart.Location = new System.Drawing.Point(202, 10);
+            this.btnOpenChart.Location = new System.Drawing.Point(201, 23);
             this.btnOpenChart.Name = "btnOpenChart";
             this.btnOpenChart.Size = new System.Drawing.Size(75, 23);
             this.btnOpenChart.TabIndex = 0;
             this.btnOpenChart.Text = "Open Chart";
             this.btnOpenChart.UseVisualStyleBackColor = true;
+            this.btnOpenChart.Click += new System.EventHandler(this.btnOpenChart_Click);
             // 
             // btnOpenTransactionsForm
             // 
-            this.btnOpenTransactionsForm.Location = new System.Drawing.Point(31, 11);
+            this.btnOpenTransactionsForm.Location = new System.Drawing.Point(30, 23);
             this.btnOpenTransactionsForm.Name = "btnOpenTransactionsForm";
             this.btnOpenTransactionsForm.Size = new System.Drawing.Size(111, 23);
             this.btnOpenTransactionsForm.TabIndex = 1;
             this.btnOpenTransactionsForm.Text = "Load Transactions";
             this.btnOpenTransactionsForm.UseVisualStyleBackColor = true;
+            this.btnOpenTransactionsForm.Click += new System.EventHandler(this.btnOpenTransactionsForm_Click);
             // 
             // btnQuit
             // 
-            this.btnQuit.Location = new System.Drawing.Point(576, 12);
+            this.btnQuit.Location = new System.Drawing.Point(577, 23);
             this.btnQuit.Name = "btnQuit";
             this.btnQuit.Size = new System.Drawing.Size(75, 23);
             this.btnQuit.TabIndex = 2;
             this.btnQuit.Text = "Quit";
             this.btnQuit.UseVisualStyleBackColor = true;
+            this.btnQuit.Click += new System.EventHandler(this.btnQuit_Click);
             // 
             // MainForm
             // 

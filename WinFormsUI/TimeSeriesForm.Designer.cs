@@ -41,7 +41,7 @@
             this.chartSeries.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
             this.chartSeries.Legends.Add(legend1);
-            this.chartSeries.Location = new System.Drawing.Point(83, 56);
+            this.chartSeries.Location = new System.Drawing.Point(78, 63);
             this.chartSeries.Name = "chartSeries";
             this.chartSeries.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SeaGreen;
             series1.ChartArea = "ChartArea1";
@@ -60,6 +60,7 @@
             this.Controls.Add(this.chartSeries);
             this.Name = "TimeSeriesForm";
             this.Text = "TimeSeries";
+            this.Load += new System.EventHandler(this.TimeSeriesForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.chartSeries)).EndInit();
             this.ResumeLayout(false);
 

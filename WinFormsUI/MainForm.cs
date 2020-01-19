@@ -11,41 +11,38 @@ namespace WinFormsUI
         {
             InitializeComponent();
 
-            btnOpenTransactionsForm.Click += ShowTransactionsForm;
-            btnOpenChart.Click += ShowTimeSeriesForm;
-            btnQuit.Click += ButtonQuitClick;
-
             State.Init();
         }
 
-        //TODO: select period
-        private void ShowTimeSeriesForm(object sender, EventArgs e)
-        {
-            var timeSeriesForm = new TimeSeriesForm();
-            this.Hide();
-            timeSeriesForm.Show();
-
-            timeSeriesForm.FormClosed += (o, e) => { Show(); };
-        }
-
-        private void ShowTransactionsForm(object sender, EventArgs e)
-        {
-            var transForm = new TransactionsForm();
-            this.Hide();
-            transForm.Show();
-
-            transForm.FormClosed += (o, e) => { Show(); };
-        }
-
-        private void ButtonQuitClick(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
+        //TODO: select period        
 
         private void RenderCategory(Index index)
         {
             // max and min index
             // changes for average in month
+        }
+
+        private void btnOpenTransactionsForm_Click(object sender, EventArgs e)
+        {
+            var transForm = new TransactionsForm();
+            this.Hide();
+            transForm.Show();
+
+            transForm.FormClosed += (o, e) => Show();
+        }
+
+        private void btnOpenChart_Click(object sender, EventArgs e)
+        {
+            var timeSeriesForm = new TimeSeriesForm();
+            this.Hide();
+            timeSeriesForm.Show();
+
+            timeSeriesForm.FormClosed += (o, e) => Show();
+        }
+
+        private void btnQuit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

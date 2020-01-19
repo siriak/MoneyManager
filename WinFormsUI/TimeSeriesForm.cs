@@ -17,30 +17,6 @@ namespace WinFormsUI
         public TimeSeriesForm()
         {
             InitializeComponent();
-            Load += OnFormLoad;
-        }
-
-        private void OnFormLoad(object sender, EventArgs e)
-        {
-            chartSeries.Series.Clear();
-            var series = new Series
-            {
-                Name = "Time Series",
-                Color = Color.Green,
-                IsVisibleInLegend = false,
-                IsXValueIndexed = true,
-                ChartType = SeriesChartType.Line
-            };
-
-            State.OnStateUpdated += RefreshChart;
-
-            for (var i = State.TimeSeries.Start; i < State.TimeSeries.End; i.AddDays(1))
-            {
-                series.Points.AddXY(State.TimeSeries[i].Date.ToString(), State.TimeSeries[i].Value);
-            }
-
-            chartSeries.Series.Add(series);
-            chartSeries.Invalidate();
         }
 
         void RefreshChart()
@@ -60,6 +36,13 @@ namespace WinFormsUI
                 series.Points.AddXY(State.TimeSeries[i].Date.ToString(), State.TimeSeries[i].Value);
             }
             chartSeries.Series.Add(series);
+        }
+
+        private void TimeSeriesForm_Load(object sender, EventArgs e)
+        {
+            State.OnStateUpdated += RefreshChart;
+
+            RefreshChart();
         }
     }
 }
