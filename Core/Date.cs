@@ -37,17 +37,17 @@ namespace System
 
 		public Date(int year, int month, int day)
 		{
-			this._dt = new DateTime(year, month, day);
+			_dt = new DateTime(year, month, day);
 		}
 
 		public Date(DateTime dateTime)
 		{
-			this._dt = dateTime.AddTicks(-dateTime.Ticks % TimeSpan.TicksPerDay);
+			_dt = dateTime.AddTicks(-dateTime.Ticks % TimeSpan.TicksPerDay);
 		}
 
 		private Date(SerializationInfo info, StreamingContext context)
 		{
-			this._dt = DateTime.FromFileTime(info.GetInt64("ticks"));
+			_dt = DateTime.FromFileTime(info.GetInt64("ticks"));
 		}
 
 		public static TimeSpan operator -(Date d1, Date d2)
@@ -109,7 +109,7 @@ namespace System
 		{
 			get
 			{
-				return this._dt.Day;
+				return _dt.Day;
 			}
 		}
 
@@ -117,7 +117,7 @@ namespace System
 		{
 			get
 			{
-				return this._dt.DayOfWeek;
+				return _dt.DayOfWeek;
 			}
 		}
 
@@ -125,7 +125,7 @@ namespace System
 		{
 			get
 			{
-				return this._dt.DayOfYear;
+				return _dt.DayOfYear;
 			}
 		}
 
@@ -133,7 +133,7 @@ namespace System
 		{
 			get
 			{
-				return this._dt.Month;
+				return _dt.Month;
 			}
 		}
 
@@ -149,7 +149,7 @@ namespace System
 		{
 			get
 			{
-				return this._dt.Year;
+				return _dt.Year;
 			}
 		}
 
@@ -157,23 +157,23 @@ namespace System
 		{
 			get
 			{
-				return this._dt.Ticks;
+				return _dt.Ticks;
 			}
 		}
 
 		public Date AddDays(int value)
 		{
-			return new Date(this._dt.AddDays(value));
+			return new Date(_dt.AddDays(value));
 		}
 
 		public Date AddMonths(int value)
 		{
-			return new Date(this._dt.AddMonths(value));
+			return new Date(_dt.AddMonths(value));
 		}
 
 		public Date AddYears(int value)
 		{
-			return new Date(this._dt.AddYears(value));
+			return new Date(_dt.AddYears(value));
 		}
 
 		public static int Compare(Date d1, Date d2)
@@ -183,12 +183,12 @@ namespace System
 
 		public int CompareTo(Date value)
 		{
-			return this._dt.CompareTo(value._dt);
+			return _dt.CompareTo(value._dt);
 		}
 
 		public int CompareTo(object value)
 		{
-			return this._dt.CompareTo(value);
+			return _dt.CompareTo(value);
 		}
 
 		public static int DaysInMonth(int year, int month)
@@ -198,17 +198,17 @@ namespace System
 
 		public bool Equals(Date value)
 		{
-			return this._dt.Equals(value._dt);
+			return _dt.Equals(value._dt);
 		}
 
 		public override bool Equals(object value)
 		{
-			return value is Date && this._dt.Equals(((Date)value)._dt);
+			return value is Date && _dt.Equals(((Date)value)._dt);
 		}
 
 		public override int GetHashCode()
 		{
-			return this._dt.GetHashCode();
+			return _dt.GetHashCode();
 		}
 
 		public static bool Equals(Date d1, Date d2)
@@ -218,7 +218,7 @@ namespace System
 
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			info.AddValue("ticks", this._dt.Ticks);
+			info.AddValue("ticks", _dt.Ticks);
 		}
 
 		public static bool IsLeapYear(int year)
@@ -268,37 +268,37 @@ namespace System
 
 		public string ToLongString()
 		{
-			return this._dt.ToLongDateString();
+			return _dt.ToLongDateString();
 		}
 
 		public string ToShortString()
 		{
-			return this._dt.ToShortDateString();
+			return _dt.ToShortDateString();
 		}
 
 		public override string ToString()
 		{
-			return this.ToShortString();
+			return ToShortString();
 		}
 
 		public string ToString(IFormatProvider provider)
 		{
-			return this._dt.ToString(provider);
+			return _dt.ToString(provider);
 		}
 
 		public string ToString(string format)
 		{
 			if (format == "O" || format == "o" || format == "s")
 			{
-				return this.ToString("yyyy-MM-dd");
+				return ToString("yyyy-MM-dd");
 			}
 
-			return this._dt.ToString(format);
+			return _dt.ToString(format);
 		}
 
 		public string ToString(string format, IFormatProvider provider)
 		{
-			return this._dt.ToString(format, provider);
+			return _dt.ToString(format, provider);
 		}
 
 		public static bool TryParse(string s, out Date result)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using Core;
 
@@ -9,14 +10,12 @@ namespace WinFormsUI
         public MainForm()
         {
             InitializeComponent();
-
-            
         }
 
         private void btnOpenTransactionsForm_Click(object sender, EventArgs e)
         {
             var transForm = new TransactionsForm();
-            this.Hide();
+            Hide();
             transForm.Show();
 
             transForm.FormClosed += (o, e) => Show();
@@ -25,7 +24,7 @@ namespace WinFormsUI
         private void btnOpenChart_Click(object sender, EventArgs e)
         {
             var timeSeriesForm = new TimeSeriesForm();
-            this.Hide();
+            Hide();
             timeSeriesForm.Show();
 
             timeSeriesForm.FormClosed += (o, e) => Show();

@@ -10,6 +10,7 @@ namespace WinFormsUI
     {
         public TimeSeriesForm()
         {
+            // TODO: Move to designer
             InitializeComponent();
         }
 
