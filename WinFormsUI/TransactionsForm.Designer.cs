@@ -34,7 +34,6 @@
             this.lblStartDate = new System.Windows.Forms.Label();
             this.dateTimePickerStart = new System.Windows.Forms.DateTimePicker();
             this.dateTimePickerEnd = new System.Windows.Forms.DateTimePicker();
-            this.buttonLoad = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnBackToMenu
@@ -43,7 +42,7 @@
             this.btnBackToMenu.Name = "btnBackToMenu";
             this.btnBackToMenu.Size = new System.Drawing.Size(86, 23);
             this.btnBackToMenu.TabIndex = 0;
-            this.btnBackToMenu.Text = "Back to menu";
+            this.btnBackToMenu.Text = "Back";
             this.btnBackToMenu.UseVisualStyleBackColor = true;
             this.btnBackToMenu.Click += new System.EventHandler(this.btnBackToMenu_Click);
             // 
@@ -91,22 +90,11 @@
             this.dateTimePickerEnd.TabIndex = 10;
             this.dateTimePickerEnd.ValueChanged += new System.EventHandler(this.dateTimePickerEnd_ValueChanged);
             // 
-            // buttonLoad
-            // 
-            this.buttonLoad.Location = new System.Drawing.Point(505, 40);
-            this.buttonLoad.Name = "buttonLoad";
-            this.buttonLoad.Size = new System.Drawing.Size(75, 23);
-            this.buttonLoad.TabIndex = 11;
-            this.buttonLoad.Text = "Load";
-            this.buttonLoad.UseVisualStyleBackColor = true;
-            this.buttonLoad.Click += new System.EventHandler(this.buttonLoad_Click);
-            // 
             // TransactionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.buttonLoad);
             this.Controls.Add(this.dateTimePickerEnd);
             this.Controls.Add(this.dateTimePickerStart);
             this.Controls.Add(this.lblEndDate);
@@ -115,6 +103,8 @@
             this.Controls.Add(this.btnBackToMenu);
             this.Name = "TransactionsForm";
             this.Text = "TransactionsForm";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TransactionsForm_FormClosed);
+            this.Load += new System.EventHandler(this.TransactionsForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -128,6 +118,5 @@
         private System.Windows.Forms.Label lblStartDate;
         private System.Windows.Forms.DateTimePicker dateTimePickerStart;
         private System.Windows.Forms.DateTimePicker dateTimePickerEnd;
-        private System.Windows.Forms.Button buttonLoad;
     }
 }

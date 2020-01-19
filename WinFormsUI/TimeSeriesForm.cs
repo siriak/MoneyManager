@@ -1,12 +1,6 @@
 ﻿using Core;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 
@@ -31,9 +25,11 @@ namespace WinFormsUI
                 ChartType = SeriesChartType.Line
             };
 
-            for (var i = State.TimeSeries.Start; i <= State.TimeSeries.End; i = i.AddDays(1))
+            var timeSeries = State.GetTimeSeries("all", 0.99);
+            // TODO: Display chart using selected dates
+            for (var date = new Date(2019, 1, 31); date <= new Date(2020, 1, 31); date = date.AddDays(1))
             {
-                series.Points.AddXY(State.TimeSeries[i].Date.ToString(), State.TimeSeries[i].Value);
+                series.Points.AddXY(date.ToString(), timeSeries[date]);
             }
             chartSeries.Series.Add(series);
         }
@@ -43,6 +39,11 @@ namespace WinFormsUI
             State.OnStateUpdated += RefreshChart;
 
             RefreshChart();
+        }
+
+        private void TimeSeriesForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            State.OnStateUpdated -= RefreshChart;
         }
     }
 }

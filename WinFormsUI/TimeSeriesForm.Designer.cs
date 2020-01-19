@@ -60,6 +60,7 @@
             this.Controls.Add(this.chartSeries);
             this.Name = "TimeSeriesForm";
             this.Text = "TimeSeries";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.TimeSeriesForm_FormClosed);
             this.Load += new System.EventHandler(this.TimeSeriesForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.chartSeries)).EndInit();
             this.ResumeLayout(false);

@@ -72,7 +72,7 @@ namespace Core
             return new Transaction(node.Attributes["card"].Value,
                 node.Attributes["appcode"].Value,
                 DateTimeOffset.Parse(node.Attributes["trandate"].Value + " " + node.Attributes["trantime"].Value),
-                new Money(decimal.Parse(node.Attributes["amount"].Value.Split(' ').First()), (Currency)Enum.Parse(typeof(Currency), node.Attributes["amount"].Value.Split(' ').Last())),
+                new Money(decimal.Parse(node.Attributes["cardamount"].Value.Split(' ').First()), (Currency)Enum.Parse(typeof(Currency), node.Attributes["cardamount"].Value.Split(' ').Last())),
                 new Money(decimal.Parse(node.Attributes["rest"].Value.Split(' ').First()), (Currency)Enum.Parse(typeof(Currency), node.Attributes["rest"].Value.Split(' ').Last())),
                 node.Attributes["terminal"].Value,
                 node.Attributes["description"].Value);

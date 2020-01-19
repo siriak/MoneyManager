@@ -1,6 +1,5 @@
 ﻿using Core;
 using System;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -8,8 +7,8 @@ namespace WinFormsUI
 {
     public partial class TransactionsForm : Form
     {
-        DateTime startDate = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
-        DateTime endDate = DateTime.Now;
+        DateTime startDate;
+        DateTime endDate;
 
         public TransactionsForm()
         {
@@ -17,9 +16,7 @@ namespace WinFormsUI
             dateTimePickerStart.Format = DateTimePickerFormat.Short;
             dateTimePickerEnd.Format = DateTimePickerFormat.Short;
             dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
-            dateTimePickerEnd.Value = DateTime.Now;
-            dateTimePickerStart.Text = "1/19/2019";
-            dateTimePickerStart.Refresh();
+            dateTimePickerEnd.Value = DateTime.Now.Date;
         }
 
         void RefreshList()
@@ -31,26 +28,18 @@ namespace WinFormsUI
             }));
         }
 
-        private void btnBackToMenu_Click(object sender, EventArgs e)
-        {
-            State.OnStateUpdated -= RefreshList;
-            this.Close();
-        }
+        private void btnBackToMenu_Click(object sender, EventArgs e) => Close();
 
-        private void dateTimePickerStart_ValueChanged(object sender, EventArgs e)
-        {
-            startDate = dateTimePickerStart.Value;
-        }
+        private void dateTimePickerStart_ValueChanged(object sender, EventArgs e) => startDate = dateTimePickerStart.Value;
 
-        private void dateTimePickerEnd_ValueChanged(object sender, EventArgs e)
-        {
-            endDate = dateTimePickerEnd.Value;
-        }
+        private void dateTimePickerEnd_ValueChanged(object sender, EventArgs e) => endDate = dateTimePickerEnd.Value;
 
-        private void buttonLoad_Click(object sender, EventArgs e)
+        private void TransactionsForm_Load(object sender, EventArgs e)
         {
             State.OnStateUpdated += RefreshList;
             RefreshList();
         }
+
+        private void TransactionsForm_FormClosed(object sender, FormClosedEventArgs e) => State.OnStateUpdated -= RefreshList;
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows.Forms;
 using Core;
 
@@ -11,15 +10,7 @@ namespace WinFormsUI
         {
             InitializeComponent();
 
-            State.Init();
-        }
-
-        //TODO: select period        
-
-        private void RenderCategory(Index index)
-        {
-            // max and min index
-            // changes for average in month
+            
         }
 
         private void btnOpenTransactionsForm_Click(object sender, EventArgs e)
@@ -40,9 +31,8 @@ namespace WinFormsUI
             timeSeriesForm.FormClosed += (o, e) => Show();
         }
 
-        private void btnQuit_Click(object sender, EventArgs e)
-        {
-            Application.Exit();
-        }
+        private void btnQuit_Click(object sender, EventArgs e) => Application.Exit();
+
+        private async void MainForm_Load(object sender, EventArgs e) => await State.Init();
     }
 }

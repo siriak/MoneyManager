@@ -49,7 +49,7 @@
             this.btnOpenTransactionsForm.Name = "btnOpenTransactionsForm";
             this.btnOpenTransactionsForm.Size = new System.Drawing.Size(111, 23);
             this.btnOpenTransactionsForm.TabIndex = 1;
-            this.btnOpenTransactionsForm.Text = "Load Transactions";
+            this.btnOpenTransactionsForm.Text = "Transactions";
             this.btnOpenTransactionsForm.UseVisualStyleBackColor = true;
             this.btnOpenTransactionsForm.Click += new System.EventHandler(this.btnOpenTransactionsForm_Click);
             // 
@@ -73,6 +73,7 @@
             this.Controls.Add(this.btnOpenChart);
             this.Name = "MainForm";
             this.Text = "MainForm";
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.ResumeLayout(false);
 
         }

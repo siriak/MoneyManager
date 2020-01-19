@@ -6,42 +6,78 @@ namespace Core
 {
     public class TimeSeries
     {
-        private List<Observation> Series { get; } = new List<Observation>();
+        private List<double> RawSeries { get; } = new List<double>();
+        private List<double> SmoothedSeries { get; } = new List<double>();
+        public double SmoothingRatio { get; }
 
-        public Date Start { get; private set; } = Date.MaxValue;
+        private Date Start = Date.MaxValue;
+        private Date End = Date.MinValue;
 
-        public Date End { get; private set; } = Date.MinValue;
-
-        public void AddMany(List<Transaction> ts)
+        public TimeSeries(double smoothingRatio)
         {
-            if (ts.Any())
+            SmoothingRatio = smoothingRatio;
+        }
+
+        public TimeSeries(IEnumerable<Transaction> transactions, double smoothingRatio) : this(smoothingRatio)
+        {
+            AddMany(transactions);
+        }
+
+        public void AddMany(IEnumerable<Transaction> transactionss)
+        {
+            if (!transactionss.Any())
             {
-                if (!Series.Any())
-                {
-                    Series.Add(new Observation() { Date = ts[0].TimeStamp.Date.ToDate() });
-                }
-                var min = ts.Select(x => new Date(x.TimeStamp.Date)).Min();
-                Start = Start.CompareTo(min) > 0 ? min : Start;
-                while (Series.First().Date > Start)
-                {
-                    Series.Insert(0, new Observation() { Date = Series[0].Date.AddDays(-1) });
-                }
+                return;
+            }
+            if (!RawSeries.Any())
+            {
+                RawSeries.Add(0);
+                Start = End = transactionss.First().TimeStamp.Date.ToDate();
+            }
 
-                var max = ts.Select(x => new Date(x.TimeStamp.Date)).Max();
-                End = End.CompareTo(max) < 0 ? max : End;
-                while (Series.Last().Date < End)
-                {
-                    Series.Add(new Observation() { Date = Series.Last().Date.AddDays(1) });
-                }
+            for (var min = transactionss.Select(x => new Date(x.TimeStamp.Date)).Min(); min < Start; Start = Start.AddDays(-1))
+            {
+                RawSeries.Insert(0, 0);
+            }
 
-                foreach (var transaction in ts)
-                {
-                    // TODO: Money to decimal
-                    this[transaction.TimeStamp.Date.ToDate()].Value += transaction.Amount.Amount;
-                }
+
+            for (var max = transactionss.Select(x => new Date(x.TimeStamp.Date)).Max(); max > End; End = End.AddDays(1))
+            {
+                RawSeries.Add(0);
+            }
+
+            foreach (var transaction in transactionss)
+            {
+                // TODO: Money to decimal
+                RawSeries[(transaction.TimeStamp.Date.ToDate() - Start).Days] += (double)transaction.Amount.Amount;
+            }
+
+            SmoothedSeries.Clear();
+            double accumulator = 0;
+            foreach (var observation in RawSeries)
+            {
+                accumulator = SmoothingRatio * accumulator + (1 - SmoothingRatio) * observation;
+                SmoothedSeries.Add((1 - SmoothingRatio) * accumulator);
             }
         }
 
-        public Observation this[Date date] => Series[(date - Start).Days];
+        public double this[Date date]
+        {
+            get
+            {
+                if (date < Start)
+                {
+                    return 0;
+                }
+
+                var index = (date - Start).Days;
+                if (index < SmoothedSeries.Count)
+                {
+                    return SmoothedSeries[index];
+                }
+
+                return Math.Pow(SmoothingRatio, index - SmoothedSeries.Count + 1) * SmoothedSeries.Last();
+            }
+        }
     }
 }
