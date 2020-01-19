@@ -227,6 +227,9 @@
     <EmbeddedResource Include="TimeSeriesForm.resx">
       <DependentUpon>TimeSeriesForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="TransactionsForm.resx">
+      <DependentUpon>TransactionsForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

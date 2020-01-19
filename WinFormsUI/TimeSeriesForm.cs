@@ -55,7 +55,7 @@ namespace WinFormsUI
                 ChartType = SeriesChartType.Line
             };
 
-            for (var i = State.TimeSeries.Start; i < State.TimeSeries.End; i.AddDays(1))
+            for (var i = State.TimeSeries.Start; i <= State.TimeSeries.End; i = i.AddDays(1))
             {
                 series.Points.AddXY(State.TimeSeries[i].Date.ToString(), State.TimeSeries[i].Value);
             }
