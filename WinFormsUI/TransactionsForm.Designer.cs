@@ -30,15 +30,16 @@
         {
             this.btnBackToMenu = new System.Windows.Forms.Button();
             this.lbTransactions = new System.Windows.Forms.ListBox();
-            this.textBoxEndDate = new System.Windows.Forms.TextBox();
             this.lblEndDate = new System.Windows.Forms.Label();
-            this.textBoxStartDate = new System.Windows.Forms.TextBox();
             this.lblStartDate = new System.Windows.Forms.Label();
+            this.dateTimePickerStart = new System.Windows.Forms.DateTimePicker();
+            this.dateTimePickerEnd = new System.Windows.Forms.DateTimePicker();
+            this.buttonLoad = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnBackToMenu
             // 
-            this.btnBackToMenu.Location = new System.Drawing.Point(681, 28);
+            this.btnBackToMenu.Location = new System.Drawing.Point(688, 40);
             this.btnBackToMenu.Name = "btnBackToMenu";
             this.btnBackToMenu.Size = new System.Drawing.Size(86, 23);
             this.btnBackToMenu.TabIndex = 0;
@@ -54,13 +55,6 @@
             this.lbTransactions.Size = new System.Drawing.Size(548, 303);
             this.lbTransactions.TabIndex = 1;
             // 
-            // textBoxEndDate
-            // 
-            this.textBoxEndDate.Location = new System.Drawing.Point(252, 44);
-            this.textBoxEndDate.Name = "textBoxEndDate";
-            this.textBoxEndDate.Size = new System.Drawing.Size(100, 20);
-            this.textBoxEndDate.TabIndex = 8;
-            // 
             // lblEndDate
             // 
             this.lblEndDate.AutoSize = true;
@@ -69,13 +63,6 @@
             this.lblEndDate.Size = new System.Drawing.Size(50, 13);
             this.lblEndDate.TabIndex = 7;
             this.lblEndDate.Text = "End date";
-            // 
-            // textBoxStartDate
-            // 
-            this.textBoxStartDate.Location = new System.Drawing.Point(29, 44);
-            this.textBoxStartDate.Name = "textBoxStartDate";
-            this.textBoxStartDate.Size = new System.Drawing.Size(100, 20);
-            this.textBoxStartDate.TabIndex = 6;
             // 
             // lblStartDate
             // 
@@ -86,14 +73,43 @@
             this.lblStartDate.TabIndex = 5;
             this.lblStartDate.Text = "Start date";
             // 
+            // dateTimePickerStart
+            // 
+            this.dateTimePickerStart.Checked = false;
+            this.dateTimePickerStart.Location = new System.Drawing.Point(29, 44);
+            this.dateTimePickerStart.Name = "dateTimePickerStart";
+            this.dateTimePickerStart.Size = new System.Drawing.Size(200, 20);
+            this.dateTimePickerStart.TabIndex = 9;
+            this.dateTimePickerStart.Value = new System.DateTime(2020, 1, 19, 15, 10, 57, 0);
+            this.dateTimePickerStart.ValueChanged += new System.EventHandler(this.dateTimePickerStart_ValueChanged);
+            // 
+            // dateTimePickerEnd
+            // 
+            this.dateTimePickerEnd.Location = new System.Drawing.Point(252, 44);
+            this.dateTimePickerEnd.Name = "dateTimePickerEnd";
+            this.dateTimePickerEnd.Size = new System.Drawing.Size(200, 20);
+            this.dateTimePickerEnd.TabIndex = 10;
+            this.dateTimePickerEnd.ValueChanged += new System.EventHandler(this.dateTimePickerEnd_ValueChanged);
+            // 
+            // buttonLoad
+            // 
+            this.buttonLoad.Location = new System.Drawing.Point(505, 40);
+            this.buttonLoad.Name = "buttonLoad";
+            this.buttonLoad.Size = new System.Drawing.Size(75, 23);
+            this.buttonLoad.TabIndex = 11;
+            this.buttonLoad.Text = "Load";
+            this.buttonLoad.UseVisualStyleBackColor = true;
+            this.buttonLoad.Click += new System.EventHandler(this.buttonLoad_Click);
+            // 
             // TransactionsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.textBoxEndDate);
+            this.Controls.Add(this.buttonLoad);
+            this.Controls.Add(this.dateTimePickerEnd);
+            this.Controls.Add(this.dateTimePickerStart);
             this.Controls.Add(this.lblEndDate);
-            this.Controls.Add(this.textBoxStartDate);
             this.Controls.Add(this.lblStartDate);
             this.Controls.Add(this.lbTransactions);
             this.Controls.Add(this.btnBackToMenu);
@@ -108,9 +124,10 @@
 
         private System.Windows.Forms.Button btnBackToMenu;
         private System.Windows.Forms.ListBox lbTransactions;
-        private System.Windows.Forms.TextBox textBoxEndDate;
         private System.Windows.Forms.Label lblEndDate;
-        private System.Windows.Forms.TextBox textBoxStartDate;
         private System.Windows.Forms.Label lblStartDate;
+        private System.Windows.Forms.DateTimePicker dateTimePickerStart;
+        private System.Windows.Forms.DateTimePicker dateTimePickerEnd;
+        private System.Windows.Forms.Button buttonLoad;
     }
 }
