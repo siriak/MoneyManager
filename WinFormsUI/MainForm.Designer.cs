@@ -28,12 +28,60 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            this.btnOpenChart = new System.Windows.Forms.Button();
+            this.btnOpenTransactionsForm = new System.Windows.Forms.Button();
+            this.btnQuit = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // btnOpenChart
+            // 
+            this.btnOpenChart.Location = new System.Drawing.Point(201, 23);
+            this.btnOpenChart.Name = "btnOpenChart";
+            this.btnOpenChart.Size = new System.Drawing.Size(75, 23);
+            this.btnOpenChart.TabIndex = 0;
+            this.btnOpenChart.Text = "Open Chart";
+            this.btnOpenChart.UseVisualStyleBackColor = true;
+            this.btnOpenChart.Click += new System.EventHandler(this.btnOpenChart_Click);
+            // 
+            // btnOpenTransactionsForm
+            // 
+            this.btnOpenTransactionsForm.Location = new System.Drawing.Point(30, 23);
+            this.btnOpenTransactionsForm.Name = "btnOpenTransactionsForm";
+            this.btnOpenTransactionsForm.Size = new System.Drawing.Size(111, 23);
+            this.btnOpenTransactionsForm.TabIndex = 1;
+            this.btnOpenTransactionsForm.Text = "Transactions";
+            this.btnOpenTransactionsForm.UseVisualStyleBackColor = true;
+            this.btnOpenTransactionsForm.Click += new System.EventHandler(this.btnOpenTransactionsForm_Click);
+            // 
+            // btnQuit
+            // 
+            this.btnQuit.Location = new System.Drawing.Point(577, 23);
+            this.btnQuit.Name = "btnQuit";
+            this.btnQuit.Size = new System.Drawing.Size(75, 23);
+            this.btnQuit.TabIndex = 2;
+            this.btnQuit.Text = "Quit";
+            this.btnQuit.UseVisualStyleBackColor = true;
+            this.btnQuit.Click += new System.EventHandler(this.btnQuit_Click);
+            // 
+            // MainForm
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnQuit);
+            this.Controls.Add(this.btnOpenTransactionsForm);
+            this.Controls.Add(this.btnOpenChart);
+            this.Name = "MainForm";
             this.Text = "MainForm";
+            this.Load += new System.EventHandler(this.MainForm_Load);
+            this.ResumeLayout(false);
+
         }
 
         #endregion
+
+        private System.Windows.Forms.Button btnOpenChart;
+        private System.Windows.Forms.Button btnOpenTransactionsForm;
+        private System.Windows.Forms.Button btnQuit;
     }
 }

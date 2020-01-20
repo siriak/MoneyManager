@@ -9,19 +9,36 @@ namespace Core
     {
         public static SortedSet<Transaction> Transactions { get; } = new SortedSet<Transaction>();
         public static event Action OnStateUpdated;
-        public static bool IsUpdating => task.Status == TaskStatus.Running; 
-        private static Task task; 
+        private static Dictionary<string, Func<Transaction, bool>> categoryFilters { get; } = new Dictionary<string, Func<Transaction, bool>>();
 
-        public static void Init()
+        public static Task Init()
         {
+            categoryFilters.Add("all", t => true);
+            categoryFilters.Add("income", t => t.IsIncome);
+            categoryFilters.Add("expences", t => t.IsExpence);
+
+            // TODO: Set up category filters with custom filters from config file
+
             var credentials = ConfigManager.GetCredentials();
 
-            task = Task.WhenAll(
-                credentials.Select(c => PrivatTransactionsImporter.ImportTransactions(c, (ts) =>
+            return Task.WhenAll(
+                credentials.Select(c => PrivatTransactionsImporter.ImportTransactions(c, ts =>
                 {
-                    Transactions.UnionWith(ts);
-                    OnStateUpdated?.Invoke();
+                    if (ts.Any())
+                    {
+                        Transactions.UnionWith(ts);
+                        OnStateUpdated?.Invoke();
+                    }
                 })));
+        }
+
+        public static TimeSeries GetTimeSeries(string category, double smoothingRatio = 0) => GetTimeSeries(new[] { category }, smoothingRatio);
+
+        public static TimeSeries GetTimeSeries(IEnumerable<string> categories, double smoothingRatio = 0)
+        {
+            Func<Transaction, bool> filter = t => categories.Any(c => categoryFilters[c](t));
+            var filtered = Transactions.Where(filter);
+            return new TimeSeries(filtered, smoothingRatio);
         }
     }
 }
