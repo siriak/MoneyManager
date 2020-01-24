@@ -9,6 +9,7 @@ namespace WinFormsUI
         public MainForm()
         {
             InitializeComponent();
+            StateManager.Load();
         }
 
         private void btnOpenTransactionsForm_Click(object sender, EventArgs e)

@@ -24,7 +24,7 @@ namespace WinFormsUI
             lbTransactions.Invoke(new Action(() =>
             {
                 lbTransactions.Items.Clear();
-                lbTransactions.Items.AddRange(State.Transactions.Reverse().Where(t => t.TimeStamp > startDate && t.TimeStamp < endDate).Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Descriprtion}").ToArray());
+                lbTransactions.Items.AddRange(StateManager.LoadedState.Where(t => t.TimeStamp >= startDate && t.TimeStamp <= endDate).Reverse().Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}").ToArray());
             }));
         }
 

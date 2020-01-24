@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,6 +10,7 @@ namespace Core
     public static class State
     {
         public static SortedSet<Transaction> Transactions { get; } = new SortedSet<Transaction>();
+
         public static event Action OnStateUpdated;
         private static Dictionary<string, Func<Transaction, bool>> categoryFilters { get; } = new Dictionary<string, Func<Transaction, bool>>();
 
@@ -28,6 +31,7 @@ namespace Core
                     {
                         Transactions.UnionWith(ts);
                         OnStateUpdated?.Invoke();
+                        StateManager.Save();
                     }
                 })));
         }
