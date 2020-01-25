@@ -8,25 +8,19 @@ namespace Core
 {
     public class StateManager
     {
-        public static SortedSet<Transaction> LoadedState { get; set; } = new SortedSet<Transaction>();
-
-        public static void Load()
+        public static SortedSet<Transaction> Load()
         {
             if (!File.Exists("state.json"))
             {
-                File.WriteAllText("state.json", JsonConvert.SerializeObject(State.Transactions));
+                return State.Transactions;
             }
-            LoadedState = JsonConvert.DeserializeObject<SortedSet<Transaction>>(File.ReadAllText("state.json"));
+            return JsonConvert.DeserializeObject<SortedSet<Transaction>>(File.ReadAllText("state.json"));
         }
 
         public static void Save()
-        {
-            if (State.Transactions.Count > (LoadedState?.Count ?? 0))
-            {
-                var transactions = JsonConvert.SerializeObject(State.Transactions);                
-                File.WriteAllText("state.json", transactions);
-                Load();
-            }
+        {            
+            var transactions = JsonConvert.SerializeObject(State.Transactions);
+            File.WriteAllText("state.json", transactions);
         }
     }
 }
