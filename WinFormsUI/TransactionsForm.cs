@@ -7,16 +7,12 @@ namespace WinFormsUI
 {
     public partial class TransactionsForm : Form
     {
-        DateTime startDate;
-        DateTime endDate;
+        DateTime startDate = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
+        DateTime endDate = DateTime.Now.Date;
 
         public TransactionsForm()
         {
             InitializeComponent();
-            dateTimePickerStart.Format = DateTimePickerFormat.Short;
-            dateTimePickerEnd.Format = DateTimePickerFormat.Short;
-            dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
-            dateTimePickerEnd.Value = DateTime.Now.Date;
         }
 
         void RefreshList()
@@ -24,18 +20,28 @@ namespace WinFormsUI
             lbTransactions.Invoke(new Action(() =>
             {
                 lbTransactions.Items.Clear();
-                lbTransactions.Items.AddRange(State.Transactions.Reverse().Where(t => t.TimeStamp >= startDate && t.TimeStamp <= endDate).Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}").ToArray());
+                lbTransactions.Items.AddRange(State.Transactions.SkipWhile(t => t.TimeStamp < startDate).TakeWhile(t => t.TimeStamp <= endDate).Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}").Reverse().ToArray());
             }));
         }
 
         private void btnBackToMenu_Click(object sender, EventArgs e) => Close();
 
-        private void dateTimePickerStart_ValueChanged(object sender, EventArgs e) => startDate = dateTimePickerStart.Value;
+        private void dateTimePickerStart_ValueChanged(object sender, EventArgs e)
+        {
+            startDate = dateTimePickerStart.Value;
+            RefreshList();
+        }
 
-        private void dateTimePickerEnd_ValueChanged(object sender, EventArgs e) => endDate = dateTimePickerEnd.Value;
+        private void dateTimePickerEnd_ValueChanged(object sender, EventArgs e)
+        {
+            endDate = dateTimePickerEnd.Value;
+            RefreshList();
+        }
 
         private void TransactionsForm_Load(object sender, EventArgs e)
         {
+            dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
+            dateTimePickerEnd.Value = DateTime.Now.Date;
             State.OnStateUpdated += RefreshList;
             RefreshList();
         }

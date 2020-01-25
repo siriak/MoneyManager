@@ -12,7 +12,7 @@ namespace Core
         {
             if (!File.Exists("state.json"))
             {
-                return State.Transactions;
+                return new SortedSet<Transaction>();
             }
             return JsonConvert.DeserializeObject<SortedSet<Transaction>>(File.ReadAllText("state.json"));
         }

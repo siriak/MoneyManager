@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace Core
 {
-    public class State
+    public static class State
     {
-        public static SortedSet<Transaction> Transactions { get; set; } = new SortedSet<Transaction>();
+        public static SortedSet<Transaction> Transactions { get; } = new SortedSet<Transaction>();
         public static event Action OnStateUpdated;
         private static Dictionary<string, Func<Transaction, bool>> categoryFilters { get; } = new Dictionary<string, Func<Transaction, bool>>();
 
         public static Task Init()
         {
-            Transactions = StateManager.Load();
+            Transactions.UnionWith(StateManager.Load());
             categoryFilters.Add("all", t => true);
             categoryFilters.Add("income", t => t.IsIncome);
             categoryFilters.Add("expences", t => t.IsExpence);
@@ -27,12 +27,13 @@ namespace Core
             return Task.WhenAll(
                 credentials.Select(c => PrivatTransactionsImporter.ImportTransactions(c, ts =>
                 {
-                    if (ts.Any() && !Transactions.Equals(ts))
+                    if (ts.All(Transactions.Contains))
                     {
-                        Transactions.UnionWith(ts);
-                        OnStateUpdated?.Invoke();
-                        StateManager.Save();
+                        return;
                     }
+                    Transactions.UnionWith(ts);
+                    StateManager.Save();
+                    OnStateUpdated?.Invoke();
                 })));
         }
 
