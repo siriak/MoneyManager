@@ -12,7 +12,7 @@ namespace Core
         public bool IsExpence => !isIncome;
         public Money Rest { get; }
         public string Terminal { get; }
-        public string Descriprtion { get; }
+        public string Description { get; }
 
         private string cardNumber;
         private string applicationCode;
@@ -22,7 +22,7 @@ namespace Core
         private bool isIncome;
         private Money rest;
         private string terminal;
-        private string descriprion;
+        private string description;
 
         public Transaction(string cardNumber, string appCode, DateTimeOffset timeStamp, Money amount, Money rest, string terminal, string description)
         {
@@ -32,7 +32,7 @@ namespace Core
             Amount = amount;
             Rest = rest;
             Terminal = terminal;
-            Descriprtion = description;
+            Description = description;
         }
 
         public int CompareTo(Transaction other)

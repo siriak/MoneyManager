@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,6 +15,7 @@ namespace Core
 
         public static Task Init()
         {
+            Transactions.UnionWith(StateManager.Load());
             categoryFilters.Add("all", t => true);
             categoryFilters.Add("income", t => t.IsIncome);
             categoryFilters.Add("expences", t => t.IsExpence);
@@ -24,11 +27,13 @@ namespace Core
             return Task.WhenAll(
                 credentials.Select(c => PrivatTransactionsImporter.ImportTransactions(c, ts =>
                 {
-                    if (ts.Any())
+                    if (ts.All(Transactions.Contains))
                     {
-                        Transactions.UnionWith(ts);
-                        OnStateUpdated?.Invoke();
+                        return;
                     }
+                    Transactions.UnionWith(ts);
+                    StateManager.Save();
+                    OnStateUpdated?.Invoke();
                 })));
         }
 
