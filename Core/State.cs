@@ -15,10 +15,11 @@ namespace Core
 
         public static Task Init()
         {
-            Transactions.UnionWith(StateManager.Load());
             categoryFilters.Add("all", t => true);
             categoryFilters.Add("income", t => t.IsIncome);
             categoryFilters.Add("expences", t => t.IsExpence);
+            Transactions.UnionWith(StateManager.Load());
+            OnStateUpdated?.Invoke();
 
             // TODO: Set up category filters with custom filters from config file
 

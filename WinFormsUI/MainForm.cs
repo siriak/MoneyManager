@@ -50,7 +50,7 @@ namespace WinFormsUI
             };
 
             var timeSeries = State.GetTimeSeries("all", 0.99);
-            // TODO: Display chart using selected dates
+            
             for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
                 series.Points.AddXY(date.ToString(), timeSeries[date]);
