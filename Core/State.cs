@@ -13,11 +13,15 @@ namespace Core
         public static event Action OnStateUpdated;
         private static Dictionary<string, Func<Transaction, bool>> categoryFilters { get; } = new Dictionary<string, Func<Transaction, bool>>();
 
-        public static Task Init()
+        static State()
         {
             categoryFilters.Add("all", t => true);
             categoryFilters.Add("income", t => t.IsIncome);
             categoryFilters.Add("expences", t => t.IsExpence);
+        }
+
+        public static Task Init()
+        {
             Transactions.UnionWith(StateManager.Load());
             OnStateUpdated?.Invoke();
 
