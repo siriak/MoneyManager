@@ -9,8 +9,7 @@ namespace WinFormsUI
 {
     public partial class MainForm : Form
     {
-        Date startDate = new Date(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
-        Date endDate = new Date(DateTime.Now);
+        Date startDate, endDate;
 
         public MainForm()
         {
@@ -19,14 +18,13 @@ namespace WinFormsUI
 
         private async void MainForm_Load(object sender, EventArgs e)
         {
-            var initTask = State.Init();
             State.OnStateUpdated += RefreshList;
             State.OnStateUpdated += RefreshChart;
 
             dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
             dateTimePickerEnd.Value = DateTime.Now.Date;
 
-            await initTask;
+            await State.Init();
         }
 
         private void RefreshList()
