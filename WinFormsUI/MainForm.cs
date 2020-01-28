@@ -32,11 +32,8 @@ namespace WinFormsUI
 
         private void RefreshList()
         {
-            lbTransactions.Invoke(new Action(() =>
-            {
-                lbTransactions.Items.Clear();
-                lbTransactions.Items.AddRange(State.Transactions.SkipWhile(t => t.TimeStamp.DateTime < startDate).TakeWhile(t => t.TimeStamp.DateTime <= endDate).Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}").Reverse().ToArray());
-            }));
+            lbTransactions.Items.Clear();
+            lbTransactions.Items.AddRange(State.Transactions.SkipWhile(t => t.TimeStamp.DateTime < startDate).TakeWhile(t => t.TimeStamp.DateTime <= endDate).Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}").Reverse().ToArray());
         }
 
         private void RefreshChart()
