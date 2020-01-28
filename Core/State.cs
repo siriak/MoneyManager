@@ -13,12 +13,17 @@ namespace Core
         public static event Action OnStateUpdated;
         private static Dictionary<string, Func<Transaction, bool>> categoryFilters { get; } = new Dictionary<string, Func<Transaction, bool>>();
 
-        public static Task Init()
+        static State()
         {
-            Transactions.UnionWith(StateManager.Load());
             categoryFilters.Add("all", t => true);
             categoryFilters.Add("income", t => t.IsIncome);
             categoryFilters.Add("expences", t => t.IsExpence);
+        }
+
+        public static Task Init()
+        {
+            Transactions.UnionWith(StateManager.Load());
+            OnStateUpdated?.Invoke();
 
             // TODO: Set up category filters with custom filters from config file
 

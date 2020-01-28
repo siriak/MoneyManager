@@ -1,36 +1,62 @@
 ﻿using System;
+using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 using Core;
 
 namespace WinFormsUI
 {
     public partial class MainForm : Form
     {
+        Date startDate, endDate;
+        event Action OnFilteringUpdated;
+
         public MainForm()
         {
             InitializeComponent();
         }
 
-        private void btnOpenTransactionsForm_Click(object sender, EventArgs e)
+        private async void MainForm_Load(object sender, EventArgs e)
         {
-            var transForm = new TransactionsForm();
-            Hide();
-            transForm.Show();
+            State.OnStateUpdated += RefreshList;
+            State.OnStateUpdated += RefreshChart;
+            OnFilteringUpdated += RefreshList;
+            OnFilteringUpdated += RefreshChart;
 
-            transForm.FormClosed += (o, e) => Show();
+            dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
+            dateTimePickerEnd.Value = DateTime.Now.Date;
+
+            await State.Init();
         }
 
-        private void btnOpenChart_Click(object sender, EventArgs e)
+        private void RefreshList()
         {
-            var timeSeriesForm = new TimeSeriesForm();
-            Hide();
-            timeSeriesForm.Show();
-
-            timeSeriesForm.FormClosed += (o, e) => Show();
+            lbTransactions.Items.Clear();
+            lbTransactions.Items.AddRange(State.Transactions.SkipWhile(t => t.TimeStamp.DateTime < startDate).TakeWhile(t => t.TimeStamp.DateTime <= endDate).Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}").Reverse().ToArray());
         }
 
-        private void btnQuit_Click(object sender, EventArgs e) => Application.Exit();
+        private void RefreshChart()
+        {
+            series.Points.Clear();
+            var timeSeries = State.GetTimeSeries("all", 0.99);
+            
+            for (var date = startDate; date <= endDate; date = date.AddDays(1))
+            {
+                series.Points.AddXY(date.ToString(), timeSeries[date]);
+            }
+        }
 
-        private async void MainForm_Load(object sender, EventArgs e) => await State.Init();
+        private void dateTimePickerStart_ValueChanged(object sender, EventArgs e)
+        {
+            startDate = dateTimePickerStart.Value.ToDate();
+            OnFilteringUpdated();
+        }
+
+        private void dateTimePickerEnd_ValueChanged(object sender, EventArgs e)
+        {
+            endDate = dateTimePickerEnd.Value.ToDate();
+            OnFilteringUpdated();
+        }
     }
 }
