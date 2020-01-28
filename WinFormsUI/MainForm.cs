@@ -10,7 +10,7 @@ namespace WinFormsUI
     public partial class MainForm : Form
     {
         Date startDate, endDate;
-        public static event Action OnFilteringUpdated;
+        event Action OnFilteringUpdated;
 
         public MainForm()
         {
