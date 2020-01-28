@@ -10,6 +10,7 @@ namespace WinFormsUI
     public partial class MainForm : Form
     {
         Date startDate, endDate;
+        public static event Action OnFilteringUpdated;
 
         public MainForm()
         {
@@ -20,8 +21,8 @@ namespace WinFormsUI
         {
             State.OnStateUpdated += RefreshList;
             State.OnStateUpdated += RefreshChart;
-            State.OnFilteringUpdated += RefreshList;
-            State.OnFilteringUpdated += RefreshChart;
+            OnFilteringUpdated += RefreshList;
+            OnFilteringUpdated += RefreshChart;
 
             dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
             dateTimePickerEnd.Value = DateTime.Now.Date;
@@ -52,17 +53,13 @@ namespace WinFormsUI
         private void dateTimePickerStart_ValueChanged(object sender, EventArgs e)
         {
             startDate = dateTimePickerStart.Value.ToDate();
-            //State.OnFilteringUpdated();
-            RefreshList();
-            RefreshChart();
+            OnFilteringUpdated();
         }
 
         private void dateTimePickerEnd_ValueChanged(object sender, EventArgs e)
         {
             endDate = dateTimePickerEnd.Value.ToDate();
-            //State.OnFilteringUpdated();
-            RefreshList();
-            RefreshChart();
+            OnFilteringUpdated();
         }
     }
 }
