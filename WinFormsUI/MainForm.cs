@@ -27,6 +27,8 @@ namespace WinFormsUI
             dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
             dateTimePickerEnd.Value = DateTime.Now.Date;
 
+            categories.Items.AddRange(State.Categories.ToArray());
+
             await State.Init();
         }
 
@@ -38,12 +40,12 @@ namespace WinFormsUI
 
         private void RefreshChart()
         {
-            series.Points.Clear();
+            chartSeries.Series["Time Series"].Points.Clear();
             var timeSeries = State.GetTimeSeries("all", 0.99);
             
             for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
-                series.Points.AddXY(date.ToString(), timeSeries[date]);
+                chartSeries.Series["Time Series"].Points.AddXY(date.ToString(), timeSeries[date]);
             }
         }
 
@@ -51,6 +53,11 @@ namespace WinFormsUI
         {
             startDate = dateTimePickerStart.Value.ToDate();
             OnFilteringUpdated();
+        }
+
+        private void categories_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
 
         private void dateTimePickerEnd_ValueChanged(object sender, EventArgs e)

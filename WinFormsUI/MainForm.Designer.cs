@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabList = new System.Windows.Forms.TabPage();
             this.lbTransactions = new System.Windows.Forms.ListBox();
@@ -40,6 +40,7 @@
             this.dateTimePickerStart = new System.Windows.Forms.DateTimePicker();
             this.lblEndDate = new System.Windows.Forms.Label();
             this.lblStartDate = new System.Windows.Forms.Label();
+            this.categories = new System.Windows.Forms.CheckedListBox();
             this.tabs.SuspendLayout();
             this.tabList.SuspendLayout();
             this.tabChart.SuspendLayout();
@@ -88,18 +89,18 @@
             // 
             // chartSeries
             // 
-            chartArea.Name = "ChartArea";
-            this.chartSeries.ChartAreas.Add(chartArea);
-            legend.Name = "Legend";
-            this.chartSeries.Legends.Add(legend);
+            chartArea1.Name = "ChartArea";
+            this.chartSeries.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend";
+            this.chartSeries.Legends.Add(legend1);
             this.chartSeries.Location = new System.Drawing.Point(19, 42);
             this.chartSeries.Name = "chartSeries";
             this.chartSeries.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SeaGreen;
-            series.ChartArea = "ChartArea";
-            series.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series.Legend = "Legend";
-            series.Name = "Time Series";
-            this.chartSeries.Series.Add(series);
+            series1.ChartArea = "ChartArea";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.Legend = "Legend";
+            series1.Name = "Time Series";
+            this.chartSeries.Series.Add(series1);
             this.chartSeries.Size = new System.Drawing.Size(461, 336);
             this.chartSeries.TabIndex = 1;
             this.chartSeries.Text = "chartSeries";
@@ -144,11 +145,21 @@
             this.lblStartDate.TabIndex = 11;
             this.lblStartDate.Text = "Start date";
             // 
+            // categories
+            // 
+            this.categories.FormattingEnabled = true;
+            this.categories.Location = new System.Drawing.Point(31, 174);
+            this.categories.Name = "categories";
+            this.categories.Size = new System.Drawing.Size(200, 214);
+            this.categories.TabIndex = 15;
+            this.categories.SelectedIndexChanged += new System.EventHandler(this.categories_SelectedIndexChanged);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(808, 466);
+            this.Controls.Add(this.categories);
             this.Controls.Add(this.dateTimePickerEnd);
             this.Controls.Add(this.tabs);
             this.Controls.Add(this.lblStartDate);
@@ -176,6 +187,6 @@
         private System.Windows.Forms.Label lblEndDate;
         private System.Windows.Forms.Label lblStartDate;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartSeries;
-        private System.Windows.Forms.DataVisualization.Charting.Series series = new System.Windows.Forms.DataVisualization.Charting.Series();
+        private System.Windows.Forms.CheckedListBox categories;
     }
 }
