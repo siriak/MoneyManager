@@ -20,6 +20,8 @@ namespace WinFormsUI
         {
             State.OnStateUpdated += RefreshList;
             State.OnStateUpdated += RefreshChart;
+            State.OnFilteringUpdated += RefreshList;
+            State.OnFilteringUpdated += RefreshChart;
 
             dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
             dateTimePickerEnd.Value = DateTime.Now.Date;
@@ -38,28 +40,19 @@ namespace WinFormsUI
 
         private void RefreshChart()
         {
-            chartSeries.Series.Clear();
-            var series = new Series
-            {
-                Name = "Time Series",
-                Color = Color.Green,
-                IsVisibleInLegend = false,
-                IsXValueIndexed = true,
-                ChartType = SeriesChartType.Line
-            };
-
+            series.Points.Clear();
             var timeSeries = State.GetTimeSeries("all", 0.99);
             
             for (var date = startDate; date <= endDate; date = date.AddDays(1))
             {
                 series.Points.AddXY(date.ToString(), timeSeries[date]);
             }
-            chartSeries.Series.Add(series);
-        }        
+        }
 
         private void dateTimePickerStart_ValueChanged(object sender, EventArgs e)
         {
             startDate = dateTimePickerStart.Value.ToDate();
+            //State.OnFilteringUpdated();
             RefreshList();
             RefreshChart();
         }
@@ -67,6 +60,7 @@ namespace WinFormsUI
         private void dateTimePickerEnd_ValueChanged(object sender, EventArgs e)
         {
             endDate = dateTimePickerEnd.Value.ToDate();
+            //State.OnFilteringUpdated();
             RefreshList();
             RefreshChart();
         }

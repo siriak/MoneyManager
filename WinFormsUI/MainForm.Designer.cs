@@ -30,7 +30,7 @@
         {
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series = new System.Windows.Forms.DataVisualization.Charting.Series();
+            
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabList = new System.Windows.Forms.TabPage();
             this.lbTransactions = new System.Windows.Forms.ListBox();
@@ -96,8 +96,9 @@
             this.chartSeries.Name = "chartSeries";
             this.chartSeries.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SeaGreen;
             series.ChartArea = "ChartArea";
+            series.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             series.Legend = "Legend";
-            series.Name = "Series";
+            series.Name = "Time Series";
             this.chartSeries.Series.Add(series);
             this.chartSeries.Size = new System.Drawing.Size(461, 336);
             this.chartSeries.TabIndex = 1;
@@ -175,5 +176,6 @@
         private System.Windows.Forms.Label lblEndDate;
         private System.Windows.Forms.Label lblStartDate;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartSeries;
+        private System.Windows.Forms.DataVisualization.Charting.Series series = new System.Windows.Forms.DataVisualization.Charting.Series();
     }
 }

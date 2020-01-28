@@ -11,6 +11,7 @@ namespace Core
     {
         public static SortedSet<Transaction> Transactions { get; } = new SortedSet<Transaction>();
         public static event Action OnStateUpdated;
+        public static event Action OnFilteringUpdated;
         private static Dictionary<string, Func<Transaction, bool>> categoryFilters { get; } = new Dictionary<string, Func<Transaction, bool>>();
 
         static State()
