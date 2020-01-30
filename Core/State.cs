@@ -51,5 +51,13 @@ namespace Core
             var filtered = Transactions.Where(filter);
             return new TimeSeries(filtered, smoothingRatio);
         }
+
+        public static IEnumerable<Transaction> GetTransactions(string category) => GetTransactions(new[] { category });
+
+        public static IEnumerable<Transaction> GetTransactions(IEnumerable<string> categories)
+        {
+            Func<Transaction, bool> filter = t => categories.Any(c => categoryFilters[c](t));
+            return Transactions.Where(filter);
+        }
     }
 }

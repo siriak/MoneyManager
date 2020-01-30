@@ -31,6 +31,7 @@ namespace WinFormsUI
 
             categories.Items.AddRange(State.Categories.ToArray());
             categories.SelectedIndexChanged += (o, e) => RefreshChart();
+            categories.SelectedIndexChanged += (o, e) => RefreshList();
             categories.SetItemChecked(0, true);
 
             await State.Init();
@@ -39,7 +40,15 @@ namespace WinFormsUI
         private void RefreshList()
         {
             lbTransactions.Items.Clear();
-            lbTransactions.Items.AddRange(State.Transactions.SkipWhile(t => t.TimeStamp.DateTime < startDate).TakeWhile(t => t.TimeStamp.DateTime <= endDate).Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}").Reverse().ToArray());
+
+            foreach (var c in categories.CheckedItems)
+            {
+                lbTransactions.Items.AddRange(State.GetTransactions(categories.GetItemText(c))
+                    .SkipWhile(t => t.TimeStamp.DateTime < startDate)
+                    .TakeWhile(t => t.TimeStamp.DateTime <= endDate)
+                    .Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}").Reverse()
+                    .ToArray());
+            }
         }
 
         private void RefreshChart()
