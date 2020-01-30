@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.tabs = new System.Windows.Forms.TabControl();
             this.tabList = new System.Windows.Forms.TabPage();
             this.lbTransactions = new System.Windows.Forms.ListBox();
@@ -89,18 +89,18 @@
             // 
             // chartSeries
             // 
-            chartArea1.Name = "ChartArea";
-            this.chartSeries.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend";
-            this.chartSeries.Legends.Add(legend1);
+            chartArea5.Name = "ChartArea";
+            this.chartSeries.ChartAreas.Add(chartArea5);
+            legend5.Name = "Legend";
+            this.chartSeries.Legends.Add(legend5);
             this.chartSeries.Location = new System.Drawing.Point(19, 42);
             this.chartSeries.Name = "chartSeries";
             this.chartSeries.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SeaGreen;
-            series1.ChartArea = "ChartArea";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series1.Legend = "Legend";
-            series1.Name = "Time Series";
-            this.chartSeries.Series.Add(series1);
+            series5.ChartArea = "ChartArea";
+            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series5.Legend = "Legend";
+            series5.Name = "all";
+            this.chartSeries.Series.Add(series5);
             this.chartSeries.Size = new System.Drawing.Size(461, 336);
             this.chartSeries.TabIndex = 1;
             this.chartSeries.Text = "chartSeries";
@@ -147,12 +147,12 @@
             // 
             // categories
             // 
+            this.categories.CheckOnClick = true;
             this.categories.FormattingEnabled = true;
             this.categories.Location = new System.Drawing.Point(31, 174);
             this.categories.Name = "categories";
             this.categories.Size = new System.Drawing.Size(200, 214);
             this.categories.TabIndex = 15;
-            this.categories.SelectedIndexChanged += new System.EventHandler(this.categories_SelectedIndexChanged);
             // 
             // MainForm
             // 

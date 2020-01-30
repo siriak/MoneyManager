@@ -10,7 +10,7 @@ namespace Core
     public static class State
     {
         public static SortedSet<Transaction> Transactions { get; } = new SortedSet<Transaction>();
-        public static SortedSet<string> Categories { get; } = new SortedSet<string>() { "all", "income", "expences" };
+        public static HashSet<string> Categories { get; } = new HashSet<string>() { "all", "income", "expences" };
         public static event Action OnStateUpdated;
         private static Dictionary<string, Func<Transaction, bool>> categoryFilters { get; } = new Dictionary<string, Func<Transaction, bool>>();
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -11,6 +12,7 @@ namespace WinFormsUI
     {
         Date startDate, endDate;
         event Action OnFilteringUpdated;
+        Random rnd;
 
         public MainForm()
         {
@@ -28,6 +30,8 @@ namespace WinFormsUI
             dateTimePickerEnd.Value = DateTime.Now.Date;
 
             categories.Items.AddRange(State.Categories.ToArray());
+            categories.SelectedIndexChanged += (o, e) => RefreshChart();
+            categories.SetItemChecked(0, true);
 
             await State.Init();
         }
@@ -40,12 +44,27 @@ namespace WinFormsUI
 
         private void RefreshChart()
         {
-            chartSeries.Series["Time Series"].Points.Clear();
-            var timeSeries = State.GetTimeSeries("all", 0.99);
-            
-            for (var date = startDate; date <= endDate; date = date.AddDays(1))
+            chartSeries.Series.Clear();
+
+            foreach (var c in categories.CheckedItems)
             {
-                chartSeries.Series["Time Series"].Points.AddXY(date.ToString(), timeSeries[date]);
+                var series = new Series
+                {
+                    Name = categories.GetItemText(c),
+                    IsVisibleInLegend = false,
+                    IsXValueIndexed = true,
+                    Color = Color.Red,
+                    ChartType = SeriesChartType.Line
+                };
+
+                var timeSeries = State.GetTimeSeries(categories.GetItemText(c), 0.99);
+
+                for (var date = startDate; date <= endDate; date = date.AddDays(1))
+                {
+                    series.Points.AddXY(date.ToString(), timeSeries[date]);
+                }
+
+                chartSeries.Series.Add(series);
             }
         }
 
@@ -53,11 +72,6 @@ namespace WinFormsUI
         {
             startDate = dateTimePickerStart.Value.ToDate();
             OnFilteringUpdated();
-        }
-
-        private void categories_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void dateTimePickerEnd_ValueChanged(object sender, EventArgs e)
