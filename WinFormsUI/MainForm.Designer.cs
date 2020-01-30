@@ -28,13 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             this.tabs = new System.Windows.Forms.TabControl();
-            this.tabList = new System.Windows.Forms.TabPage();
+            this.tabLedger = new System.Windows.Forms.TabPage();
             this.lbTransactions = new System.Windows.Forms.ListBox();
-            this.tabChart = new System.Windows.Forms.TabPage();
+            this.tabTrends = new System.Windows.Forms.TabPage();
             this.chartSeries = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.dateTimePickerEnd = new System.Windows.Forms.DateTimePicker();
             this.dateTimePickerStart = new System.Windows.Forms.DateTimePicker();
@@ -42,31 +41,31 @@
             this.lblStartDate = new System.Windows.Forms.Label();
             this.categories = new System.Windows.Forms.CheckedListBox();
             this.tabs.SuspendLayout();
-            this.tabList.SuspendLayout();
-            this.tabChart.SuspendLayout();
+            this.tabLedger.SuspendLayout();
+            this.tabTrends.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartSeries)).BeginInit();
             this.SuspendLayout();
             // 
             // tabs
             // 
-            this.tabs.Controls.Add(this.tabList);
-            this.tabs.Controls.Add(this.tabChart);
+            this.tabs.Controls.Add(this.tabTrends);
+            this.tabs.Controls.Add(this.tabLedger);
             this.tabs.Location = new System.Drawing.Point(284, 29);
             this.tabs.Name = "tabs";
             this.tabs.SelectedIndex = 0;
             this.tabs.Size = new System.Drawing.Size(512, 425);
             this.tabs.TabIndex = 3;
             // 
-            // tabList
+            // tabLedger
             // 
-            this.tabList.Controls.Add(this.lbTransactions);
-            this.tabList.Location = new System.Drawing.Point(4, 22);
-            this.tabList.Name = "tabList";
-            this.tabList.Padding = new System.Windows.Forms.Padding(3);
-            this.tabList.Size = new System.Drawing.Size(504, 399);
-            this.tabList.TabIndex = 0;
-            this.tabList.Text = "List";
-            this.tabList.UseVisualStyleBackColor = true;
+            this.tabLedger.Controls.Add(this.lbTransactions);
+            this.tabLedger.Location = new System.Drawing.Point(4, 22);
+            this.tabLedger.Name = "tabLedger";
+            this.tabLedger.Padding = new System.Windows.Forms.Padding(3);
+            this.tabLedger.Size = new System.Drawing.Size(504, 399);
+            this.tabLedger.TabIndex = 0;
+            this.tabLedger.Text = "Ledger";
+            this.tabLedger.UseVisualStyleBackColor = true;
             // 
             // lbTransactions
             // 
@@ -76,34 +75,29 @@
             this.lbTransactions.Size = new System.Drawing.Size(463, 368);
             this.lbTransactions.TabIndex = 1;
             // 
-            // tabChart
+            // tabTrends
             // 
-            this.tabChart.Controls.Add(this.chartSeries);
-            this.tabChart.Location = new System.Drawing.Point(4, 22);
-            this.tabChart.Name = "tabChart";
-            this.tabChart.Padding = new System.Windows.Forms.Padding(3);
-            this.tabChart.Size = new System.Drawing.Size(504, 399);
-            this.tabChart.TabIndex = 1;
-            this.tabChart.Text = "Chart";
-            this.tabChart.UseVisualStyleBackColor = true;
+            this.tabTrends.Controls.Add(this.chartSeries);
+            this.tabTrends.Location = new System.Drawing.Point(4, 22);
+            this.tabTrends.Name = "tabTrends";
+            this.tabTrends.Padding = new System.Windows.Forms.Padding(3);
+            this.tabTrends.Size = new System.Drawing.Size(504, 399);
+            this.tabTrends.TabIndex = 1;
+            this.tabTrends.Text = "Trends";
+            this.tabTrends.UseVisualStyleBackColor = true;
             // 
             // chartSeries
             // 
-            chartArea5.Name = "ChartArea";
-            this.chartSeries.ChartAreas.Add(chartArea5);
-            legend5.Name = "Legend";
-            this.chartSeries.Legends.Add(legend5);
+            chartArea1.Name = "Main Chart Area";
+            this.chartSeries.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend";
+            this.chartSeries.Legends.Add(legend1);
             this.chartSeries.Location = new System.Drawing.Point(19, 42);
             this.chartSeries.Name = "chartSeries";
-            this.chartSeries.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.SeaGreen;
-            series5.ChartArea = "ChartArea";
-            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
-            series5.Legend = "Legend";
-            series5.Name = "all";
-            this.chartSeries.Series.Add(series5);
+            this.chartSeries.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Excel;
             this.chartSeries.Size = new System.Drawing.Size(461, 336);
             this.chartSeries.TabIndex = 1;
-            this.chartSeries.Text = "chartSeries";
+            this.chartSeries.Text = "chartTrends";
             // 
             // dateTimePickerEnd
             // 
@@ -166,11 +160,11 @@
             this.Controls.Add(this.lblEndDate);
             this.Controls.Add(this.dateTimePickerStart);
             this.Name = "MainForm";
-            this.Text = "MainForm";
+            this.Text = "Money Manager";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.tabs.ResumeLayout(false);
-            this.tabList.ResumeLayout(false);
-            this.tabChart.ResumeLayout(false);
+            this.tabLedger.ResumeLayout(false);
+            this.tabTrends.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.chartSeries)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -179,9 +173,9 @@
 
         #endregion
         private System.Windows.Forms.TabControl tabs;
-        private System.Windows.Forms.TabPage tabList;
+        private System.Windows.Forms.TabPage tabLedger;
         private System.Windows.Forms.ListBox lbTransactions;
-        private System.Windows.Forms.TabPage tabChart;
+        private System.Windows.Forms.TabPage tabTrends;
         private System.Windows.Forms.DateTimePicker dateTimePickerEnd;
         private System.Windows.Forms.DateTimePicker dateTimePickerStart;
         private System.Windows.Forms.Label lblEndDate;

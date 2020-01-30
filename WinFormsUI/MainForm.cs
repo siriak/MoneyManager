@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -46,7 +44,8 @@ namespace WinFormsUI
                 lbTransactions.Items.AddRange(State.GetTransactions(categories.GetItemText(c))
                     .SkipWhile(t => t.TimeStamp.DateTime < startDate)
                     .TakeWhile(t => t.TimeStamp.DateTime <= endDate)
-                    .Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}").Reverse()
+                    .Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}")
+                    .Reverse()
                     .ToArray());
             }
         }
@@ -60,10 +59,7 @@ namespace WinFormsUI
                 var series = new Series
                 {
                     Name = categories.GetItemText(c),
-                    IsVisibleInLegend = false,
-                    IsXValueIndexed = true,
-                    Color = Color.Red,
-                    ChartType = SeriesChartType.Line
+                    ChartType = SeriesChartType.Line,
                 };
 
                 var timeSeries = State.GetTimeSeries(categories.GetItemText(c), 0.99);
