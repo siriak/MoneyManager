@@ -32,19 +32,16 @@ namespace WinFormsUI
             clbCategories.SetItemChecked(0, true);
 
             await State.Init();
-        }
+        } 
 
         private void RefreshList()
         {
             lbTransactions.Items.Clear();
 
-            foreach (var c in clbCategories.CheckedItems)
-            {
-                lbTransactions.Items.AddRange(State.GetTransactions(clbCategories.GetItemText(c), startDate, endDate)
-                    .Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}")
-                    .Reverse()
-                    .ToArray());
-            }
+            lbTransactions.Items.AddRange(State.GetTransactionsUnion(clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText), startDate, endDate)
+                .Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}")
+                .Reverse()
+                .ToArray());
         }
 
         private void RefreshChart()
