@@ -52,12 +52,14 @@ namespace Core
             return new TimeSeries(filtered, smoothingRatio);
         }
 
-        public static IEnumerable<Transaction> GetTransactions(string category) => GetTransactions(new[] { category });
+        public static IEnumerable<Transaction> GetTransactions(string category, Date start, Date end) => GetTransactions(new[] { category }, start, end);
 
-        public static IEnumerable<Transaction> GetTransactions(IEnumerable<string> categories)
+        public static IEnumerable<Transaction> GetTransactions(IEnumerable<string> categories, Date start, Date end)
         {
             Func<Transaction, bool> filter = t => categories.Any(c => categoryFilters[c](t));
-            return Transactions.Where(filter);
+            return Transactions.Where(filter)
+                    .SkipWhile(t => t.TimeStamp.DateTime < start)
+                    .TakeWhile(t => t.TimeStamp.DateTime <= end);
         }
     }
 }

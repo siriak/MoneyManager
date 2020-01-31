@@ -39,7 +39,7 @@
             this.dateTimePickerStart = new System.Windows.Forms.DateTimePicker();
             this.lblEndDate = new System.Windows.Forms.Label();
             this.lblStartDate = new System.Windows.Forms.Label();
-            this.categories = new System.Windows.Forms.CheckedListBox();
+            this.clbCategories = new System.Windows.Forms.CheckedListBox();
             this.tabs.SuspendLayout();
             this.tabLedger.SuspendLayout();
             this.tabTrends.SuspendLayout();
@@ -139,21 +139,21 @@
             this.lblStartDate.TabIndex = 11;
             this.lblStartDate.Text = "Start date";
             // 
-            // categories
+            // clbCategories
             // 
-            this.categories.CheckOnClick = true;
-            this.categories.FormattingEnabled = true;
-            this.categories.Location = new System.Drawing.Point(31, 174);
-            this.categories.Name = "categories";
-            this.categories.Size = new System.Drawing.Size(200, 214);
-            this.categories.TabIndex = 15;
+            this.clbCategories.CheckOnClick = true;
+            this.clbCategories.FormattingEnabled = true;
+            this.clbCategories.Location = new System.Drawing.Point(31, 174);
+            this.clbCategories.Name = "clbCategories";
+            this.clbCategories.Size = new System.Drawing.Size(200, 214);
+            this.clbCategories.TabIndex = 15;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(808, 466);
-            this.Controls.Add(this.categories);
+            this.Controls.Add(this.clbCategories);
             this.Controls.Add(this.dateTimePickerEnd);
             this.Controls.Add(this.tabs);
             this.Controls.Add(this.lblStartDate);
@@ -181,6 +181,6 @@
         private System.Windows.Forms.Label lblEndDate;
         private System.Windows.Forms.Label lblStartDate;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartSeries;
-        private System.Windows.Forms.CheckedListBox categories;
+        private System.Windows.Forms.CheckedListBox clbCategories;
     }
 }

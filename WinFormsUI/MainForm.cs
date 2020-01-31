@@ -10,7 +10,6 @@ namespace WinFormsUI
     {
         Date startDate, endDate;
         event Action OnFilteringUpdated;
-        Random rnd;
 
         public MainForm()
         {
@@ -27,10 +26,10 @@ namespace WinFormsUI
             dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
             dateTimePickerEnd.Value = DateTime.Now.Date;
 
-            categories.Items.AddRange(State.Categories.ToArray());
-            categories.SelectedIndexChanged += (o, e) => RefreshChart();
-            categories.SelectedIndexChanged += (o, e) => RefreshList();
-            categories.SetItemChecked(0, true);
+            clbCategories.Items.AddRange(State.Categories.ToArray());
+            clbCategories.SelectedIndexChanged += (o, e) => RefreshChart();
+            clbCategories.SelectedIndexChanged += (o, e) => RefreshList();
+            clbCategories.SetItemChecked(0, true);
 
             await State.Init();
         }
@@ -39,11 +38,9 @@ namespace WinFormsUI
         {
             lbTransactions.Items.Clear();
 
-            foreach (var c in categories.CheckedItems)
+            foreach (var c in clbCategories.CheckedItems)
             {
-                lbTransactions.Items.AddRange(State.GetTransactions(categories.GetItemText(c))
-                    .SkipWhile(t => t.TimeStamp.DateTime < startDate)
-                    .TakeWhile(t => t.TimeStamp.DateTime <= endDate)
+                lbTransactions.Items.AddRange(State.GetTransactions(clbCategories.GetItemText(c), startDate, endDate)
                     .Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}")
                     .Reverse()
                     .ToArray());
@@ -54,15 +51,15 @@ namespace WinFormsUI
         {
             chartSeries.Series.Clear();
 
-            foreach (var c in categories.CheckedItems)
+            foreach (var c in clbCategories.CheckedItems)
             {
                 var series = new Series
                 {
-                    Name = categories.GetItemText(c),
+                    Name = clbCategories.GetItemText(c),
                     ChartType = SeriesChartType.Line,
                 };
 
-                var timeSeries = State.GetTimeSeries(categories.GetItemText(c), 0.99);
+                var timeSeries = State.GetTimeSeries(clbCategories.GetItemText(c), 0.99);
 
                 for (var date = startDate; date <= endDate; date = date.AddDays(1))
                 {
