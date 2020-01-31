@@ -29,10 +29,10 @@ namespace WinFormsUI
             clbCategories.Items.AddRange(State.Categories.ToArray());
             clbCategories.SelectedIndexChanged += (o, e) => RefreshChart();
             clbCategories.SelectedIndexChanged += (o, e) => RefreshList();
-            clbCategories.SetItemChecked(0, true);
+            clbCategories.SetItemChecked(clbCategories.FindStringExact("All"), true);
 
             await State.Init();
-        } 
+        }
 
         private void RefreshList()
         {
