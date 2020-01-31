@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -27,23 +26,44 @@ namespace WinFormsUI
             dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
             dateTimePickerEnd.Value = DateTime.Now.Date;
 
+            clbCategories.Items.AddRange(State.Categories.ToArray());
+            clbCategories.SelectedIndexChanged += (o, e) => RefreshChart();
+            clbCategories.SelectedIndexChanged += (o, e) => RefreshList();
+            clbCategories.SetItemChecked(clbCategories.FindStringExact("All"), true);
+
             await State.Init();
         }
 
         private void RefreshList()
         {
             lbTransactions.Items.Clear();
-            lbTransactions.Items.AddRange(State.Transactions.SkipWhile(t => t.TimeStamp.DateTime < startDate).TakeWhile(t => t.TimeStamp.DateTime <= endDate).Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}").Reverse().ToArray());
+
+            lbTransactions.Items.AddRange(State.GetTransactionsUnion(clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText), startDate, endDate)
+                .Select(t => (object)$"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}")
+                .Reverse()
+                .ToArray());
         }
 
         private void RefreshChart()
         {
-            series.Points.Clear();
-            var timeSeries = State.GetTimeSeries("all", 0.99);
-            
-            for (var date = startDate; date <= endDate; date = date.AddDays(1))
+            chartSeries.Series.Clear();
+
+            foreach (var c in clbCategories.CheckedItems)
             {
-                series.Points.AddXY(date.ToString(), timeSeries[date]);
+                var series = new Series
+                {
+                    Name = clbCategories.GetItemText(c),
+                    ChartType = SeriesChartType.Line,
+                };
+
+                var timeSeries = State.GetTimeSeries(clbCategories.GetItemText(c), 0.99);
+
+                for (var date = startDate; date <= endDate; date = date.AddDays(1))
+                {
+                    series.Points.AddXY(date.ToString(), timeSeries[date]);
+                }
+
+                chartSeries.Series.Add(series);
             }
         }
 
