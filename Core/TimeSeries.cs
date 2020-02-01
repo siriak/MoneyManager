@@ -47,11 +47,23 @@ namespace Core
             }
 
             SmoothedSeries.Clear();
-            double accumulator = 0;
+
+            // Exponential smoothing
+            // SmoothingRatio == 1 - completely smoothed series (always zero)
+            // SmoothingRatio == 0 - raw unsmoothed series
+            // Let s_n be n-th element of smoothed series
+            // Then s_n / s_infinity > acc
+            // if n >  log(1 - acc) base SmoothingRatio
+            // e.g.
+            // SmoothingRatio=0.99 and acc=0.99 => n>458
+            // SmoothingRatio=0.99 and acc=0.95 => n>298
+            // SmoothingRatio=0.95 and acc=0.99 => n>89
+            // SmoothingRatio=0.95 and acc=0.95 => n>58
+            var smoothed = 0d;
             foreach (var observation in RawSeries)
             {
-                accumulator = SmoothingRatio * accumulator + observation;
-                SmoothedSeries.Add((1 - SmoothingRatio) * accumulator);
+                smoothed = SmoothingRatio * smoothed + (1 - SmoothingRatio) * observation;
+                SmoothedSeries.Add(smoothed);
             }
         }
 
