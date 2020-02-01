@@ -9,8 +9,8 @@ namespace Core
     {
         public static SortedSet<Transaction> Transactions { get; } = new SortedSet<Transaction>();
         public static HashSet<string> Categories { get; } = new HashSet<string>() { "All", "Income", "Expences" };
-        public static event Action OnStateUpdated;
-        private static Dictionary<string, Func<Transaction, bool>> categoryFilters { get; } = new Dictionary<string, Func<Transaction, bool>>();
+        public static event Action OnStateUpdated = () => { };
+        private static readonly Dictionary<string, Func<Transaction, bool>> categoryFilters = new Dictionary<string, Func<Transaction, bool>>();
 
         static State()
         {
@@ -22,7 +22,7 @@ namespace Core
         public static Task Init()
         {
             Transactions.UnionWith(StateManager.Load());
-            OnStateUpdated?.Invoke();
+            OnStateUpdated();
 
             // TODO: Set up category filters with custom filters from config file
 
@@ -37,7 +37,7 @@ namespace Core
                     }
                     Transactions.UnionWith(ts);
                     StateManager.Save();
-                    OnStateUpdated?.Invoke();
+                    OnStateUpdated();
                 })));
         }
 

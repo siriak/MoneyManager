@@ -6,9 +6,6 @@ namespace Core
 {
     public class ConfigManager
     {
-        public static List<Credentials> GetCredentials()
-        {            
-            return JsonConvert.DeserializeObject<List<Credentials>>(File.ReadAllText("credentials.json"));
-        }
+        public static List<Credentials> GetCredentials() => JsonConvert.DeserializeObject<List<Credentials>>(File.ReadAllText("credentials.json"));
     }
 }

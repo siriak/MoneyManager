@@ -4,9 +4,6 @@ namespace WinFormsUI
 {
     public class Program
     {
-        public static void Main()
-        {
-            Application.Run(new MainForm());
-        }
+        public static void Main() => Application.Run(new MainForm());
     }
 }

@@ -33,7 +33,7 @@ namespace Core
             var signature = ByteArrayToString(sha1h);
 
             var handler = new WinHttpHandler();
-            HttpClient client = new HttpClient(handler);
+            var client = new HttpClient(handler);
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
@@ -45,10 +45,10 @@ namespace Core
 
             var xml = await res.Content.ReadAsStringAsync();
 
-            XmlDocument xmlDoc = new XmlDocument();
+            var xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(xml);
 
-            string xpath = "response/data/info/statements/statement";
+            var xpath = "response/data/info/statements/statement";
             var nodes = xmlDoc.SelectNodes(xpath);
             
             var list = new List<Transaction>();
@@ -61,9 +61,12 @@ namespace Core
 
         private static string ByteArrayToString(byte[] ba)
         {
-            StringBuilder hex = new StringBuilder(ba.Length * 2);
-            foreach (byte b in ba)
-                hex.AppendFormat("{0:x2}", b);
+            var hex = new StringBuilder(ba.Length * 2);
+            foreach (var b in ba)
+            {
+                _ = hex.AppendFormat("{0:x2}", b);
+            }
+
             return hex.ToString();
         }
 
