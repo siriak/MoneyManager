@@ -9,12 +9,9 @@ namespace WinFormsUI
     public partial class MainForm : Form
     {
         Date startDate, endDate;
-        event Action OnFilteringUpdated;
+        event Action OnFilteringUpdated = () => { };
 
-        public MainForm()
-        {
-            InitializeComponent();
-        }
+        public MainForm() => InitializeComponent();
 
         private async void MainForm_Load(object sender, EventArgs e)
         {
@@ -48,22 +45,34 @@ namespace WinFormsUI
         {
             chartSeries.Series.Clear();
 
-            foreach (var c in clbCategories.CheckedItems)
-            {
-                var series = new Series
-                {
-                    Name = clbCategories.GetItemText(c),
-                    ChartType = SeriesChartType.Line,
-                };
+            var selectedCategories = clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText).ToList();
+            var seriesToRemove = chartSeries.Series.Where(s => selectedCategories.All(c => c != s.Name)).ToList();
 
-                var timeSeries = State.GetTimeSeries(clbCategories.GetItemText(c), 0.99);
+            foreach (var s in seriesToRemove)
+            {
+                chartSeries.Series.Remove(s);
+            }
+            
+            foreach (var c in selectedCategories)
+            {
+                if (chartSeries.Series.FindByName(c) is null)
+                {
+                    var newSeries = new Series
+                    {
+                        Name = c,
+                        ChartType = SeriesChartType.Line,
+                    };
+                    chartSeries.Series.Add(newSeries);
+                }
+
+                var series = chartSeries.Series.FindByName(c);
+                series.Points.Clear();
+                var timeSeries = State.GetTimeSeries(c, 0.99);
 
                 for (var date = startDate; date <= endDate; date = date.AddDays(1))
                 {
-                    series.Points.AddXY(date.ToString(), timeSeries[date]);
+                    _ = series.Points.AddXY(date.ToString(), timeSeries[date]);
                 }
-
-                chartSeries.Series.Add(series);
             }
         }
 
