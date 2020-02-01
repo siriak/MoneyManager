@@ -13,15 +13,9 @@ namespace Core
         private Date Start = Date.MaxValue;
         private Date End = Date.MinValue;
 
-        public TimeSeries(double smoothingRatio)
-        {
-            SmoothingRatio = smoothingRatio;
-        }
+        public TimeSeries(double smoothingRatio) => SmoothingRatio = smoothingRatio;
 
-        public TimeSeries(IEnumerable<Transaction> transactions, double smoothingRatio) : this(smoothingRatio)
-        {
-            AddMany(transactions);
-        }
+        public TimeSeries(IEnumerable<Transaction> transactions, double smoothingRatio) : this(smoothingRatio) => AddMany(transactions);
 
         public void AddMany(IEnumerable<Transaction> transactionss)
         {
@@ -56,7 +50,7 @@ namespace Core
             double accumulator = 0;
             foreach (var observation in RawSeries)
             {
-                accumulator = SmoothingRatio * accumulator + (1 - SmoothingRatio) * observation;
+                accumulator = SmoothingRatio * accumulator + observation;
                 SmoothedSeries.Add((1 - SmoothingRatio) * accumulator);
             }
         }
