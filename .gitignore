@@ -12,4 +12,4 @@ obj/
 packages/
 
 # User info
-WinFormsUI/WinFormsUI.csproj.user 
+*.csproj.user 
