@@ -14,9 +14,10 @@ jobs:
       run: dotnet build --configuration Debug
     - name: Test
       run: dotnet test --collect:"XPlat Code Coverage"
+    - name: Install CodeCov
+      run: pip install codecov
     - name: Upload coverage report
-      run: bash <(curl -s https://codecov.io/bash)
-      shell: bash
+      run: codecov
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   Release:
