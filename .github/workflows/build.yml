@@ -18,6 +18,7 @@ jobs:
       run: pip install codecov
     - name: Upload coverage report
       run: codecov
+      shell: bash
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   Release:
