@@ -9,19 +9,5 @@ namespace Core.Tests
         {
             Assert.True(true);
         }
-
-        [Fact]
-        public void Increment()
-        {
-            var res = State.Increment(5);
-            Assert.Equal(6, res);
-        }
-
-        [Fact]
-        public void IncrementWhong()
-        {
-            var res = State.Increment(7);
-            Assert.Equal(6, res);
-        }
     }
 }
