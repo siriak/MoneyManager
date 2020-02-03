@@ -75,7 +75,7 @@
             this.chartSeries.Legends.Add(legend1);
             this.chartSeries.Location = new System.Drawing.Point(6, 6);
             this.chartSeries.Name = "chartSeries";
-            this.chartSeries.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Excel;
+            this.chartSeries.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Bright;
             this.chartSeries.Size = new System.Drawing.Size(999, 619);
             this.chartSeries.TabIndex = 1;
             this.chartSeries.Text = "chartTrends";
