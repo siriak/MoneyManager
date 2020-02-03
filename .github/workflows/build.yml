@@ -15,5 +15,6 @@ jobs:
       run: dotnet test --collect:"XPlat Code Coverage"
     - name: Upload report
       run: bash <(curl -s https://codecov.io/bash)
+      shell: bash
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
