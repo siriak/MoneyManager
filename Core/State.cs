@@ -60,5 +60,10 @@ namespace Core
                     .TakeWhile(t => t.TimeStamp.DateTime <= end)
                     .Where(filter);
         }
+
+        public static int Increment(int i)
+        {
+            return ++i;
+        }
     }
 }
