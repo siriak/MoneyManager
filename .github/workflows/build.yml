@@ -1,10 +1,29 @@
 name: Build
 on: push
 jobs:
-  buildAndTest:
+  Debug:
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.100
+    - name: Build
+      run: dotnet build --configuration Debug
+    - name: Test
+      run: dotnet test --collect:"XPlat Code Coverage"
+    - name: Upload coverage report
+      run: bash <(curl -s https://codecov.io/bash)
+      shell: bash
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+  Release:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
@@ -13,8 +32,3 @@ jobs:
       run: dotnet build --configuration Release
     - name: Test
       run: dotnet test --collect:"XPlat Code Coverage"
-    - name: Upload report
-      run: bash <(curl -s https://codecov.io/bash)
-      shell: bash
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
