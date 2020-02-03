@@ -4,8 +4,6 @@ jobs:
   Debug:
     runs-on: windows-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
@@ -13,23 +11,12 @@ jobs:
     - name: Build
       run: dotnet build --configuration Debug
     - name: Test
-      run: dotnet test --collect:"XPlat Code Coverage"
-    - name: Install CodeCov
-      run: pip install codecov
-    - name: Upload coverage report
-      run: codecov
-      shell: bash
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      run: dotnet test
   Release:
     runs-on: windows-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.100
     - name: Build
       run: dotnet build --configuration Release
     - name: Test
