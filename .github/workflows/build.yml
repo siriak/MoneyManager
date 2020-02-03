@@ -1,7 +1,7 @@
 name: Build
 on: push
 jobs:
-  build:
+  buildAndTest:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
@@ -9,12 +9,11 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 3.1.100
-    - name: Build with dotnet
+    - name: Build
       run: dotnet build --configuration Release
-  test:
-    name: Run tests
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@master
     - name: Test
-      uses: skx/github-action-tester@master    
+      run: dotnet test --collect:"XPlat Code Coverage"
+    - name: Upload report
+      run: bash <(curl -s https://codecov.io/bash)
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
