@@ -17,5 +17,12 @@ namespace Core.Tests
             var res = State.Increment(5);
             Assert.Equal(6, res);
         }
+
+        [Fact]
+        public void IncrementWhong()
+        {
+            var res = State.Increment(7);
+            Assert.Equal(6, res);
+        }
     }
 }
