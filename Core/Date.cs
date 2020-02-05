@@ -92,9 +92,9 @@ namespace System
 
 		public static int DaysInMonth(int year, int month) => DateTime.DaysInMonth(year, month);
 
-		public bool Equals(Date obj) => _dt.Equals(obj._dt);
+		public bool Equals(Date other) => _dt.Equals(other._dt);
 
-		public override bool Equals(object obj) => obj is Date d && _dt.Equals(d._dt);
+		public override bool Equals(object other) => other is Date d && _dt.Equals(d._dt);
 
 		public override int GetHashCode() => _dt.GetHashCode();
 
