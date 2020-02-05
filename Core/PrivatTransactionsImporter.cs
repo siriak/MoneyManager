@@ -32,8 +32,7 @@ namespace Core
             var sha1h = sha1.ComputeHash(Encoding.UTF8.GetBytes(md5hs));
             var signature = ByteArrayToString(sha1h);
 
-            var handler = new WinHttpHandler();
-            var client = new HttpClient(handler);
+            HttpClient client = new HttpClient();
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
