@@ -94,7 +94,7 @@ namespace System
 
 		public bool Equals(Date other) => _dt.Equals(other._dt);
 
-		public override bool Equals(object other) => other is Date d && _dt.Equals(d._dt);
+		public override bool Equals(object obj) => obj is Date d && _dt.Equals(d._dt);
 
 		public static bool Equals(Date d1, Date d2) => d1._dt.Equals(d2._dt);
 
