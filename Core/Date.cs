@@ -39,7 +39,8 @@ namespace System
 
 		public Date(DateTime dateTime) => _dt = dateTime.AddTicks(-dateTime.Ticks % TimeSpan.TicksPerDay);
 
-		private Date(SerializationInfo info, StreamingContext context) => _dt = DateTime.FromFileTime(info.GetInt64("ticks"));
+		private Date(SerializationInfo info, StreamingContext context) =>
+			_dt = DateTime.FromFileTime(info.GetInt64("ticks"));
 
 		public static TimeSpan operator -(Date d1, Date d2) => d1._dt - d2._dt;
 
@@ -85,21 +86,22 @@ namespace System
 
 		public static int Compare(Date d1, Date d2) => d1.CompareTo(d2);
 
-		public int CompareTo(Date value) => _dt.CompareTo(value._dt);
+		public int CompareTo(Date obj) => _dt.CompareTo(obj._dt);
 
-		public int CompareTo(object value) => _dt.CompareTo(value);
+		public int CompareTo(object obj) => _dt.CompareTo(obj);
 
 		public static int DaysInMonth(int year, int month) => DateTime.DaysInMonth(year, month);
 
-		public bool Equals(Date value) => _dt.Equals(value._dt);
+		public bool Equals(Date obj) => _dt.Equals(obj._dt);
 
-		public override bool Equals(object value) => value is Date && _dt.Equals(((Date)value)._dt);
+		public override bool Equals(object obj) => obj is Date d && _dt.Equals(d._dt);
 
 		public override int GetHashCode() => _dt.GetHashCode();
 
 		public static bool Equals(Date d1, Date d2) => d1._dt.Equals(d2._dt);
 
-		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) => info.AddValue("ticks", _dt.Ticks);
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) =>
+			info.AddValue("ticks", _dt.Ticks);
 
 		public static bool IsLeapYear(int year) => DateTime.IsLeapYear(year);
 
@@ -107,13 +109,17 @@ namespace System
 
 		public static Date Parse(string s, IFormatProvider provider) => new Date(DateTime.Parse(s, provider));
 
-		public static Date Parse(string s, IFormatProvider provider, DateTimeStyles style) => new Date(DateTime.Parse(s, provider, style));
+		public static Date Parse(string s, IFormatProvider provider, DateTimeStyles style) =>
+			new Date(DateTime.Parse(s, provider, style));
 
-		public static Date ParseExact(string s, string format, IFormatProvider provider) => new Date(DateTime.ParseExact(s, format, provider));
+		public static Date ParseExact(string s, string format, IFormatProvider provider) =>
+			new Date(DateTime.ParseExact(s, format, provider));
 
-		public static Date ParseExact(string s, string format, IFormatProvider provider, DateTimeStyles style) => new Date(DateTime.ParseExact(s, format, provider, style));
+		public static Date ParseExact(string s, string format, IFormatProvider provider, DateTimeStyles style) =>
+			new Date(DateTime.ParseExact(s, format, provider, style));
 
-		public static Date ParseExact(string s, string[] formats, IFormatProvider provider, DateTimeStyles style) => new Date(DateTime.ParseExact(s, formats, provider, style));
+		public static Date ParseExact(string s, string[] formats, IFormatProvider provider, DateTimeStyles style) =>
+			new Date(DateTime.ParseExact(s, formats, provider, style));
 
 		public TimeSpan Subtract(Date value) => this - value;
 
@@ -129,7 +135,7 @@ namespace System
 
 		public string ToString(string format) => _dt.ToString(format);
 
-		public string ToString(string format, IFormatProvider provider) => _dt.ToString(format, provider);
+		public string ToString(string format, IFormatProvider formatProvider) => _dt.ToString(format, formatProvider);
 
 		public static bool TryParse(string s, out Date result)
 		{
@@ -145,14 +151,16 @@ namespace System
 			return success;
 		}
 
-		public static bool TryParseExact(string s, string format, IFormatProvider provider, DateTimeStyles style, out Date result)
+		public static bool TryParseExact(string s, string format, IFormatProvider provider, DateTimeStyles style,
+		                                 out Date result)
 		{
 			var success = DateTime.TryParseExact(s, format, provider, style, out var d);
 			result = new Date(d);
 			return success;
 		}
 
-		public static bool TryParseExact(string s, string[] formats, IFormatProvider provider, DateTimeStyles style, out Date result)
+		public static bool TryParseExact(string s, string[] formats, IFormatProvider provider, DateTimeStyles style,
+		                                 out Date result)
 		{
 			var success = DateTime.TryParseExact(s, formats, provider, style, out var d);
 			result = new Date(d);

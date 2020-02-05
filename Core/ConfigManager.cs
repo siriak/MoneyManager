@@ -4,8 +4,9 @@ using Newtonsoft.Json;
 
 namespace Core
 {
-    public class ConfigManager
-    {
-        public static List<Credentials> GetCredentials() => JsonConvert.DeserializeObject<List<Credentials>>(File.ReadAllText("credentials.json"));
-    }
+	public class ConfigManager
+	{
+		public static List<Credentials> GetCredentials() =>
+			JsonConvert.DeserializeObject<List<Credentials>>(File.ReadAllText("credentials.json"));
+	}
 }
