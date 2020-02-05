@@ -86,7 +86,7 @@ namespace System
 
 		public static int Compare(Date d1, Date d2) => d1.CompareTo(d2);
 
-		public int CompareTo(Date obj) => _dt.CompareTo(obj._dt);
+		public int CompareTo(Date other) => _dt.CompareTo(other._dt);
 
 		public int CompareTo(object obj) => _dt.CompareTo(obj);
 
@@ -96,9 +96,9 @@ namespace System
 
 		public override bool Equals(object other) => other is Date d && _dt.Equals(d._dt);
 
-		public override int GetHashCode() => _dt.GetHashCode();
-
 		public static bool Equals(Date d1, Date d2) => d1._dt.Equals(d2._dt);
+
+		public override int GetHashCode() => _dt.GetHashCode();
 
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) =>
 			info.AddValue("ticks", _dt.Ticks);
