@@ -73,7 +73,7 @@ namespace Core
 			var cartNumber = node.Attributes["card"].Value;
 			var appCode = node.Attributes["appcode"].Value;
 			var timeStamp = DateTimeOffset.Parse(node.Attributes["trandate"].Value + " " + node.Attributes["trantime"].Value);
-			var amount = ParseMoney(node.Attributes["amount"]);
+			var amount = ParseMoney(node.Attributes["cardamount"]);
 			var rest = ParseMoney(node.Attributes["rest"]);
 			var terminal = node.Attributes["terminal"].Value;
 			var description = node.Attributes["description"].Value;
