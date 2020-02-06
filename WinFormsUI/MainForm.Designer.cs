@@ -124,7 +124,7 @@
             // lblEndDate
             // 
             this.lblEndDate.AutoSize = true;
-            this.lblEndDate.Location = new System.Drawing.Point(12, 70);
+            this.lblEndDate.Location = new System.Drawing.Point(12, 65);
             this.lblEndDate.Name = "lblEndDate";
             this.lblEndDate.Size = new System.Drawing.Size(50, 13);
             this.lblEndDate.TabIndex = 12;
@@ -133,7 +133,7 @@
             // lblStartDate
             // 
             this.lblStartDate.AutoSize = true;
-            this.lblStartDate.Location = new System.Drawing.Point(12, 19);
+            this.lblStartDate.Location = new System.Drawing.Point(12, 14);
             this.lblStartDate.Name = "lblStartDate";
             this.lblStartDate.Size = new System.Drawing.Size(53, 13);
             this.lblStartDate.TabIndex = 11;

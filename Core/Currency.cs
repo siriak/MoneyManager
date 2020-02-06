@@ -1,7 +1,7 @@
 ﻿namespace Core
 {
-    public enum Currency
-    {
-        UAH
-    }
+	public enum Currency
+	{
+		UAH
+	}
 }
