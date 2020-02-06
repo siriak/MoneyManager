@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Xml;
 using Xunit;
 
@@ -14,7 +12,7 @@ namespace Core.Tests
             var expectedTransaction = new Transaction("5555555555555555", "188888", DateTimeOffset.Parse("01/03/2020 18:58:00"), new Money(-599.03M, Currency.UAH),
                 new Money(1300.74M, Currency.UAH), "Wizz Air", "Payment");
 
-            var xmlContent = "<statement card=\"5555555555555555\" appcode=\"188888\" trandate=\"2020 - 01 - 03\" " +
+            const string xmlContent = "<statement card=\"5555555555555555\" appcode=\"188888\" trandate=\"2020 - 01 - 03\" " +
                 "trantime=\"18:58:00\" amount=\"585.00 UAH\" cardamount=\"-599.03 UAH\" rest=\"1300.74 UAH\" " +
                 "terminal=\"Wizz Air\" description=\"Payment\"/>";
 
