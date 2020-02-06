@@ -20,8 +20,7 @@ namespace Core
 
 		private static async Task<List<Transaction>> LoadData(Date date, Credentials credentials)
 		{
-			var data =
-				$"<oper>cmt</oper><wait>60</wait><payment><prop name=\"sd\" value=\"{date.Day}.{date.Month}.{date.Year}\"/><prop name=\"ed\" value=\"{date.Day}.{date.Month}.{date.Year}\"/><prop name=\"card\" value=\"{credentials.CardNumber}\"/></payment>";
+			var data = $"<oper>cmt</oper><wait>60</wait><payment><prop name=\"sd\" value=\"{date.Day}.{date.Month}.{date.Year}\"/><prop name=\"ed\" value=\"{date.Day}.{date.Month}.{date.Year}\"/><prop name=\"card\" value=\"{credentials.CardNumber}\"/></payment>";
 			var md5 = MD5.Create();
 			var sha1 = SHA1.Create();
 
@@ -37,10 +36,7 @@ namespace Core
 			{
 				Method = HttpMethod.Get,
 				RequestUri = new Uri("https://api.privatbank.ua/p24api/rest_fiz"),
-				Content = new StringContent(
-					$"<?xml version=\"1.0\" encoding=\"UTF-8\"?><request version=\"1.0\"><merchant><id>{credentials.MerchantId}</id><signature>{signature}</signature></merchant><data>{data}</data></request>",
-					Encoding.Default,
-					"application/xml")
+				Content = new StringContent($"<?xml version=\"1.0\" encoding=\"UTF-8\"?><request version=\"1.0\"><merchant><id>{credentials.MerchantId}</id><signature>{signature}</signature></merchant><data>{data}</data></request>", Encoding.Default, "application/xml")
 			};
 			var res = await client.SendAsync(request);
 
@@ -76,8 +72,7 @@ namespace Core
 		{
 			var cartNumber = node.Attributes["card"].Value;
 			var appCode = node.Attributes["appcode"].Value;
-			var timeStamp = DateTimeOffset.Parse(node.Attributes["trandate"].Value + " " +
-			                                     node.Attributes["trantime"].Value);
+			var timeStamp = DateTimeOffset.Parse(node.Attributes["trandate"].Value + " " + node.Attributes["trantime"].Value);
 			var amount = ParseMoney(node.Attributes["amount"]);
 			var rest = ParseMoney(node.Attributes["rest"]);
 			var terminal = node.Attributes["terminal"].Value;

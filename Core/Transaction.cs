@@ -5,8 +5,7 @@ namespace Core
 {
 	public class Transaction : IComparable<Transaction>
 	{
-		public Transaction(string cardNumber, string appCode, DateTimeOffset timeStamp, Money amount, Money rest,
-		                   string terminal, string description)
+		public Transaction(string cardNumber, string appCode, DateTimeOffset timeStamp, Money amount, Money rest, string terminal, string description)
 		{
 			CardNumber = cardNumber;
 			ApplicationCode = appCode;
@@ -20,8 +19,7 @@ namespace Core
 		}
 
 		[JsonConstructor]
-		public Transaction(string cardNumber, string applicationCode, DateTimeOffset timeStamp, Money amount,
-		                   bool isIncome, bool isExpence, Money rest, string terminal, string description)
+		public Transaction(string cardNumber, string applicationCode, DateTimeOffset timeStamp, Money amount, bool isIncome, bool isExpence, Money rest, string terminal, string description)
 		{
 			CardNumber = cardNumber;
 			ApplicationCode = applicationCode;

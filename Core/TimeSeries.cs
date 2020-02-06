@@ -51,9 +51,7 @@ namespace Core
 				Start = End = transactionss.First().TimeStamp.Date.ToDate();
 			}
 
-			for (var min = transactionss.Select(x => new Date(x.TimeStamp.Date)).Min();
-			     min < Start;
-			     Start = Start.AddDays(-1))
+			for (var min = transactionss.Select(x => new Date(x.TimeStamp.Date)).Min(); min < Start; Start = Start.AddDays(-1))
 			{
 				RawSeries.Insert(0, 0);
 			}

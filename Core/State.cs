@@ -7,8 +7,7 @@ namespace Core
 {
 	public static class State
 	{
-		private static readonly Dictionary<string, Func<Transaction, bool>> categoryFilters =
-			new Dictionary<string, Func<Transaction, bool>>();
+		private static readonly Dictionary<string, Func<Transaction, bool>> categoryFilters = new Dictionary<string, Func<Transaction, bool>>();
 
 		static State()
 		{
@@ -74,8 +73,7 @@ namespace Core
 			return filteredTransactions;
 		}
 
-		public static IEnumerable<Transaction> GetTransactionsUnion(IEnumerable<string> categories, Date start,
-		                                                            Date end)
+		public static IEnumerable<Transaction> GetTransactionsUnion(IEnumerable<string> categories, Date start, Date end)
 		{
 			Func<Transaction, bool> filter = t => categories.Any(c => categoryFilters[c](t));
 			return Transactions.SkipWhile(t => t.TimeStamp.DateTime < start)

@@ -151,16 +151,14 @@ namespace System
 			return success;
 		}
 
-		public static bool TryParseExact(string s, string format, IFormatProvider provider, DateTimeStyles style,
-		                                 out Date result)
+		public static bool TryParseExact(string s, string format, IFormatProvider provider, DateTimeStyles style, out Date result)
 		{
 			var success = DateTime.TryParseExact(s, format, provider, style, out var d);
 			result = new Date(d);
 			return success;
 		}
 
-		public static bool TryParseExact(string s, string[] formats, IFormatProvider provider, DateTimeStyles style,
-		                                 out Date result)
+		public static bool TryParseExact(string s, string[] formats, IFormatProvider provider, DateTimeStyles style, out Date result)
 		{
 			var success = DateTime.TryParseExact(s, formats, provider, style, out var d);
 			result = new Date(d);
