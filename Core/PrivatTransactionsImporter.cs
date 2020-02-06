@@ -72,7 +72,7 @@ namespace Core
 			return hex.ToString();
 		}
 
-		private static Transaction GetTransactionFromXml(XmlNode node)
+		public static Transaction GetTransactionFromXml(XmlNode node)
 		{
 			var cartNumber = node.Attributes["card"].Value;
 			var appCode = node.Attributes["appcode"].Value;
