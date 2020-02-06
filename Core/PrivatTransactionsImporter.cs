@@ -74,9 +74,9 @@ namespace Core
 
 		public static Transaction GetTransactionFromXml(XmlNode node)
 		{
-			if (node == null)
+			if (node is null)
 			{
-				throw new ArgumentNullException();
+				throw new ArgumentNullException($"{nameof(node)} cannot be null");
 			}
 			else
 			{

@@ -22,8 +22,6 @@ namespace Core.Tests
 
             var actualTansaction = PrivatTransactionsImporter.GetTransactionFromXml(node);
 
-            Assert.Equal(expectedTransaction, actualTansaction);
-
             Assert.Equal(expectedTransaction.Amount, actualTansaction.Amount);
             Assert.Equal(expectedTransaction.ApplicationCode, actualTansaction.ApplicationCode);
             Assert.Equal(expectedTransaction.CardNumber, actualTansaction.CardNumber);
