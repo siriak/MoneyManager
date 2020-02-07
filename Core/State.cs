@@ -18,21 +18,19 @@ namespace Core
 
 		public static SortedSet<Transaction> Transactions { get; } = new SortedSet<Transaction>();
 
-		public static HashSet<string> Categories { get; } = new HashSet<string>
-		{
-			"All",
-			"Income",
-			"Expences"
-		};
+		public static HashSet<string> Categories => new HashSet<string>(categoryFilters.Keys);
 
 		public static event Action OnStateUpdated = () => { };
 
 		public static Task Init()
 		{
 			Transactions.UnionWith(StateManager.Load());
-			OnStateUpdated();
 
-			// TODO: Set up category filters with custom filters from config file
+			foreach (var c in CategoriesManager.Load())
+			{
+				categoryFilters.Add(c.Key, c.Value);
+			}
+			OnStateUpdated();
 
 			var credentials = ConfigManager.GetCredentials();
 			var importTasks = credentials.Select(c => PrivatTransactionsImporter.ImportTransactions(c, ProcessUpdates));

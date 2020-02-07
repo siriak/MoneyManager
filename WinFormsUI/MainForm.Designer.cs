@@ -94,9 +94,9 @@
             // lbTransactions
             // 
             this.lbTransactions.FormattingEnabled = true;
-            this.lbTransactions.Location = new System.Drawing.Point(20, 13);
+            this.lbTransactions.Location = new System.Drawing.Point(6, 6);
             this.lbTransactions.Name = "lbTransactions";
-            this.lbTransactions.Size = new System.Drawing.Size(463, 368);
+            this.lbTransactions.Size = new System.Drawing.Size(999, 619);
             this.lbTransactions.TabIndex = 1;
             // 
             // dateTimePickerEnd

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Core;
@@ -17,18 +19,43 @@ namespace WinFormsUI
 		{
 			State.OnStateUpdated += RefreshList;
 			State.OnStateUpdated += RefreshChart;
+			State.OnStateUpdated += RefreshCategories;
 			OnFilteringUpdated += RefreshList;
 			OnFilteringUpdated += RefreshChart;
+
+			clbCategories.ItemCheck += async (o, e) => 
+			{ 
+				await Task.Delay(100);
+				OnFilteringUpdated();
+			};
 
 			dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
 			dateTimePickerEnd.Value = DateTime.Now.Date;
 
-			clbCategories.Items.AddRange(State.Categories.ToArray());
-			clbCategories.SelectedIndexChanged += (o, e) => RefreshChart();
-			clbCategories.SelectedIndexChanged += (o, e) => RefreshList();
-			clbCategories.SetItemChecked(clbCategories.FindStringExact("All"), true);
-
 			await State.Init();
+		}
+
+		private void RefreshCategories()
+		{
+			var isFirstLoad = clbCategories.Items.Count == 0;
+
+			var selectedCategories = clbCategories.CheckedItems
+												  .Cast<object>()
+												  .Select(clbCategories.GetItemText)
+												  .ToList();
+
+			clbCategories.Items.Clear();
+			clbCategories.Items.AddRange(State.Categories.ToArray());
+
+			foreach (var c in selectedCategories)
+			{
+				clbCategories.SetItemChecked(clbCategories.FindStringExact(c), true);
+			}
+
+			if (isFirstLoad)
+			{
+				clbCategories.SetItemChecked(clbCategories.FindStringExact("All"), true);
+			}
 		}
 
 		private void RefreshList()
