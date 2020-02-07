@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Core
 {
-    public class CategoriesManager
+    public static class CategoriesManager
     {
 		public static Dictionary<string, Func<Transaction, bool>> Load()
 		{
@@ -15,18 +15,18 @@ namespace Core
 				return new Dictionary<string, Func<Transaction, bool>>();
 			}
 
-			var categories = JsonConvert.DeserializeObject<List<CategoryDTO>>(File.ReadAllText("categories.json"));
+			var categories = JsonConvert.DeserializeObject<List<CategoryDto>>(File.ReadAllText("categories.json"));
 
 			var categoryFilters = new Dictionary<string, Func<Transaction, bool>>();
 
 			foreach (var c in categories)
 			{
-				categoryFilters.Add(c.Name, t => Regex.IsMatch(t.ApplicationCode, '@' + c.ApplicationCode)
-											&& Regex.IsMatch(t.CardNumber, '@' + c.CardNumber)
-											&& Regex.IsMatch(t.Description, '@' + c.Description)
-											&& Regex.IsMatch(t.IsExpence.ToString(), '@' + c.IsExpence)
-											&& Regex.IsMatch(t.IsIncome.ToString(), '@' + c.IsIncome)
-											&& Regex.IsMatch(t.Terminal, '@' + c.Terminal));
+				categoryFilters.Add(c.Name, t => Regex.IsMatch(t.ApplicationCode, c.ApplicationCode)
+											&& Regex.IsMatch(t.CardNumber, c.CardNumber)
+											&& Regex.IsMatch(t.Description, c.Description)
+											&& Regex.IsMatch(t.IsExpence.ToString(), c.IsExpence)
+											&& Regex.IsMatch(t.IsIncome.ToString(), c.IsIncome)
+											&& Regex.IsMatch(t.Terminal, c.Terminal));
 			}
 
 			return categoryFilters;

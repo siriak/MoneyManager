@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Core
+﻿namespace Core
 {
-    public class CategoryDTO
+    public class CategoryDto
     {
-		public CategoryDTO(string name, string cardNumber, string applicationCode, string isIncome, 
+		public CategoryDto(string name, string cardNumber, string applicationCode, string isIncome, 
 			string isExpence, string terminal, string description)
 		{
 			Name = name;

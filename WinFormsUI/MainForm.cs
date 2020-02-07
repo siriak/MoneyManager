@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -25,7 +24,7 @@ namespace WinFormsUI
 
 			clbCategories.ItemCheck += async (o, e) => 
 			{ 
-				await Task.Delay(100);
+				await Task.Delay(100).ConfigureAwait(false);
 				OnFilteringUpdated();
 			};
 
