@@ -24,7 +24,7 @@ namespace WinFormsUI
 
 			clbCategories.ItemCheck += async (o, e) => 
 			{ 
-				await Task.Delay(100).ConfigureAwait(false);
+				await Task.Delay(100);
 				OnFilteringUpdated();
 			};
 

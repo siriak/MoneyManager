@@ -24,8 +24,8 @@ namespace Core
 				categoryFilters.Add(c.Name, t => Regex.IsMatch(t.ApplicationCode, c.ApplicationCode)
 											&& Regex.IsMatch(t.CardNumber, c.CardNumber)
 											&& Regex.IsMatch(t.Description, c.Description)
-											&& Regex.IsMatch(t.IsExpence.ToString(), c.IsExpence)
-											&& Regex.IsMatch(t.IsIncome.ToString(), c.IsIncome)
+											&& Regex.IsMatch(t.IsExpence.ToString().ToLower(), c.IsExpence)
+											&& Regex.IsMatch(t.IsIncome.ToString().ToLower(), c.IsIncome)
 											&& Regex.IsMatch(t.Terminal, c.Terminal));
 			}
 
