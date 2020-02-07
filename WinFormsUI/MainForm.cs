@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -22,9 +23,23 @@ namespace WinFormsUI
 			OnFilteringUpdated += RefreshList;
 			OnFilteringUpdated += RefreshChart;
 
+			var cts = new CancellationTokenSource();
 			clbCategories.ItemCheck += async (o, e) => 
-			{ 
-				await Task.Delay(100);
+			{
+				// No lock here because this code only executes in
+				// UI thread, which means critical section cannot
+				// be executed in different threads simultaneously
+				cts.Cancel();
+				cts = new CancellationTokenSource();
+				var ct = cts.Token;
+
+				const int debounceDelayMs = 100;
+				await Task.Delay(debounceDelayMs);
+				if (ct.IsCancellationRequested)
+				{
+					return;
+				}
+
 				OnFilteringUpdated();
 			};
 
