@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Core;
@@ -17,18 +19,57 @@ namespace WinFormsUI
 		{
 			State.OnStateUpdated += RefreshList;
 			State.OnStateUpdated += RefreshChart;
+			State.OnStateUpdated += RefreshCategories;
 			OnFilteringUpdated += RefreshList;
 			OnFilteringUpdated += RefreshChart;
+
+			var cts = new CancellationTokenSource();
+			clbCategories.ItemCheck += async (o, e) => 
+			{
+				// No lock here because this code only executes in
+				// UI thread, which means critical section cannot
+				// be executed in different threads simultaneously
+				cts.Cancel();
+				cts = new CancellationTokenSource();
+				var ct = cts.Token;
+
+				const int debounceDelayMs = 100;
+				await Task.Delay(debounceDelayMs);
+				if (ct.IsCancellationRequested)
+				{
+					return;
+				}
+
+				OnFilteringUpdated();
+			};
 
 			dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
 			dateTimePickerEnd.Value = DateTime.Now.Date;
 
-			clbCategories.Items.AddRange(State.Categories.ToArray());
-			clbCategories.SelectedIndexChanged += (o, e) => RefreshChart();
-			clbCategories.SelectedIndexChanged += (o, e) => RefreshList();
-			clbCategories.SetItemChecked(clbCategories.FindStringExact("All"), true);
-
 			await State.Init();
+		}
+
+		private void RefreshCategories()
+		{
+			var isFirstLoad = clbCategories.Items.Count == 0;
+
+			var selectedCategories = clbCategories.CheckedItems
+												  .Cast<object>()
+												  .Select(clbCategories.GetItemText)
+												  .ToList();
+
+			clbCategories.Items.Clear();
+			clbCategories.Items.AddRange(State.Categories.OrderBy(c => c).ToArray());
+
+			foreach (var c in selectedCategories)
+			{
+				clbCategories.SetItemChecked(clbCategories.FindStringExact(c), true);
+			}
+
+			if (isFirstLoad)
+			{
+				clbCategories.SetItemChecked(0, true);
+			}
 		}
 
 		private void RefreshList()

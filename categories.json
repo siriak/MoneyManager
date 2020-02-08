@@ -1,0 +1,29 @@
+[
+	{
+		"Name": "All",
+		"CardNumber": ".*",
+		"ApplicationCode": ".*",
+		"IsIncome": ".*",
+		"IsExpence": ".*",
+		"Terminal": ".*",
+		"Description": ".*"
+	},
+	{
+		"Name": "Expences",
+		"CardNumber": ".*",
+		"ApplicationCode": ".*",
+		"IsIncome": false,
+		"IsExpence": true,
+		"Terminal": ".*",
+		"Description": ".*"
+	},
+	{
+		"Name": "Incomes",
+		"CardNumber": ".*",
+		"ApplicationCode": ".*",
+		"IsIncome": true,
+		"IsExpence": false,
+		"Terminal": ".*",
+		"Description": ".*"
+	}
+]
