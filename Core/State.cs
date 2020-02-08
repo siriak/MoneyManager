@@ -9,13 +9,6 @@ namespace Core
 	{
 		private static readonly Dictionary<string, Func<Transaction, bool>> categoryFilters = new Dictionary<string, Func<Transaction, bool>>();
 
-		static State()
-		{
-			categoryFilters.Add("All", t => true);
-			categoryFilters.Add("Income", t => t.IsIncome);
-			categoryFilters.Add("Expences", t => t.IsExpence);
-		}
-
 		public static SortedSet<Transaction> Transactions { get; } = new SortedSet<Transaction>();
 
 		public static HashSet<string> Categories => new HashSet<string>(categoryFilters.Keys);

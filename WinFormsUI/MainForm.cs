@@ -59,7 +59,7 @@ namespace WinFormsUI
 												  .ToList();
 
 			clbCategories.Items.Clear();
-			clbCategories.Items.AddRange(State.Categories.ToArray());
+			clbCategories.Items.AddRange(State.Categories.OrderBy(c => c).ToArray());
 
 			foreach (var c in selectedCategories)
 			{
@@ -68,7 +68,7 @@ namespace WinFormsUI
 
 			if (isFirstLoad)
 			{
-				clbCategories.SetItemChecked(clbCategories.FindStringExact("All"), true);
+				clbCategories.SetItemChecked(0, true);
 			}
 		}
 
