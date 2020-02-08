@@ -1,23 +1,5 @@
 [
 	{
-		"Name": "Food",
-		"CardNumber": ".*",
-		"ApplicationCode": ".*",
-		"IsIncome": false,
-		"IsExpence": true,
-		"Terminal": ".*",
-		"Description": "\\w*Продукты\\w*"
-	},
-	{
-		"Name": "Scholarship",
-		"CardNumber": ".*",
-		"ApplicationCode": ".*",
-		"IsIncome": true,
-		"IsExpence": false,
-		"Terminal": ".*",
-		"Description": "\\w*Стипендия\\w*"
-	},
-	{
 		"Name": "All",
 		"CardNumber": ".*",
 		"ApplicationCode": ".*",
