@@ -2,15 +2,15 @@
 
 namespace Core
 {
-    public class CategoryDto
+    public class Category
     {
-		public CategoryDto(string name, IEnumerable<Rule> rules)
+		public Category(string name, IList<Rule> rules)
 		{
 			Name = name;
 			Rules = rules;
 		}
 
 		public string Name { get; set; }
-		public IEnumerable<Rule> Rules { get; }
+		public IList<Rule> Rules { get; }
 	}
 }

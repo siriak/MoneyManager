@@ -16,14 +16,13 @@ namespace Core
 				return new Dictionary<string, Func<Transaction, bool>>();
 			}
 
-			var categories = JsonConvert.DeserializeObject<List<CategoryDto>>(File.ReadAllText("categories.json"));
+			var categories = JsonConvert.DeserializeObject<List<Category>>(File.ReadAllText("categories.json"));
 
 			var categoryFilters = new Dictionary<string, Func<Transaction, bool>>();
 
 			foreach (var c in categories)
 			{
-				categoryFilters.Add(c.Name, t => c.Rules.Any(r => Regex.IsMatch(t.ApplicationCode, r.ApplicationCode)
-											&& Regex.IsMatch(t.CardNumber, r.CardNumber)
+				categoryFilters.Add(c.Name, t => c.Rules.Any(r => Regex.IsMatch(t.CardNumber, r.CardNumber)
 											&& Regex.IsMatch(t.Description, r.Description)
 											&& Regex.IsMatch(t.IsExpence.ToString().ToLower(), r.IsExpence)
 											&& Regex.IsMatch(t.IsIncome.ToString().ToLower(), r.IsIncome)
