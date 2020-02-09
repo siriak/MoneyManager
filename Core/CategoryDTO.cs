@@ -4,13 +4,13 @@ namespace Core
 {
     public class CategoryDto
     {
-		public CategoryDto(string name, List<Rule> rules)
+		public CategoryDto(string name, IEnumerable<Rule> rules)
 		{
 			Name = name;
 			Rules = rules;
 		}
 
 		public string Name { get; set; }
-		public List<Rule> Rules { get; set; }
+		public IEnumerable<Rule> Rules { get; }
 	}
 }
