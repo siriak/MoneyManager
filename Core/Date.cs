@@ -22,10 +22,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+using System;
 using System.Globalization;
 using System.Runtime.Serialization;
 
-namespace System
+namespace Core
 {
 	[Serializable]
 	public struct Date : IComparable, IFormattable, ISerializable, IComparable<Date>, IEquatable<Date>
