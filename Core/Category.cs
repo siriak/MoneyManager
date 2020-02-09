@@ -4,13 +4,13 @@ namespace Core
 {
     public class Category
     {
-		public Category(string name, IList<Rule> rules)
+		public Category(string name, ICollection<Rule> rules)
 		{
 			Name = name;
 			Rules = rules;
 		}
 
 		public string Name { get; set; }
-		public IList<Rule> Rules { get; }
+		public ICollection<Rule> Rules { get; }
 	}
 }
