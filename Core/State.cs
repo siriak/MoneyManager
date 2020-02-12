@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core.TimeSeries;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -42,17 +43,27 @@ namespace Core
 			}
 		}
 
-		public static TimeSeries GetTimeSeries(string category, double smoothingRatio)
+		public static SmoothedTimeSeries GetSmoothedTimeSeries(string category, double smoothingRatio)
 		{
 			var filteredTransactions = Transactions.Where(categoryFilters[category]).ToList();
-			return new TimeSeries(filteredTransactions, smoothingRatio);
+			return new SmoothedTimeSeries(filteredTransactions, smoothingRatio);
 		}
 
-		public static TimeSeries GetTimeSeriesUnion(IEnumerable<string> categories, double smoothingRatio)
+		public static CumulativeTimeSeries GetCumulativeTimeSeries(string category, double smoothingRatio)
+		{
+			return new CumulativeTimeSeries(1, 4);
+		}
+
+		public static SmoothedTimeSeries GetSmoothedTimeSeriesUnion(IEnumerable<string> categories, double smoothingRatio)
 		{
 			Func<Transaction, bool> filter = t => categories.Any(c => categoryFilters[c](t));
 			var filteredTransactions = Transactions.Where(filter).ToList();
-			return new TimeSeries(filteredTransactions, smoothingRatio);
+			return new SmoothedTimeSeries(filteredTransactions, smoothingRatio);
+		}
+
+		public static CumulativeTimeSeries GetCumulativeTimeSeriesUnion(IEnumerable<string> categories, double smoothingRatio)
+		{
+			return new CumulativeTimeSeries(1, 4);
 		}
 
 		public static IEnumerable<Transaction> GetTransactions(string category, Date start, Date end)

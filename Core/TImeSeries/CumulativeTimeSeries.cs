@@ -13,8 +13,8 @@ namespace Core.TimeSeries
         
         public CumulativeTimeSeries(double increment, double capacity)
         {
-        Increment = increment;
-        Capacity = capacity;
+            Increment = increment;
+            Capacity = capacity;
         }
 
         public CumulativeTimeSeries(List<Transaction> transactions, double increment, double capacity) : this(increment, capacity) =>

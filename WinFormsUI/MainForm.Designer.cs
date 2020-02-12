@@ -1,4 +1,6 @@
-﻿namespace WinFormsUI
+﻿using System.Windows.Forms;
+
+namespace WinFormsUI
 {
     partial class MainForm
     {
@@ -30,9 +32,13 @@
         {
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend(); 
             this.tabs = new System.Windows.Forms.TabControl();
-            this.tabTrends = new System.Windows.Forms.TabPage();
-            this.chartSeries = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.tabSmoothedTrends = new System.Windows.Forms.TabPage();
+            this.tabCumulativeTrends = new System.Windows.Forms.TabPage();
+            this.chartSeriesSmoothed = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chartSeriesCumulative = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tabLedger = new System.Windows.Forms.TabPage();
             this.lbTransactions = new System.Windows.Forms.ListBox();
             this.dateTimePickerEnd = new System.Windows.Forms.DateTimePicker();
@@ -41,14 +47,17 @@
             this.lblStartDate = new System.Windows.Forms.Label();
             this.clbCategories = new System.Windows.Forms.CheckedListBox();
             this.tabs.SuspendLayout();
-            this.tabTrends.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chartSeries)).BeginInit();
+            this.tabSmoothedTrends.SuspendLayout();
+            this.tabCumulativeTrends.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chartSeriesSmoothed)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartSeriesCumulative)).BeginInit();
             this.tabLedger.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabs
             // 
-            this.tabs.Controls.Add(this.tabTrends);
+            this.tabs.Controls.Add(this.tabSmoothedTrends);
+            this.tabs.Controls.Add(this.tabCumulativeTrends);
             this.tabs.Controls.Add(this.tabLedger);
             this.tabs.Location = new System.Drawing.Point(233, 12);
             this.tabs.Name = "tabs";
@@ -56,29 +65,53 @@
             this.tabs.Size = new System.Drawing.Size(1019, 657);
             this.tabs.TabIndex = 3;
             // 
-            // tabTrends
+            // tabSmoothedTrends
             // 
-            this.tabTrends.Controls.Add(this.chartSeries);
-            this.tabTrends.Location = new System.Drawing.Point(4, 22);
-            this.tabTrends.Name = "tabTrends";
-            this.tabTrends.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTrends.Size = new System.Drawing.Size(1011, 631);
-            this.tabTrends.TabIndex = 1;
-            this.tabTrends.Text = "Trends";
-            this.tabTrends.UseVisualStyleBackColor = true;
+            this.tabSmoothedTrends.Controls.Add(this.chartSeriesSmoothed);
+            this.tabSmoothedTrends.Location = new System.Drawing.Point(4, 22);
+            this.tabSmoothedTrends.Name = "tabSmoothedTrends";
+            this.tabSmoothedTrends.Padding = new System.Windows.Forms.Padding(3);
+            this.tabSmoothedTrends.Size = new System.Drawing.Size(1011, 631);
+            this.tabSmoothedTrends.TabIndex = 1;
+            this.tabSmoothedTrends.Text = "Smoothed Trends";
+            this.tabSmoothedTrends.UseVisualStyleBackColor = true;
             // 
-            // chartSeries
+            // tabCumulativeTrends
+            // 
+            this.tabCumulativeTrends.Controls.Add(this.chartSeriesCumulative);
+            this.tabCumulativeTrends.Location = new System.Drawing.Point(4, 22);
+            this.tabCumulativeTrends.Name = "tabCumulativeTrends";
+            this.tabCumulativeTrends.Padding = new System.Windows.Forms.Padding(3);
+            this.tabCumulativeTrends.Size = new System.Drawing.Size(1011, 631);
+            this.tabCumulativeTrends.TabIndex = 1;
+            this.tabCumulativeTrends.Text = "Cumulative Trends";
+            this.tabCumulativeTrends.UseVisualStyleBackColor = true;
+            // 
+            // chartSeries1
             // 
             chartArea1.Name = "Main Chart Area";
-            this.chartSeries.ChartAreas.Add(chartArea1);
+            this.chartSeriesSmoothed.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend";
-            this.chartSeries.Legends.Add(legend1);
-            this.chartSeries.Location = new System.Drawing.Point(6, 6);
-            this.chartSeries.Name = "chartSeries";
-            this.chartSeries.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Bright;
-            this.chartSeries.Size = new System.Drawing.Size(999, 619);
-            this.chartSeries.TabIndex = 1;
-            this.chartSeries.Text = "chartTrends";
+            this.chartSeriesSmoothed.Legends.Add(legend1);
+            this.chartSeriesSmoothed.Location = new System.Drawing.Point(6, 6);
+            this.chartSeriesSmoothed.Name = "chartSeriesSmoothed";
+            this.chartSeriesSmoothed.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Bright;
+            this.chartSeriesSmoothed.Size = new System.Drawing.Size(999, 619);
+            this.chartSeriesSmoothed.TabIndex = 1;
+            this.chartSeriesSmoothed.Text = "chartTrends";
+            // 
+            // chartSeries2
+            // 
+            chartArea2.Name = "Main Chart Area";
+            this.chartSeriesCumulative.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend";
+            this.chartSeriesCumulative.Legends.Add(legend2);
+            this.chartSeriesCumulative.Location = new System.Drawing.Point(6, 6);
+            this.chartSeriesCumulative.Name = "chartSeriesCumulative";
+            this.chartSeriesCumulative.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Bright;
+            this.chartSeriesCumulative.Size = new System.Drawing.Size(999, 619);
+            this.chartSeriesCumulative.TabIndex = 1;
+            this.chartSeriesCumulative.Text = "chartTrends";
             // 
             // tabLedger
             // 
@@ -163,8 +196,10 @@
             this.Text = "Money Manager";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.tabs.ResumeLayout(false);
-            this.tabTrends.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.chartSeries)).EndInit();
+            this.tabSmoothedTrends.ResumeLayout(false); 
+            this.tabCumulativeTrends.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.chartSeriesSmoothed)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartSeriesCumulative)).EndInit();
             this.tabLedger.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -175,12 +210,14 @@
         private System.Windows.Forms.TabControl tabs;
         private System.Windows.Forms.TabPage tabLedger;
         private System.Windows.Forms.ListBox lbTransactions;
-        private System.Windows.Forms.TabPage tabTrends;
+        private System.Windows.Forms.TabPage tabSmoothedTrends;
+        private System.Windows.Forms.TabPage tabCumulativeTrends;
         private System.Windows.Forms.DateTimePicker dateTimePickerEnd;
         private System.Windows.Forms.DateTimePicker dateTimePickerStart;
         private System.Windows.Forms.Label lblEndDate;
         private System.Windows.Forms.Label lblStartDate;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chartSeries;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartSeriesSmoothed;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartSeriesCumulative;
         private System.Windows.Forms.CheckedListBox clbCategories;
     }
 }

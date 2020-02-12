@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -88,38 +88,52 @@ namespace WinFormsUI
 
 		private void RefreshChart()
 		{
-			chartSeries.Series.Clear();
+			chartSeriesSmoothed.Series.Clear();
+			chartSeriesCumulative.Series.Clear();
 
 			var selectedCategories = clbCategories.CheckedItems
 			                                      .Cast<object>()
 			                                      .Select(clbCategories.GetItemText)
 			                                      .ToList();
-			var seriesToRemove = chartSeries.Series.Where(s => selectedCategories.All(c => c != s.Name)).ToList();
+			var seriesToRemove = chartSeriesSmoothed.Series.Where(s => selectedCategories.All(c => c != s.Name)).Concat(
+								 chartSeriesCumulative.Series.Where(s => selectedCategories.All(c => c != s.Name))).ToList();
 
 			foreach (var s in seriesToRemove)
 			{
-				chartSeries.Series.Remove(s);
+				chartSeriesSmoothed.Series.Remove(s);
+				chartSeriesCumulative.Series.Remove(s);
 			}
 
 			foreach (var c in selectedCategories)
 			{
-				if (chartSeries.Series.FindByName(c) is null)
+				if (chartSeriesSmoothed.Series.FindByName(c) is null && chartSeriesCumulative.Series.FindByName(c) is null)
 				{
 					var newSeries = new Series
 					{
 						Name = c,
 						ChartType = SeriesChartType.Line
 					};
-					chartSeries.Series.Add(newSeries);
+					chartSeriesSmoothed.Series.Add(newSeries);
+					chartSeriesCumulative.Series.Add(newSeries);
 				}
 
-				var series = chartSeries.Series.FindByName(c);
-				series.Points.Clear();
-				var timeSeries = State.GetTimeSeries(c, 0.99);
+				var smoothedSeries = chartSeriesSmoothed.Series.FindByName(c);
+				smoothedSeries.Points.Clear();
+
+				var cumulativeSeries = chartSeriesCumulative.Series.FindByName(c);
+				cumulativeSeries.Points.Clear();
+
+				var smoothedTimeSeries = State.GetSmoothedTimeSeries(c, 0.99);
+				var cumulativeTimeSeries = State.GetCumulativeTimeSeries(c, 0.99);
 
 				for (var date = startDate; date <= endDate; date = date.AddDays(1))
 				{
-					_ = series.Points.AddXY(date.ToString(), timeSeries[date]);
+					_ = smoothedSeries.Points.AddXY(date.ToString(), smoothedTimeSeries[date]);
+				}
+
+				for (var date = startDate; date <= endDate; date = date.AddDays(1))
+				{
+					_ = cumulativeSeries.Points.AddXY(date.ToString(), cumulativeTimeSeries[date]);
 				}
 			}
 		}
