@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Core
@@ -15,18 +16,17 @@ namespace Core
 				return new Dictionary<string, Func<Transaction, bool>>();
 			}
 
-			var categories = JsonConvert.DeserializeObject<List<CategoryDto>>(File.ReadAllText("categories.json"));
+			var categories = JsonConvert.DeserializeObject<List<Category>>(File.ReadAllText("categories.json"));
 
 			var categoryFilters = new Dictionary<string, Func<Transaction, bool>>();
 
 			foreach (var c in categories)
 			{
-				categoryFilters.Add(c.Name, t => Regex.IsMatch(t.ApplicationCode, c.ApplicationCode)
-											&& Regex.IsMatch(t.CardNumber, c.CardNumber)
-											&& Regex.IsMatch(t.Description, c.Description)
-											&& Regex.IsMatch(t.IsExpence.ToString().ToLower(), c.IsExpence)
-											&& Regex.IsMatch(t.IsIncome.ToString().ToLower(), c.IsIncome)
-											&& Regex.IsMatch(t.Terminal, c.Terminal));
+				categoryFilters.Add(c.Name, t => c.Rules.Any(r => Regex.IsMatch(t.CardNumber, r.CardNumber)
+											&& Regex.IsMatch(t.Description, r.Description)
+											&& Regex.IsMatch(t.IsExpence.ToString().ToLower(), r.IsExpence)
+											&& Regex.IsMatch(t.IsIncome.ToString().ToLower(), r.IsIncome)
+											&& Regex.IsMatch(t.Terminal, r.Terminal)));
 			}
 
 			return categoryFilters;
