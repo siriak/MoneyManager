@@ -28,7 +28,7 @@ namespace Core.TimeSeries
 
 		public virtual void AddMany(IEnumerable<Transaction> transactions)
 		{
-			transactions ??= throw new ArgumentNullException(nameof(transactions));
+			transactions = transactions ?? throw new ArgumentNullException(nameof(transactions));
 			
 			if (!transactions.Any())
 			{
