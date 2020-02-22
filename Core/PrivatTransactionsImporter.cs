@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -82,8 +83,8 @@ namespace Core
 			var cartNumber = node.Attributes["card"].Value;
 			var appCode = node.Attributes["appcode"].Value;
 			var timeStamp = DateTimeOffset.Parse(node.Attributes["trandate"].Value + " " + node.Attributes["trantime"].Value);
-			var amount = double.Parse(node.Attributes["cardamount"].Value);
-			var rest = double.Parse(node.Attributes["rest"].Value);
+			var amount = double.Parse(node.Attributes["cardamount"].Value.Split(' ').First());
+			var rest = double.Parse(node.Attributes["rest"].Value.Split(' ').First());
 			var terminal = node.Attributes["terminal"].Value;
 			var description = node.Attributes["description"].Value;
 			return new Transaction(cartNumber, appCode, timeStamp, amount, rest, terminal, description);
