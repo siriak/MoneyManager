@@ -56,7 +56,7 @@ namespace Core.TimeSeries
 			foreach (var transaction in transactions)
 			{
 				// TODO: Money to decimal
-				Series[(transaction.TimeStamp.Date.ToDate() - Start).Days] += (double) transaction.Amount.Amount;
+				Series[(transaction.TimeStamp.Date.ToDate() - Start).Days] += (double) transaction.Amount;
 			}
 		}
 	}

@@ -82,19 +82,11 @@ namespace Core
 			var cartNumber = node.Attributes["card"].Value;
 			var appCode = node.Attributes["appcode"].Value;
 			var timeStamp = DateTimeOffset.Parse(node.Attributes["trandate"].Value + " " + node.Attributes["trantime"].Value);
-			var amount = ParseMoney(node.Attributes["cardamount"]);
-			var rest = ParseMoney(node.Attributes["rest"]);
+			var amount = double.Parse(node.Attributes["cardamount"].Value);
+			var rest = double.Parse(node.Attributes["rest"].Value);
 			var terminal = node.Attributes["terminal"].Value;
 			var description = node.Attributes["description"].Value;
 			return new Transaction(cartNumber, appCode, timeStamp, amount, rest, terminal, description);
-		}
-
-		private static Money ParseMoney(XmlAttribute money)
-		{
-			var amountSplit = money.Value.Split(' ');
-			var amount = decimal.Parse(amountSplit[0]);
-			var currency = (Currency) Enum.Parse(typeof(Currency), amountSplit[1]);
-			return new Money(amount, currency);
 		}
 	}
 }

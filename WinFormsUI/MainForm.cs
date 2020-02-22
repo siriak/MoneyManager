@@ -124,7 +124,7 @@ namespace WinFormsUI
 				cumulativeSeries.Points.Clear();
 
 				var smoothedTimeSeries = State.GetSmoothedTimeSeries(c, 0.99);
-				var cumulativeTimeSeries = State.GetCumulativeTimeSeries(c, 0.99);
+				var cumulativeTimeSeries = State.GetCumulativeTimeSeries(1, 0.99);
 
 				for (var date = startDate; date <= endDate; date = date.AddDays(1))
 				{
