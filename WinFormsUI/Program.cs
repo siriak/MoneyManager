@@ -1,3 +1,5 @@
+using System.Windows.Forms;
+
 namespace WinFormsUI
 {
 	public class Program
