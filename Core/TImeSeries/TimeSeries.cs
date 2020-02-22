@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Core;
 
 namespace Core.TimeSeries
 {
@@ -27,8 +26,10 @@ namespace Core.TimeSeries
 			}
 		}
 
-		public virtual void AddMany(List<Transaction> transactions)
+		public virtual void AddMany(IEnumerable<Transaction> transactions)
 		{
+			transactions = transactions ?? throw new ArgumentNullException(nameof(transactions));
+			
 			if (!transactions.Any())
 			{
 				return;

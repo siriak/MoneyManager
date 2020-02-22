@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using Core;
 
 namespace Core.TimeSeries
 {
@@ -17,7 +16,7 @@ namespace Core.TimeSeries
             Capacity = capacity;
         }
 
-        public CumulativeTimeSeries(List<Transaction> transactions, double increment, double capacity) : this(increment, capacity) =>
+        public CumulativeTimeSeries(IEnumerable<Transaction> transactions, double increment, double capacity) : this(increment, capacity) =>
             AddMany(transactions);
         
         public override double this[Date date]
@@ -38,7 +37,7 @@ namespace Core.TimeSeries
             }
         }
 
-        public override void AddMany(List<Transaction> transactions)
+        public override void AddMany(IEnumerable<Transaction> transactions)
         {
             base.AddMany(transactions);
 

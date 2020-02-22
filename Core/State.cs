@@ -49,9 +49,9 @@ namespace Core
 			return new SmoothedTimeSeries(filteredTransactions, smoothingRatio);
 		}
 
-		public static CumulativeTimeSeries GetCumulativeTimeSeries(string category, double smoothingRatio)
+		public static CumulativeTimeSeries GetCumulativeTimeSeries(double increment, double capacity)
 		{
-			return new CumulativeTimeSeries(1, 4);
+			return new CumulativeTimeSeries(increment, capacity);
 		}
 
 		public static SmoothedTimeSeries GetSmoothedTimeSeriesUnion(IEnumerable<string> categories, double smoothingRatio)
@@ -63,7 +63,7 @@ namespace Core
 
 		public static CumulativeTimeSeries GetCumulativeTimeSeriesUnion(IEnumerable<string> categories, double smoothingRatio)
 		{
-			return new CumulativeTimeSeries(1, 4);
+			return new CumulativeTimeSeries(1, 1);
 		}
 
 		public static IEnumerable<Transaction> GetTransactions(string category, Date start, Date end)

@@ -32,7 +32,7 @@ namespace Core.TimeSeries
             }
         }
 
-        public override void AddMany(List<Transaction> transactions)
+        public override void AddMany(IEnumerable<Transaction> transactions)
         {
             base.AddMany(transactions);
 
