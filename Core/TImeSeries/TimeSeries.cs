@@ -10,7 +10,7 @@ namespace Core.TimeSeries
 
 		protected Date Start = Date.MaxValue;
 
-		protected List<double> Series { get; } = new List<double>();
+		protected IList<double> Series { get; } = new List<double>();
 
 		public virtual double this[Date date]
 		{
@@ -28,7 +28,7 @@ namespace Core.TimeSeries
 
 		public virtual void AddMany(IEnumerable<Transaction> transactions)
 		{
-			transactions = transactions ?? throw new ArgumentNullException(nameof(transactions));
+			transactions ??= throw new ArgumentNullException(nameof(transactions));
 			
 			if (!transactions.Any())
 			{

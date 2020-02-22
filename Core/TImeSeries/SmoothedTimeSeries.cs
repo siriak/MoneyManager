@@ -11,7 +11,7 @@ namespace Core.TimeSeries
         
         public SmoothedTimeSeries(double smoothingRatio) => SmoothingRatio = smoothingRatio;
 
-        public SmoothedTimeSeries(List<Transaction> transactions, double smoothingRatio) : this(smoothingRatio) =>
+        public SmoothedTimeSeries(IEnumerable<Transaction> transactions, double smoothingRatio) : this(smoothingRatio) =>
             AddMany(transactions);
         
         public override double this[Date date]
