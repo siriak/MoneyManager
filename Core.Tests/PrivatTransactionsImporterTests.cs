@@ -9,8 +9,8 @@ namespace Core.Tests
         [Fact]
         public void GetTransactionFromXml_WhenCorrectXml_ReturnTransaction()
         {
-            var expectedTransaction = new Transaction("5555555555555555", "188888", DateTimeOffset.Parse("01/03/2020 18:58:00"), -599.03,
-                1300.74, "Wizz Air", "Payment");
+            var expectedTransaction = new Transaction("5555555555555555", "188888", DateTimeOffset.Parse("01/03/2020 18:58:00"), new Money(-599.03, Currency.UAH),
+                new Money(1300.74, Currency.UAH), "Wizz Air", "Payment");
 
             const string xmlContent = "<statement card=\"5555555555555555\" appcode=\"188888\" trandate=\"2020 - 01 - 03\" " +
                 "trantime=\"18:58:00\" amount=\"585.00 UAH\" cardamount=\"-599.03 UAH\" rest=\"1300.74 UAH\" " +

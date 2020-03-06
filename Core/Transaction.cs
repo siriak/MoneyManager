@@ -5,23 +5,21 @@ namespace Core
 {
 	public class Transaction : IComparable<Transaction>
 	{
-		public Transaction(string cardNumber, string appCode, DateTimeOffset timeStamp, double amount, 
-			double rest, string terminal, string description)
+		public Transaction(string cardNumber, string appCode, DateTimeOffset timeStamp, Money amount, Money rest, string terminal, string description)
 		{
 			CardNumber = cardNumber;
 			ApplicationCode = appCode;
 			TimeStamp = timeStamp;
-			Amount = amount >= 0 ? amount : -amount;
-			IsIncome = amount > 0;
-			IsExpence = amount < 0;
+			Amount = amount.Amount >= 0 ? amount : new Money(-amount.Amount, amount.Currency);
+			IsIncome = amount.Amount > 0;
+			IsExpence = amount.Amount < 0;
 			Rest = rest;
 			Terminal = terminal;
 			Description = description;
 		}
 
 		[JsonConstructor]
-		public Transaction(string cardNumber, string applicationCode, DateTimeOffset timeStamp, double amount, 
-			bool isIncome, bool isExpence, double rest, string terminal, string description)
+		public Transaction(string cardNumber, string applicationCode, DateTimeOffset timeStamp, Money amount, bool isIncome, bool isExpence, Money rest, string terminal, string description)
 		{
 			CardNumber = cardNumber;
 			ApplicationCode = applicationCode;
@@ -37,10 +35,10 @@ namespace Core
 		public string CardNumber { get; }
 		public string ApplicationCode { get; }
 		public DateTimeOffset TimeStamp { get; }
-		public double Amount { get; }
+		public Money Amount { get; }
 		public bool IsIncome { get; }
 		public bool IsExpence { get; }
-		public double Rest { get; }
+		public Money Rest { get; }
 		public string Terminal { get; }
 		public string Description { get; }
 
