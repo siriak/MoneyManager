@@ -1,0 +1,16 @@
+@page "/ledger"
+@using Core
+
+<h1>Ledger</h1>
+
+<ul>
+   @foreach (var t in Transactions)
+   {
+       <ol>t.Amount.Amount t.Amount.Currency: t.Description</ol>
+   }
+</ul>
+
+@code {
+    [Parameter]
+    public List<Transaction> Transactions { get; set; }
+}

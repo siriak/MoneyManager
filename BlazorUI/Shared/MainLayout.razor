@@ -1,15 +1,84 @@
 ﻿@inherits LayoutComponentBase
 
+@using Core;
+@using System.Linq;
+@using System.Threading;
+
 <div class="sidebar">
-    <NavMenu />
+    <StartDatePicker></StartDatePicker>
+    <EndDatePicker></EndDatePicker>
+    <Categories></Categories>
 </div>
 
 <div class="main">
     <div class="top-row px-4">
-        <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        <NavMenu/>
     </div>
 
     <div class="content px-4">
         @Body
     </div>
 </div>
+
+@code {
+    private event Action OnFilteringUpdated = () => { };
+    private Date startDate, endDate;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        State.OnStateUpdated += RefreshList;
+        State.OnStateUpdated += RefreshChart;
+        State.OnStateUpdated += RefreshCategories;
+        OnFilteringUpdated += RefreshList;
+        OnFilteringUpdated += RefreshChart;
+
+        var cts = new CancellationTokenSource();
+        Categories.ItemCheck += async (o, e) => 
+        {
+    // No lock here because this code only executes in
+    // UI thread, which means critical section cannot
+    // be executed in different threads simultaneously
+            cts.Cancel();
+            cts = new CancellationTokenSource();
+            var ct = cts.Token;
+
+            const int debounceDelayMs = 100;
+            await Task.Delay(debounceDelayMs);
+            if (ct.IsCancellationRequested)
+            {
+                return;
+            }
+
+            OnFilteringUpdated();
+        };
+
+        StartDatePicker.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
+        EndDatePicker.Value = DateTime.Now.Date;
+
+        await State.Init();
+    }
+    
+    private void RefreshCategories()
+    {
+        
+    }
+
+    private void RefreshList()
+    {
+        lbTransactions.Items.Clear();
+
+        lbTransactions.Items.AddRange(
+            State.GetTransactionsUnion(
+                Categories.CheckedItems.Cast<object>().Select(Categories.GetItemText),
+                startDate,
+                endDate)
+                .Select(t => (object) $"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}")
+                .Reverse()
+                .ToArray());
+    }
+
+    private void RefreshChart()
+    {
+        
+    }
+}
