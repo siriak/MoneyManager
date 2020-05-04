@@ -137,8 +137,12 @@ namespace WinFormsUI
 				var cumulativeSeries = chartSeriesCumulative.Series.FindByName(c);
 				cumulativeSeries.Points.Clear();
 
-				var smoothedTimeSeries = State.GetSmoothedTimeSeries(c, 0.99);
-				var cumulativeTimeSeries = State.GetCumulativeTimeSeries(1, 0.99);
+				const double smoothingRatio = 0.99;
+				const int increment = 100;
+				const int capacity = 10000;
+
+				var smoothedTimeSeries = State.GetSmoothedTimeSeries(c,smoothingRatio);
+				var cumulativeTimeSeries = State.GetCumulativeTimeSeries(c, increment, capacity);
 
 				for (var date = startDate; date <= endDate; date = date.AddDays(1))
 				{
