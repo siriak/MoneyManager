@@ -81,7 +81,7 @@ namespace WinFormsUI
 					      clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText),
 					      startDate,
 					      endDate)
-				     .Select(t => (object) $"{t.Amount}: {t.Description}")
+				     .Select(t => (object) $"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}")
 				     .Reverse()
 				     .ToArray());
 		}
@@ -95,18 +95,23 @@ namespace WinFormsUI
 			                                      .Cast<object>()
 			                                      .Select(clbCategories.GetItemText)
 			                                      .ToList();
-			var seriesToRemove = chartSeriesSmoothed.Series.Where(s => selectedCategories.All(c => c != s.Name)).Concat(
-								 chartSeriesCumulative.Series.Where(s => selectedCategories.All(c => c != s.Name))).ToList();
 
-			foreach (var s in seriesToRemove)
+			var smoothedSeriesToRemove = chartSeriesSmoothed.Series.Where(s => selectedCategories.All(c => c != s.Name));
+			var cumulativeSeriesToRemove = chartSeriesCumulative.Series.Where(s => selectedCategories.All(c => c != s.Name));
+
+			foreach (var s in smoothedSeriesToRemove)
 			{
 				chartSeriesSmoothed.Series.Remove(s);
+			}
+
+			foreach (var s in cumulativeSeriesToRemove)
+			{
 				chartSeriesCumulative.Series.Remove(s);
 			}
 
 			foreach (var c in selectedCategories)
 			{
-				if (chartSeriesSmoothed.Series.FindByName(c) is null && chartSeriesCumulative.Series.FindByName(c) is null)
+				if (chartSeriesSmoothed.Series.FindByName(c) is null)
 				{
 					var newSeries = new Series
 					{
@@ -114,6 +119,15 @@ namespace WinFormsUI
 						ChartType = SeriesChartType.Line
 					};
 					chartSeriesSmoothed.Series.Add(newSeries);
+				}
+
+				if (chartSeriesCumulative.Series.FindByName(c) is null)
+				{
+					var newSeries = new Series
+					{
+						Name = c,
+						ChartType = SeriesChartType.Line
+					};
 					chartSeriesCumulative.Series.Add(newSeries);
 				}
 

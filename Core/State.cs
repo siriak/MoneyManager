@@ -63,7 +63,7 @@ namespace Core
 
 		public static CumulativeTimeSeries GetCumulativeTimeSeriesUnion(IEnumerable<string> categories, double smoothingRatio)
 		{
-			return new CumulativeTimeSeries(1, 1);
+			return new CumulativeTimeSeries(1, 2);
 		}
 
 		public static IEnumerable<Transaction> GetTransactions(string category, Date start, Date end)
