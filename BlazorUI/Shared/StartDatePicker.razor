@@ -1,7 +1,18 @@
-namespace BlazorUI.Shared
-{
-    public class StartDatePicker
+<div class="m-3" style="color: #ffffff">
+    <label>Start Date:</label>
+    <EditForm EditContext="@_editContext">
+        <InputDate @bind-Value="StartDate"/>
+    </EditForm>
+</div>
+
+@code{
+    [Parameter]
+    public Date StartDate { get; set; }
+
+    private EditContext _editContext;
+
+    protected override void OnInitialized()
     {
-        
+        _editContext = new EditContext(StartDate);
     }
 }

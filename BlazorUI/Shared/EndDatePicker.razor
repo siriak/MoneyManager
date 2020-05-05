@@ -1,0 +1,17 @@
+<div class="m-3" style="color: #ffffff">
+    <label>End Date:</label>
+    <EditForm EditContext="@_editContext">
+        <InputDate @bind-Value="EndDate"/>
+    </EditForm>
+</div>
+
+@code{
+    public Date EndDate { get; set; }
+
+    private EditContext _editContext;
+
+    protected override void OnInitialized()
+    {
+        _editContext = new EditContext(EndDate);
+    }
+}

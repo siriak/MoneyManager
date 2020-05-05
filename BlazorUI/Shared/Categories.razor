@@ -1,0 +1,29 @@
+@using BlazorUI.Data
+@using Core
+<div class="m-3" style="color: #ffffff">
+    <label>Categories:</label>
+    <EditForm Model="@CategoriesList">
+        @foreach (var c in CategoriesList)
+        {
+            <p>
+                <InputCheckbox @bind-Value="c.IsSelected"/> @c.Name
+            </p>
+        }
+    </EditForm>
+</div>
+
+@code{
+    
+    [Parameter]
+    public static IEnumerable<Caterogy> CategoriesList { get; set; } = InitCategoryList();
+
+    public static IEnumerable<Caterogy> InitCategoryList()
+    {
+        State.Init();
+        foreach (var c in State.Categories)
+        {
+            CategoriesList.ToList().Add(new Caterogy(){Name = c, IsSelected = false});
+        }
+        return CategoriesList;
+    }
+}
