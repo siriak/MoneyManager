@@ -92,7 +92,7 @@ namespace Core
 		private static Money ParseMoney(XmlAttribute money)
 		{
 			var amountSplit = money.Value.Split(' ');
-			var amount = decimal.Parse(amountSplit[0]);
+			var amount = double.Parse(amountSplit[0]);
 			var currency = (Currency) Enum.Parse(typeof(Currency), amountSplit[1]);
 			return new Money(amount, currency);
 		}
