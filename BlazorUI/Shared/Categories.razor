@@ -12,18 +12,8 @@
     </EditForm>
 </div>
 
-@code{
-    
+@code
+{
     [Parameter]
-    public static IEnumerable<Caterogy> CategoriesList { get; set; } = InitCategoryList();
-
-    public static IEnumerable<Caterogy> InitCategoryList()
-    {
-        State.Init();
-        foreach (var c in State.Categories)
-        {
-            CategoriesList.ToList().Add(new Caterogy(){Name = c, IsSelected = false});
-        }
-        return CategoriesList;
-    }
+    public static IList<Caterogy> CategoriesList { get; set; } = new List<Caterogy>();
 }
