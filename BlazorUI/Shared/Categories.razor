@@ -1,5 +1,4 @@
-@using BlazorUI.Data
-@using Core
+@using Category = BlazorUI.Data.Category
 <div class="m-3" style="color: #ffffff">
     <label>Categories:</label>
     <EditForm Model="@CategoriesList">
@@ -15,5 +14,5 @@
 @code
 {
     [Parameter]
-    public static IList<Caterogy> CategoriesList { get; set; } = new List<Caterogy>();
+    public static IList<Category> CategoriesList { get; set; } = new List<Category>();
 }

@@ -9,13 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\categories.json">
-      <Link>categories.json</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Update="wwwroot\css\chart.css">
       <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

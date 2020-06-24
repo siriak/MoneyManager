@@ -6,7 +6,7 @@
 <ul>
    @foreach (var t in Transactions)
    {
-       <ol>t.Amount.Amount t.Amount.Currency: t.Description</ol>
+       <ol>@t.ToString()</ol>
    }
 </ul>
 
