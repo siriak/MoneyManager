@@ -2,10 +2,10 @@ namespace Core
 {
 	public class Index
 	{
-		public decimal Value { get; set; }
-		public decimal Max30 { get; set; }
-		public decimal Min30 { get; set; }
-		public decimal Average30 { get; set; }
-		public decimal OldAverage30 { get; set; }
+		public double Value { get; set; }
+		public double Max30 { get; set; }
+		public double Min30 { get; set; }
+		public double Average30 { get; set; }
+		public double OldAverage30 { get; set; }
 	}
 }
