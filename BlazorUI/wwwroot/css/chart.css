@@ -24,7 +24,7 @@ body {
     caption-side: top;
     width: 600px;
     text-transform: uppercase;
-    letter-spacing: .5px;
+    letter-spacing: 0.5px;
     top: -40px;
     position: relative;
     z-index: 10;
@@ -42,12 +42,12 @@ body {
 }
 
 #q-graph td {
-    transition: all .3s ease;
+    transition: all 0.3s ease;
 }
 
 #q-graph td:hover {
     background-color: #4d4d4d;
-    opacity: .9;
+    opacity: 0.9;
     color: white;
 }
 
@@ -79,8 +79,8 @@ body {
 #q-graph tbody tr {
     height: 296px;
     padding-top: 2px;
-    border-right: 1px dotted #C4C4C4;
-    color: #AAA;
+    border-right: 1px dotted #с4с4с4;
+    color: #aaa;
 }
 
 #q-graph #q1 {
@@ -117,7 +117,7 @@ body {
 #q-graph .bar p {
     margin: 5px 0 0;
     padding: 0;
-    opacity: .4;
+    opacity: 0.4;
 }
 
 #q-graph .sent {
