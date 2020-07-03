@@ -1,4 +1,4 @@
-[
+﻿[
 	{
 		"Name": "All",
 		"Rules": [
@@ -32,6 +32,49 @@
 				"IsExpence": false,
 				"Terminal": ".*",
 				"Description": ".*"
+			}
+		]
+	},
+	{
+		"Name": "Interest",
+		"Rules": [
+			{
+				"CardNumber": ".*",
+				"IsIncome": true,
+				"IsExpence": false,
+				"Terminal": ".*",
+				"Description": "Начисление процентов на остаток средств по договору"
+			}
+		]
+	},
+	{
+		"Name": "Entertainment",
+		"Rules": [
+			{
+				"CardNumber": ".*",
+				"IsIncome": false,
+				"IsExpence": true,
+				"Terminal": ".*",
+				"Description": ".*(GOOGLE \\*(Google Music|Play)|STEAMGAMES.COM).*"
+			}
+		]
+	},
+	{
+		"Name": "Transportation",
+		"Rules": [
+			{
+				"CardNumber": ".*",
+				"IsIncome": false,
+				"IsExpence": true,
+				"Terminal": "Wizz Air, TWITERM",
+				"Description": ".*"
+			},
+			{
+				"CardNumber": ".*",
+				"IsIncome": false,
+				"IsExpence": true,
+				"Terminal": ".*",
+				"Description": "(Оплата проезда в городском транспорте|.*(WWW.UZ.GOV.UA|TICKET UZ GOV UA|INFOBUS).*)"
 			}
 		]
 	}

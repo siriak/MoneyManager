@@ -11,25 +11,26 @@ namespace Core
     {
 		public static Dictionary<string, Func<Transaction, bool>> Load()
 		{
-			if (!File.Exists("categories.json"))
+			//TODO: load from user provided file
+			if (true)
 			{
 				return new Dictionary<string, Func<Transaction, bool>>();
 			}
 
-			var categories = JsonConvert.DeserializeObject<List<Category>>(File.ReadAllText("categories.json"));
-
-			var categoryFilters = new Dictionary<string, Func<Transaction, bool>>();
-
-			foreach (var c in categories)
-			{
-				categoryFilters.Add(c.Name, t => c.Rules.Any(r => Regex.IsMatch(t.CardNumber, r.CardNumber)
-											&& Regex.IsMatch(t.Description, r.Description)
-											&& Regex.IsMatch(t.IsExpence.ToString().ToLower(), r.IsExpence)
-											&& Regex.IsMatch(t.IsIncome.ToString().ToLower(), r.IsIncome)
-											&& Regex.IsMatch(t.Terminal, r.Terminal)));
-			}
-
-			return categoryFilters;
+			// var categories = JsonConvert.DeserializeObject<List<Category>>(File.ReadAllText("categories.json"));
+			//
+			// var categoryFilters = new Dictionary<string, Func<Transaction, bool>>();
+			//
+			// foreach (var c in categories)
+			// {
+			// 	categoryFilters.Add(c.Name, t => c.Rules.Any(r => Regex.IsMatch(t.CardNumber, r.CardNumber)
+			// 								&& Regex.IsMatch(t.Description, r.Description)
+			// 								&& Regex.IsMatch(t.IsExpence.ToString().ToLower(), r.IsExpence)
+			// 								&& Regex.IsMatch(t.IsIncome.ToString().ToLower(), r.IsIncome)
+			// 								&& Regex.IsMatch(t.Terminal, r.Terminal)));
+			// }
+			//
+			// return categoryFilters;
 		}
 	}
 }

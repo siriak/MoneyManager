@@ -1,0 +1,16 @@
+@page "/ledger"
+@using Core
+
+<h1>Ledger</h1>
+
+<ul>
+   @foreach (var t in Transactions)
+   {
+       <ol>@t.ToString()</ol>
+   }
+</ul>
+
+@code {
+    [Parameter]
+    public List<Transaction> Transactions { get; set; } = new List<Transaction>();
+}

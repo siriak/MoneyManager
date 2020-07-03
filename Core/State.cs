@@ -25,22 +25,7 @@ namespace Core
 				categoryFilters.Add(c.Key, c.Value);
 			}
 			OnStateUpdated();
-
-			var credentials = ConfigManager.GetCredentials();
-			var importTasks = credentials.Select(c => PrivatTransactionsImporter.ImportTransactions(c, ProcessUpdates));
-			return Task.WhenAll(importTasks);
-
-			void ProcessUpdates(List<Transaction> ts)
-			{
-				if (ts.All(Transactions.Contains))
-				{
-					return;
-				}
-
-				Transactions.UnionWith(ts);
-				StateManager.Save();
-				OnStateUpdated();
-			}
+			return Task.CompletedTask;
 		}
 
 		public static SmoothedTimeSeries GetSmoothedTimeSeries(string category, double smoothingRatio)

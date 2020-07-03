@@ -43,5 +43,10 @@ namespace Core
 		public string Description { get; }
 
 		public int CompareTo(Transaction other) => TimeStamp.CompareTo(other.TimeStamp);
+
+		public new string ToString()
+		{
+			return $"{Amount.Amount} {Amount.Currency}: {Description}";
+		}
 	}
 }
