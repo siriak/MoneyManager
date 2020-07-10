@@ -3,71 +3,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Core
 {
-	public static class State
+	public class State
 	{
-		private static readonly Dictionary<string, Func<Transaction, bool>> categoryFilters = new Dictionary<string, Func<Transaction, bool>>();
+		public static State Instance { get; set; } = new State(new List<Category>(), new SortedSet<Transaction>());
+		
+		public Dictionary<string, Func<Transaction, bool>> CategoryFilters { get; }
 
-		public static SortedSet<Transaction> Transactions { get; } = new SortedSet<Transaction>();
+		public List<Category> Categories { get; }
 
-		public static HashSet<string> Categories => new HashSet<string>(categoryFilters.Keys);
+		public SortedSet<Transaction> Transactions { get; }
 
-		public static event Action OnStateUpdated = () => { };
+		// todo: move to IReadOnlySet in .NET 5
+		public IReadOnlyCollection<string> CategoriesNames => CategoryFilters.Keys;
 
-		public static Task Init()
+		[JsonConstructor]
+		public State(List<Category> categories, SortedSet<Transaction> transactions)
 		{
-			Transactions.UnionWith(StateManager.Load());
-
-			foreach (var c in CategoriesManager.Load())
-			{
-				categoryFilters.Add(c.Key, c.Value);
-			}
-			OnStateUpdated();
-			return Task.CompletedTask;
-		}
-
-		public static SmoothedTimeSeries GetSmoothedTimeSeries(string category, double smoothingRatio)
-		{
-			var filteredTransactions = Transactions.Where(categoryFilters[category]).ToList();
-			return new SmoothedTimeSeries(filteredTransactions, smoothingRatio);
-		}
-
-		public static CumulativeTimeSeries GetCumulativeTimeSeries(string category, double increment, double capacity)
-		{
-			var filteredTransactions = Transactions.Where(categoryFilters[category]).ToList();
-			return new CumulativeTimeSeries(filteredTransactions, increment, capacity);
-		}
-
-		public static SmoothedTimeSeries GetSmoothedTimeSeriesUnion(IEnumerable<string> categories, double smoothingRatio)
-		{
-			Func<Transaction, bool> filter = t => categories.Any(c => categoryFilters[c](t));
-			var filteredTransactions = Transactions.Where(filter).ToList();
-			return new SmoothedTimeSeries(filteredTransactions, smoothingRatio);
-		}
-
-		public static CumulativeTimeSeries GetCumulativeTimeSeriesUnion(IEnumerable<string> categories, double smoothingRatio)
-		{
-			return new CumulativeTimeSeries(1, 1);
-		}
-
-		public static IEnumerable<Transaction> GetTransactions(string category, Date start, Date end)
-		{
-			var filteredTransactions = Transactions.SkipWhile(t => t.TimeStamp.DateTime < start)
-			                                       .TakeWhile(t => t.TimeStamp.DateTime <= end)
-			                                       .Where(categoryFilters[category])
-			                                       .ToList();
-			return filteredTransactions;
-		}
-
-		public static IEnumerable<Transaction> GetTransactionsUnion(IEnumerable<string> categories, Date start, Date end)
-		{
-			Func<Transaction, bool> filter = t => categories.Any(c => categoryFilters[c](t));
-			return Transactions.SkipWhile(t => t.TimeStamp.DateTime < start)
-			                   .TakeWhile(t => t.TimeStamp.DateTime <= end)
-			                   .Where(filter)
-			                   .ToList();
+			Transactions = transactions;
+			Categories = categories;
+			CategoryFilters = CategoriesManager.BuildFilters(categories);
 		}
 	}
 }
