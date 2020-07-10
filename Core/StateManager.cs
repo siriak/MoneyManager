@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Core.TimeSeries;
 using Newtonsoft.Json;
 
@@ -23,6 +22,36 @@ namespace Core
 		public static string SaveToJson()
 		{
 			return JsonConvert.SerializeObject(State.Instance);
+		}
+
+		public static void LoadTransactions(IEnumerable<Stream> files)
+		{
+			var importers = new List<TransactionsImporter>();
+			var inMemoryFiles = files.Select(f =>
+			{
+				var ms = new MemoryStream();
+				f.CopyTo(ms);
+				ms.Position = 0;
+				return ms;
+			}).ToList();
+			// todo: add all importers
+			// importers.Add(Privar);
+
+			foreach (var file in inMemoryFiles)
+			{
+				var canBeImportedBy = new List<TransactionsImporter>();
+				foreach (var importer in importers)
+				{
+					if (importer.CanLoad(file))
+					{
+						canBeImportedBy.Add(importer);
+					}
+
+					file.Position = 0;
+				}
+
+				canBeImportedBy.Single().Load(file);
+			}
 		}
 		
 		public static SmoothedTimeSeries GetSmoothedTimeSeries(string category, double smoothingRatio)

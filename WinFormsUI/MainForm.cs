@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,11 +17,8 @@ namespace WinFormsUI
 		public MainForm() => InitializeComponent();
 		private event Action OnFilteringUpdated = () => { };
 
-		private async void MainForm_Load(object sender, EventArgs e)
+		private void MainForm_Load(object sender, EventArgs e)
 		{
-			State.OnStateUpdated += RefreshList;
-			State.OnStateUpdated += RefreshChart;
-			State.OnStateUpdated += RefreshCategories;
 			OnFilteringUpdated += RefreshList;
 			OnFilteringUpdated += RefreshChart;
 
@@ -47,7 +45,16 @@ namespace WinFormsUI
 			dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
 			dateTimePickerEnd.Value = DateTime.Now.Date;
 
-			await State.Init();
+			const string stateFileName = "state.json";
+			if (!File.Exists(stateFileName))
+			{
+				File.WriteAllText(stateFileName, StateManager.SaveToJson());
+			}
+			StateManager.LoadFromJson(File.ReadAllText(stateFileName));
+			
+			RefreshCategories();
+			RefreshChart();
+			RefreshList();
 		}
 
 		private void RefreshCategories()
@@ -60,7 +67,7 @@ namespace WinFormsUI
 												  .ToList();
 
 			clbCategories.Items.Clear();
-			clbCategories.Items.AddRange(State.Categories.OrderBy(c => c).ToArray());
+			clbCategories.Items.AddRange(State.Instance.CategoriesNames.OrderBy(c => c).ToArray());
 
 			foreach (var c in selectedCategories)
 			{
@@ -78,7 +85,7 @@ namespace WinFormsUI
 			lbTransactions.Items.Clear();
 
 			lbTransactions.Items.AddRange(
-				State.GetTransactionsUnion(
+				StateManager.GetTransactionsUnion(
 					      clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText),
 					      startDate,
 					      endDate)
@@ -142,8 +149,8 @@ namespace WinFormsUI
 				const int increment = 100;
 				const int capacity = 10000;
 
-				var smoothedTimeSeries = State.GetSmoothedTimeSeries(c,smoothingRatio);
-				var cumulativeTimeSeries = State.GetCumulativeTimeSeries(c, increment, capacity);
+				var smoothedTimeSeries = StateManager.GetSmoothedTimeSeries(c,smoothingRatio);
+				var cumulativeTimeSeries = StateManager.GetCumulativeTimeSeries(c, increment, capacity);
 
 				for (var date = startDate; date <= endDate; date = date.AddDays(1))
 				{
