@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Core.Importers;
 using Core.TimeSeries;
 using Newtonsoft.Json;
 
@@ -34,8 +35,10 @@ namespace Core
 				ms.Position = 0;
 				return ms;
 			}).ToList();
-			// todo: add all importers
-			// importers.Add(Privar);
+
+			importers.Add(new PrivatTransactionsImporter());
+			importers.Add(new KredoTransactionsImporter());
+			importers.Add(new UkrSibTransactionsImporter());
 
 			foreach (var file in inMemoryFiles)
 			{
@@ -80,8 +83,8 @@ namespace Core
 
 		public static IEnumerable<Transaction> GetTransactions(string category, Date start, Date end)
 		{
-			var filteredTransactions = State.Instance.Transactions.SkipWhile(t => t.TimeStamp.DateTime < start)
-			                                       .TakeWhile(t => t.TimeStamp.DateTime <= end)
+			var filteredTransactions = State.Instance.Transactions.SkipWhile(t => t.Date < start)
+			                                       .TakeWhile(t => t.Date <= end)
 			                                       .Where(State.Instance.CategoryFilters[category])
 			                                       .ToList();
 			return filteredTransactions;
@@ -90,8 +93,8 @@ namespace Core
 		public static IEnumerable<Transaction> GetTransactionsUnion(IEnumerable<string> categories, Date start, Date end)
 		{
 			Func<Transaction, bool> filter = t => categories.Any(c => State.Instance.CategoryFilters[c](t));
-			return State.Instance.Transactions.SkipWhile(t => t.TimeStamp.DateTime < start)
-			                   .TakeWhile(t => t.TimeStamp.DateTime <= end)
+			return State.Instance.Transactions.SkipWhile(t => t.Date < start)
+			                   .TakeWhile(t => t.Date <= end)
 			                   .Where(filter)
 			                   .ToList();
 		}

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Core;
+using Core.Importers;
 
 namespace WinFormsUI
 {
@@ -19,6 +20,9 @@ namespace WinFormsUI
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
+			//remove this + using
+			var p = new PrivatTransactionsImporter();
+			p.Load(null);
 			OnFilteringUpdated += RefreshList;
 			OnFilteringUpdated += RefreshChart;
 

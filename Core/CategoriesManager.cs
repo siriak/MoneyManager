@@ -15,9 +15,17 @@ namespace Core
 			{
 				categoryFilters.Add(c.Name, t => c.Rules.Any(r => Regex.IsMatch(t.CardNumber, r.CardNumber)
 											&& Regex.IsMatch(t.Description, r.Description)
-											&& Regex.IsMatch(t.IsExpence.ToString().ToLower(), r.IsExpence)
-											&& Regex.IsMatch(t.IsIncome.ToString().ToLower(), r.IsIncome)
-											&& Regex.IsMatch(t.Terminal, r.Terminal)));
+											&& Regex.IsMatch(t.Amount.ToString().ToLower(), r.Amount)
+											&& r.Amount[1..] is var ch
+											&& r.Amount[0] switch
+											{
+												'>' => t.Amount.Amount > int.Parse(ch),
+												'<' => t.Amount.Amount < int.Parse(ch),
+												'=' => t.Amount.Amount == int.Parse(ch),
+												'*' => true,
+												_ => throw new NotImplementedException()
+											}
+											));
 			}
 
 			return categoryFilters;
