@@ -1,8 +1,10 @@
 ﻿using ExcelDataReader;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace Core.Importers
 {
@@ -10,12 +12,8 @@ namespace Core.Importers
     {
         public override List<Transaction> Load(Stream file)
         {
-            System.Threading.Thread.CurrentThread.CurrentCulture =
-                System.Globalization.CultureInfo.CreateSpecificCulture("en-GB");
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            
-            //remove this
-            file = File.Open("statements.xls", FileMode.Open, FileAccess.Read);
 
             using var reader = ExcelReaderFactory.CreateBinaryReader(file);
             var dataSet = reader.AsDataSet();

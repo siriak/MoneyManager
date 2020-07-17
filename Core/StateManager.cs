@@ -10,6 +10,11 @@ namespace Core
 {
 	public class StateManager
 	{
+		private static Dictionary<string, TransactionsImporter> importers = new Dictionary<string, TransactionsImporter>()
+		{
+			["pb"] = new PrivatTransactionsImporter(),
+		};
+
 		public static void LoadFromJson(string stateJson)
 		{
 			if (string.IsNullOrWhiteSpace(stateJson))
@@ -25,35 +30,17 @@ namespace Core
 			return JsonConvert.SerializeObject(State.Instance);
 		}
 
-		public static void LoadTransactions(IEnumerable<Stream> files)
+		public static void LoadTransactions(IEnumerable<(string key, Stream stream)> files)
 		{
-			var importers = new List<TransactionsImporter>();
-			var inMemoryFiles = files.Select(f =>
+			var transactions = new List<Transaction>();
+			foreach (var file in files)
 			{
-				var ms = new MemoryStream();
-				f.CopyTo(ms);
-				ms.Position = 0;
-				return ms;
-			}).ToList();
+				transactions.AddRange(importers[file.key].Load(file.stream)));
+			}
 
-			importers.Add(new PrivatTransactionsImporter());
-			importers.Add(new KredoTransactionsImporter());
-			importers.Add(new UkrSibTransactionsImporter());
-
-			foreach (var file in inMemoryFiles)
+			foreach (var t in transactions)
 			{
-				var canBeImportedBy = new List<TransactionsImporter>();
-				foreach (var importer in importers)
-				{
-					if (importer.CanLoad(file))
-					{
-						canBeImportedBy.Add(importer);
-					}
-
-					file.Position = 0;
-				}
-
-				canBeImportedBy.Single().Load(file);
+				State.Instance.Transactions.Add(t);
 			}
 		}
 		

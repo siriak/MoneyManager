@@ -7,7 +7,7 @@ namespace Core
 {
     public static class CategoriesManager
     {
-		public static Dictionary<string, Func<Transaction, bool>> BuildFilters(List<Category> categories)
+		public static IDictionary<string, Func<Transaction, bool>> BuildFilters(List<Category> categories)
 		{
 			var categoryFilters = new Dictionary<string, Func<Transaction, bool>>();
 			
@@ -23,7 +23,7 @@ namespace Core
 												'<' => t.Amount.Amount < int.Parse(ruleAmount),
 												'=' => t.Amount.Amount == int.Parse(ruleAmount),
 												'*' => true,
-												_ => throw new NotImplementedException()
+												_ => throw new NotSupportedException()
 											}
 											));
 			}

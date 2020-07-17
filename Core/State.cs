@@ -24,7 +24,7 @@ namespace Core
 		{
 			Transactions = transactions;
 			Categories = categories;
-			CategoryFilters = CategoriesManager.BuildFilters(categories);
+			CategoryFilters = (Dictionary <string, Func<Transaction, bool>>)CategoriesManager.BuildFilters(categories);
 		}
 	}
 }
