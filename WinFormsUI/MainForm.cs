@@ -97,7 +97,7 @@ namespace WinFormsUI
 					      clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText),
 					      startDate,
 					      endDate)
-				     .Select(t => (object) $"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}")
+				     .Select(t => (object) t.ToString())
 				     .Reverse()
 				     .ToArray());
 		}

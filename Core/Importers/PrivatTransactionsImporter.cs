@@ -25,7 +25,7 @@ namespace Core.Importers
                 var date = dataTable.Rows[i][0].ToString();
                 var category = dataTable.Rows[i][2].ToString(); 
                 var cardNumber = dataTable.Rows[i][3].ToString();
-                var description = dataTable.Rows[i][4].ToString();
+                var description = dataTable.Rows[i][4].ToString().Trim();
                 var amount = dataTable.Rows[i][5].ToString();
                 //todo: read currency from file
                 var currency = dataTable.Rows[i][6].ToString();
