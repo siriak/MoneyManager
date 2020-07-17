@@ -7,7 +7,7 @@ namespace Core
 {
     public static class CategoriesManager
     {
-		public static IDictionary<string, Func<Transaction, bool>> BuildFilters(List<Category> categories)
+		public static IDictionary<string, Func<Transaction, bool>> BuildFilters(IList<Category> categories)
 		{
 			var categoryFilters = new Dictionary<string, Func<Transaction, bool>>();
 			
