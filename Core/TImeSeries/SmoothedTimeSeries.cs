@@ -28,7 +28,7 @@ namespace Core.TimeSeries
                     return SmoothedSeries[(date - Start).Days];
                 }
 
-                return Math.Pow(SmoothingRatio, (date - End).Days * SmoothedSeries.Last());
+                return Math.Pow(SmoothingRatio, (date - End).Days) * SmoothedSeries.Last();
             }
         }
 

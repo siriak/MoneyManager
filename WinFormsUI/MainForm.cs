@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Core;
-using Core.Importers;
 
 namespace WinFormsUI
 {
@@ -20,9 +19,6 @@ namespace WinFormsUI
 
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			//remove this + using
-			var p = new PrivatTransactionsImporter();
-			p.Load(null);
 			OnFilteringUpdated += RefreshList;
 			OnFilteringUpdated += RefreshChart;
 
@@ -55,10 +51,18 @@ namespace WinFormsUI
 				File.WriteAllText(stateFileName, StateManager.SaveToJson());
 			}
 			StateManager.LoadFromJson(File.ReadAllText(stateFileName));
+			LoadTransactions();
 			
 			RefreshCategories();
 			RefreshChart();
 			RefreshList();
+		}
+
+		private void LoadTransactions()
+		{
+			var currentDirecory = Directory.GetCurrentDirectory();
+			var files = Directory.GetFiles(currentDirecory + "/pb").Select(f => ("pb", (Stream)File.OpenRead(f)));
+			StateManager.LoadTransactions(files);
 		}
 
 		private void RefreshCategories()

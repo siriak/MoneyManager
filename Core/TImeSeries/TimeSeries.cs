@@ -55,7 +55,7 @@ namespace Core.TimeSeries
 
 			foreach (var transaction in transactions)
 			{
-				Series[(transaction.Date - Start).Days] += transaction.Amount.Convert(Currency.UAH).Amount;
+				Series[(transaction.Date - Start).Days] += transaction.AbsoluteAmount.Convert(Currency.UAH).Amount;
 			}
 		}
 	}
