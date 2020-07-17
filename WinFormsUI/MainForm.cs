@@ -154,11 +154,11 @@ namespace WinFormsUI
 				cumulativeSeries.Points.Clear();
 
 				const double smoothingRatio = 0.99;
-				const int increment = 100;
-				const int capacity = 10000;
 
-				var smoothedTimeSeries = StateManager.GetSmoothedTimeSeries(c,smoothingRatio);
-				var cumulativeTimeSeries = StateManager.GetCumulativeTimeSeries(c, increment, capacity);
+				var smoothedTimeSeries = StateManager.GetSmoothedTimeSeries(c, smoothingRatio);
+				var cumulativeTimeSeries = StateManager.GetCumulativeTimeSeries(c, 
+					State.Instance.Categories.First(category => category.Name == c).Increment,
+					State.Instance.Categories.First(category => category.Name == c).Capacity);
 
 				for (var date = startDate; date <= endDate; date = date.AddDays(1))
 				{
