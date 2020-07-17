@@ -26,14 +26,6 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="..\credentials.json">
-      <Link>credentials.json</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="..\categories.json">
-      <Link>categories.json</Link>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>

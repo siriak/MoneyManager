@@ -35,7 +35,7 @@ namespace Core.TimeSeries
 				return;
 			}
 
-			var dates = transactions.Select(x => new Date(x.TimeStamp.Date)).ToList();
+			var dates = transactions.Select(x => new Date(x.Date)).ToList();
 			if (!Series.Any())
 			{
 				Series.Add(0);
@@ -55,7 +55,7 @@ namespace Core.TimeSeries
 
 			foreach (var transaction in transactions)
 			{
-				Series[(transaction.TimeStamp.Date.ToDate() - Start).Days] += transaction.Amount.Convert(Currency.UAH).Amount;
+				Series[(transaction.Date - Start).Days] += transaction.AbsoluteAmount.Convert(Currency.UAH).Amount;
 			}
 		}
 	}
