@@ -35,7 +35,7 @@ namespace Core
 			var transactions = new List<Transaction>();
 			foreach (var file in files)
 			{
-				transactions.AddRange(importers[file.key].Load(file.stream)));
+				transactions.AddRange(importers[file.key].Load(file.stream));
 			}
 
 			foreach (var t in transactions)
