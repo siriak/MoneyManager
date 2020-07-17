@@ -10,12 +10,12 @@ namespace Core
 {
 	public class StateManager
 	{
-		private static Dictionary<string, TransactionsImporter> importers = new Dictionary<string, TransactionsImporter>()
+		private static Dictionary<string, TransactionsImporter> importers = new Dictionary<string, TransactionsImporter>
 		{
 			["pb"] = new PrivatTransactionsImporter(),
 		};
 
-		public static void LoadFromJson(string stateJson)
+		public static void LoadState(string stateJson)
 		{
 			if (string.IsNullOrWhiteSpace(stateJson))
 			{

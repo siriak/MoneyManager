@@ -50,7 +50,7 @@ namespace WinFormsUI
 			{
 				File.WriteAllText(stateFileName, StateManager.SaveToJson());
 			}
-			StateManager.LoadFromJson(File.ReadAllText(stateFileName));
+			StateManager.LoadState(File.ReadAllText(stateFileName));
 			LoadTransactions();
 			
 			RefreshCategories();
