@@ -184,8 +184,12 @@ namespace WinFormsUI
 
 		private void txtboxSmoothingRatio_TextChanged(object sender, EventArgs e)
 		{
-			double.TryParse(txtboxSmoothingRatio.Text, out smoothingRatio);
-			OnFilteringUpdated();
+			if (double.TryParse(txtboxSmoothingRatio.Text, out var newSmoothingRatio)
+				&& newSmoothingRatio <= 1 && newSmoothingRatio >= 0)
+			{
+				smoothingRatio = newSmoothingRatio;
+				OnFilteringUpdated();
+			}
 		}
 	}
 }

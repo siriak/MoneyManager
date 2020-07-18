@@ -193,6 +193,7 @@ namespace WinFormsUI
             this.txtboxSmoothingRatio.Size = new System.Drawing.Size(93, 23);
             this.txtboxSmoothingRatio.TabIndex = 11;
             this.txtboxSmoothingRatio.TextChanged += new System.EventHandler(this.txtboxSmoothingRatio_TextChanged);
+            this.txtboxSmoothingRatio.Text = "0.99";
             // 
             // clbCategories
             // 
