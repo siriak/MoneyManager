@@ -13,6 +13,7 @@ namespace WinFormsUI
 	{
 		
 		private Date startDate, endDate;
+		private double smoothingRatio;
 
 		public MainForm() => InitializeComponent();
 		private event Action OnFilteringUpdated = () => { };
@@ -153,12 +154,9 @@ namespace WinFormsUI
 				var cumulativeSeries = chartSeriesCumulative.Series.FindByName(c);
 				cumulativeSeries.Points.Clear();
 
-				const double smoothingRatio = 0.99;
-
+				var category = State.Instance.Categories.First(category => category.Name == c);
 				var smoothedTimeSeries = StateManager.GetSmoothedTimeSeries(c, smoothingRatio);
-				var cumulativeTimeSeries = StateManager.GetCumulativeTimeSeries(c, 
-					State.Instance.Categories.First(category => category.Name == c).Increment,
-					State.Instance.Categories.First(category => category.Name == c).Capacity);
+				var cumulativeTimeSeries = StateManager.GetCumulativeTimeSeries(c, category.Increment, category.Capacity);
 
 				for (var date = startDate; date <= endDate; date = date.AddDays(1))
 				{
@@ -181,6 +179,12 @@ namespace WinFormsUI
 		private void dateTimePickerEnd_ValueChanged(object sender, EventArgs e)
 		{
 			endDate = dateTimePickerEnd.Value.ToDate();
+			OnFilteringUpdated();
+		}
+
+		private void txtboxSmoothingRatio_TextChanged(object sender, EventArgs e)
+		{
+			double.TryParse(txtboxSmoothingRatio.Text, out smoothingRatio);
 			OnFilteringUpdated();
 		}
 	}
