@@ -29,7 +29,7 @@ namespace Core
 
 		public new string ToString()
 		{
-			return $"{Amount.Amount} {Amount.Currency}: {Description}";
+			return $"{Date.ToLongString()}:" + $"{Amount.Amount}".PadLeft(10) +$" {Amount.Currency}  {Description}";
 		}
 	}
 }

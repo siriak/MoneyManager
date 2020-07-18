@@ -13,6 +13,7 @@ namespace WinFormsUI
 	{
 		
 		private Date startDate, endDate;
+		private double smoothingRatio;
 
 		public MainForm() => InitializeComponent();
 		private event Action OnFilteringUpdated = () => { };
@@ -97,7 +98,7 @@ namespace WinFormsUI
 					      clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText),
 					      startDate,
 					      endDate)
-				     .Select(t => (object) $"{t.Amount.Amount} {t.Amount.Currency}: {t.Description}")
+				     .Select(t => (object) t.ToString())
 				     .Reverse()
 				     .ToArray());
 		}
@@ -153,12 +154,9 @@ namespace WinFormsUI
 				var cumulativeSeries = chartSeriesCumulative.Series.FindByName(c);
 				cumulativeSeries.Points.Clear();
 
-				const double smoothingRatio = 0.99;
-				const int increment = 100;
-				const int capacity = 10000;
-
-				var smoothedTimeSeries = StateManager.GetSmoothedTimeSeries(c,smoothingRatio);
-				var cumulativeTimeSeries = StateManager.GetCumulativeTimeSeries(c, increment, capacity);
+				var category = State.Instance.Categories.First(category => category.Name == c);
+				var smoothedTimeSeries = StateManager.GetSmoothedTimeSeries(c, smoothingRatio);
+				var cumulativeTimeSeries = StateManager.GetCumulativeTimeSeries(c, category.Increment, category.Capacity);
 
 				for (var date = startDate; date <= endDate; date = date.AddDays(1))
 				{
@@ -182,6 +180,16 @@ namespace WinFormsUI
 		{
 			endDate = dateTimePickerEnd.Value.ToDate();
 			OnFilteringUpdated();
+		}
+
+		private void txtboxSmoothingRatio_TextChanged(object sender, EventArgs e)
+		{
+			if (double.TryParse(txtboxSmoothingRatio.Text, out var newSmoothingRatio)
+				&& newSmoothingRatio <= 1 && newSmoothingRatio >= 0)
+			{
+				smoothingRatio = newSmoothingRatio;
+				OnFilteringUpdated();
+			}
 		}
 	}
 }
