@@ -10,7 +10,7 @@ namespace Core
 
 		public SortedSet<Transaction> Transactions { get; }
 
-		public List<Category> Categories { get; }
+		public IList<Category> Categories { get; }
 		
 		[JsonIgnore]
 		public Dictionary<string, Func<Transaction, bool>> CategoryFilters { get; }
@@ -20,11 +20,11 @@ namespace Core
 		public IReadOnlyCollection<string> CategoriesNames => CategoryFilters.Keys;
 
 		[JsonConstructor]
-		public State(List<Category> categories, SortedSet<Transaction> transactions)
+		public State(IList<Category> categories, SortedSet<Transaction> transactions)
 		{
 			Transactions = transactions;
 			Categories = categories;
-			CategoryFilters = CategoriesManager.BuildFilters(categories);
+			CategoryFilters = (Dictionary <string, Func<Transaction, bool>>)CategoriesManager.BuildFilters(categories);
 		}
 	}
 }

@@ -5,48 +5,31 @@ namespace Core
 {
 	public class Transaction : IComparable<Transaction>
 	{
-		public Transaction(string cardNumber, string appCode, DateTimeOffset timeStamp, Money amount, Money rest, string terminal, string description)
-		{
-			CardNumber = cardNumber;
-			ApplicationCode = appCode;
-			TimeStamp = timeStamp;
-			Amount = amount.Amount >= 0 ? amount : new Money(-amount.Amount, amount.Currency);
-			IsIncome = amount.Amount > 0;
-			IsExpence = amount.Amount < 0;
-			Rest = rest;
-			Terminal = terminal;
-			Description = description;
-		}
-
 		[JsonConstructor]
-		public Transaction(string cardNumber, string applicationCode, DateTimeOffset timeStamp, Money amount, bool isIncome, bool isExpence, Money rest, string terminal, string description)
+		public Transaction(string cardNumber, Date date, Money amount, string description, string category)
 		{
 			CardNumber = cardNumber;
-			ApplicationCode = applicationCode;
-			TimeStamp = timeStamp;
+			Date = date;
 			Amount = amount;
-			IsIncome = isIncome;
-			IsExpence = isExpence;
-			Rest = rest;
-			Terminal = terminal;
 			Description = description;
+			Category = category;
 		}
 
 		public string CardNumber { get; }
-		public string ApplicationCode { get; }
-		public DateTimeOffset TimeStamp { get; }
+		public Date Date { get; }
 		public Money Amount { get; }
-		public bool IsIncome { get; }
-		public bool IsExpence { get; }
-		public Money Rest { get; }
-		public string Terminal { get; }
-		public string Description { get; }
 
-		public int CompareTo(Transaction other) => TimeStamp.CompareTo(other.TimeStamp);
+		[JsonIgnore]
+		public Money AbsoluteAmount => new Money(Math.Abs(Amount.Amount), Amount.Currency);
+
+		public string Description { get; }
+		public string Category { get; }
+
+		public int CompareTo(Transaction other) => Date.CompareTo(other.Date);
 
 		public new string ToString()
 		{
-			return $"{Amount.Amount} {Amount.Currency}: {Description}";
+			return $"{Date.ToLongString()}:" + $"{Amount.Amount}".PadLeft(10) +$" {Amount.Currency}  {Description}";
 		}
 	}
 }

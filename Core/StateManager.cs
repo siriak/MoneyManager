@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Core.Importers;
+using Core.TimeSeries;
+using System.Linq;
 using Core.TimeSeries;
 using Newtonsoft.Json;
 
@@ -9,7 +12,12 @@ namespace Core
 {
 	public class StateManager
 	{
-		public static void LoadFromJson(string stateJson)
+		private static Dictionary<string, TransactionsImporter> importers = new Dictionary<string, TransactionsImporter>
+		{
+			["pb"] = new PrivatTransactionsImporter(),
+		};
+
+		public static void LoadState(string stateJson)
 		{
 			if (string.IsNullOrWhiteSpace(stateJson))
 			{
@@ -24,33 +32,17 @@ namespace Core
 			return JsonConvert.SerializeObject(State.Instance);
 		}
 
-		public static void LoadTransactions(IEnumerable<Stream> files)
+		public static void LoadTransactions(IEnumerable<(string key, Stream stream)> files)
 		{
-			var importers = new List<TransactionsImporter>();
-			var inMemoryFiles = files.Select(f =>
+			var transactions = new List<Transaction>();
+			foreach (var file in files)
 			{
-				var ms = new MemoryStream();
-				f.CopyTo(ms);
-				ms.Position = 0;
-				return ms;
-			}).ToList();
-			// todo: add all importers
-			// importers.Add(Privar);
+				transactions.AddRange(importers[file.key].Load(file.stream));
+			}
 
-			foreach (var file in inMemoryFiles)
+			foreach (var t in transactions)
 			{
-				var canBeImportedBy = new List<TransactionsImporter>();
-				foreach (var importer in importers)
-				{
-					if (importer.CanLoad(file))
-					{
-						canBeImportedBy.Add(importer);
-					}
-
-					file.Position = 0;
-				}
-
-				canBeImportedBy.Single().Load(file);
+				State.Instance.Transactions.Add(t);
 			}
 		}
 		
@@ -80,8 +72,8 @@ namespace Core
 
 		public static IEnumerable<Transaction> GetTransactions(string category, Date start, Date end)
 		{
-			var filteredTransactions = State.Instance.Transactions.SkipWhile(t => t.TimeStamp.DateTime < start)
-			                                       .TakeWhile(t => t.TimeStamp.DateTime <= end)
+			var filteredTransactions = State.Instance.Transactions.SkipWhile(t => t.Date < start)
+			                                       .TakeWhile(t => t.Date <= end)
 			                                       .Where(State.Instance.CategoryFilters[category])
 			                                       .ToList();
 			return filteredTransactions;
@@ -90,8 +82,8 @@ namespace Core
 		public static IEnumerable<Transaction> GetTransactionsUnion(IEnumerable<string> categories, Date start, Date end)
 		{
 			Func<Transaction, bool> filter = t => categories.Any(c => State.Instance.CategoryFilters[c](t));
-			return State.Instance.Transactions.SkipWhile(t => t.TimeStamp.DateTime < start)
-			                   .TakeWhile(t => t.TimeStamp.DateTime <= end)
+			return State.Instance.Transactions.SkipWhile(t => t.Date < start)
+			                   .TakeWhile(t => t.Date <= end)
 			                   .Where(filter)
 			                   .ToList();
 		}

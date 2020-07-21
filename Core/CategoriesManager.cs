@@ -7,7 +7,7 @@ namespace Core
 {
     public static class CategoriesManager
     {
-		public static Dictionary<string, Func<Transaction, bool>> BuildFilters(List<Category> categories)
+		public static IDictionary<string, Func<Transaction, bool>> BuildFilters(IList<Category> categories)
 		{
 			var categoryFilters = new Dictionary<string, Func<Transaction, bool>>();
 			
@@ -15,9 +15,16 @@ namespace Core
 			{
 				categoryFilters.Add(c.Name, t => c.Rules.Any(r => Regex.IsMatch(t.CardNumber, r.CardNumber)
 											&& Regex.IsMatch(t.Description, r.Description)
-											&& Regex.IsMatch(t.IsExpence.ToString().ToLower(), r.IsExpence)
-											&& Regex.IsMatch(t.IsIncome.ToString().ToLower(), r.IsIncome)
-											&& Regex.IsMatch(t.Terminal, r.Terminal)));
+											&& r.Amount[1..] is var ruleAmount
+											&& r.Amount[0] switch
+											{
+												'>' => t.Amount.Amount > int.Parse(ruleAmount),
+												'<' => t.Amount.Amount < int.Parse(ruleAmount),
+												'=' => t.Amount.Amount == int.Parse(ruleAmount),
+												'*' => true,
+												_ => throw new NotSupportedException()
+											}
+											));
 			}
 
 			return categoryFilters;
