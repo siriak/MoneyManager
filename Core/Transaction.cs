@@ -25,6 +25,11 @@ namespace Core
 		public string Description { get; }
 		public string Category { get; }
 
-		public int CompareTo(Transaction other) => Date.CompareTo(other.Date);
+		public int CompareTo(Transaction other) => Date.CompareTo(other.Date) is var dateComparison && dateComparison == 0 ? GetHashCode().CompareTo(other.GetHashCode()) : dateComparison;
+
+		public override int GetHashCode()
+		{
+			return Date.GetHashCode() + Category.GetHashCode() + Amount.GetHashCode() + CardNumber.GetHashCode() + Description.GetHashCode();
+		}
 	}
 }
