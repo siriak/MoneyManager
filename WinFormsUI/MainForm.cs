@@ -53,7 +53,10 @@ namespace WinFormsUI
 			}
 			StateManager.LoadState(File.ReadAllText(stateFileName));
 			LoadTransactions();
-			
+
+			var formattedRecords = State.Instance.Transactions.Select(DisplayManager.FormatLedgerRecord);
+			File.WriteAllLines("transactions.txt", formattedRecords);				
+
 			RefreshCategories();
 			RefreshChart();
 			RefreshList();
@@ -76,7 +79,7 @@ namespace WinFormsUI
 												  .ToList();
 
 			clbCategories.Items.Clear();
-			clbCategories.Items.AddRange(State.Instance.CategoriesNames.OrderBy(c => c).ToArray());
+			clbCategories.Items.AddRange(State.Instance.Categories.Select(c => c.Name).OrderBy(c => c).ToArray());
 
 			foreach (var c in selectedCategories)
 			{
@@ -94,11 +97,11 @@ namespace WinFormsUI
 			lbTransactions.Items.Clear();
 
 			lbTransactions.Items.AddRange(
-				StateManager.GetTransactionsUnion(
+				StateHelper.GetTransactionsUnion(
 					      clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText),
 					      startDate,
 					      endDate)
-				     .Select(t => (object) t.ToString())
+				     .Select(t => (object) DisplayManager.FormatLedgerRecord(t))
 				     .Reverse()
 				     .ToArray());
 		}
@@ -155,8 +158,8 @@ namespace WinFormsUI
 				cumulativeSeries.Points.Clear();
 
 				var category = State.Instance.Categories.First(category => category.Name == c);
-				var smoothedTimeSeries = StateManager.GetSmoothedTimeSeries(c, smoothingRatio);
-				var cumulativeTimeSeries = StateManager.GetCumulativeTimeSeries(c, category.Increment, category.Capacity);
+				var smoothedTimeSeries = StateHelper.GetSmoothedTimeSeries(c, smoothingRatio);
+				var cumulativeTimeSeries = StateHelper.GetCumulativeTimeSeries(c, category.Increment, category.Capacity);
 
 				for (var date = startDate; date <= endDate; date = date.AddDays(1))
 				{

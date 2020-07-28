@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Core
 {
-	public class Transaction : IComparable<Transaction>
+	public struct Transaction : IComparable<Transaction>
 	{
 		[JsonConstructor]
 		public Transaction(string cardNumber, Date date, Money amount, string description, string category)
@@ -26,10 +26,5 @@ namespace Core
 		public string Category { get; }
 
 		public int CompareTo(Transaction other) => Date.CompareTo(other.Date);
-
-		public new string ToString()
-		{
-			return $"{Date.ToLongString()}:" + $"{Amount.Amount}".PadLeft(10) +$" {Amount.Currency}  {Description}";
-		}
 	}
 }

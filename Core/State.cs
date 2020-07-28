@@ -6,25 +6,17 @@ namespace Core
 {
 	public class State
 	{
-		public static State Instance { get; set; } = new State(new List<Category>(), new SortedSet<Transaction>());
+		public static State Instance { get; internal set; } = new State(new List<Category>(), new SortedSet<Transaction>());
 
-		public SortedSet<Transaction> Transactions { get; }
+		public IReadOnlyCollection<Category> Categories { get; }
 
-		public IList<Category> Categories { get; }
-		
-		[JsonIgnore]
-		public Dictionary<string, Func<Transaction, bool>> CategoryFilters { get; }
-
-		// todo: move to IReadOnlySet in .NET 5
-		[JsonIgnore]
-		public IReadOnlyCollection<string> CategoriesNames => CategoryFilters.Keys;
+		public IReadOnlyCollection<Transaction> Transactions { get; }
 
 		[JsonConstructor]
-		public State(IList<Category> categories, SortedSet<Transaction> transactions)
+		public State(IReadOnlyCollection<Category> categories, IReadOnlyCollection<Transaction> transactions)
 		{
 			Transactions = transactions;
 			Categories = categories;
-			CategoryFilters = (Dictionary <string, Func<Transaction, bool>>)CategoriesManager.BuildFilters(categories);
 		}
 	}
 }

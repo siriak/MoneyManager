@@ -4,7 +4,7 @@ namespace Core
 {
     public class Category
     {
-		public Category(string name, ICollection<Rule> rules, double increment, int capacity)
+		public Category(string name, IReadOnlyCollection<Rule> rules, double increment, int capacity)
 		{
 			Name = name;
 			Rules = rules;
@@ -12,8 +12,8 @@ namespace Core
 			Capacity = capacity;
 		}
 
-		public string Name { get; set; }
-		public ICollection<Rule> Rules { get; }
+		public string Name { get; }
+		public IReadOnlyCollection<Rule> Rules { get; }
 		public double Increment { get; }
 		public double Capacity { get; }
 	}
