@@ -41,7 +41,7 @@ namespace Core
 		public Date(DateTime dateTime) => _dt = dateTime.AddTicks(-dateTime.Ticks % TimeSpan.TicksPerDay);
 
 		private Date(SerializationInfo info, StreamingContext context) =>
-			_dt = DateTime.FromFileTime(info.GetInt64("ticks"));
+			_dt = new DateTime(info.GetInt64("ticks"));
 
 		public static TimeSpan operator -(Date d1, Date d2) => d1._dt - d2._dt;
 

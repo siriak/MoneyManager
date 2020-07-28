@@ -65,8 +65,9 @@ namespace WinFormsUI
 		private void LoadTransactions()
 		{
 			var currentDirecory = Directory.GetCurrentDirectory();
-			var files = Directory.GetFiles(currentDirecory + "/pb").Select(f => ("pb", (Stream)File.OpenRead(f)));
-			StateManager.LoadTransactions(files);
+			//var files1 = Directory.GetFiles(currentDirecory + "/usb").Select(f => ("usb", (Stream)File.OpenRead(f)));
+			var files2 = Directory.GetFiles(currentDirecory + "/pb").Select(f => ("pb", (Stream)File.OpenRead(f)));
+			StateManager.LoadTransactions(files2);
 			File.WriteAllText(stateFileName, StateManager.SaveToJson());
 		}
 

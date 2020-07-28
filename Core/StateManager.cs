@@ -8,9 +8,10 @@ namespace Core
 {
 	public class StateManager
 	{
-		private static Dictionary<string, TransactionsImporter> importers = new Dictionary<string, TransactionsImporter>
+		private static Dictionary<string, ITransactionsImporter> importers = new Dictionary<string, ITransactionsImporter>
 		{
 			["pb"] = new PrivatTransactionsImporter(),
+			//["usb"] = new UkrSibTransactionsImporter()
 		};
 
 		public static void LoadState(string stateJson)

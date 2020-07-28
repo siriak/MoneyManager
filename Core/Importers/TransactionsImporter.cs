@@ -3,22 +3,8 @@ using System.IO;
 
 namespace Core
 {
-	public abstract class TransactionsImporter
+	interface ITransactionsImporter
 	{
-		public bool CanLoad(Stream file)
-		{
-			try
-			{
-				Load(file);
-			}
-			catch
-			{
-				return false;
-			}
-
-			return true;
-		}
-
-		public abstract List<Transaction> Load(Stream file);
+		public List<Transaction> Load(Stream file);
 	}
 }
