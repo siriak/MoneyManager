@@ -1,5 +1,4 @@
 ﻿using ExcelDataReader;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -27,10 +26,9 @@ namespace Core.Importers
                 var cardNumber = dataTable.Rows[i][3].ToString();
                 var description = dataTable.Rows[i][4].ToString().Trim();
                 var amount = dataTable.Rows[i][5].ToString();
-                //todo: read currency from file
                 var currency = dataTable.Rows[i][6].ToString();
                 transactions.Add(new Transaction(cardNumber, Date.Parse(date), 
-                    new Money(double.Parse(amount), Currency.UAH), description, category));
+                    new Money(double.Parse(amount), MoneyConverter.Convert(currency)), description, category));
             }
 
             return transactions;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace Core
 {
@@ -11,6 +11,18 @@ namespace Core
                 return money;
             }
             throw new ArgumentException("Invalid Currency");
+        }
+
+        public static Currency Convert(string currency)
+        {
+            switch (currency.ToLower())
+            {
+                case "uah":
+                case "грн":
+                    return Currency.UAH;
+                default:
+                    throw new ArgumentException();
+            }
         }
     }
 }

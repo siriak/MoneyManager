@@ -1,11 +1,8 @@
 ﻿using Core;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace WinFormsUI
 {
-    public class DisplayManager
+	public class DisplayManager
 	{
 		public static string FormatLedgerRecord(Transaction transaction)
 		{

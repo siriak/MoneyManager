@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using Core.TimeSeries;
 using System.Text.RegularExpressions;
 
 namespace Core
 {
-    public static class StateHelper
+	public static class StateHelper
     {
 		public static Func<Transaction, bool> GetFilterForCategory(string categoryName)
 		{

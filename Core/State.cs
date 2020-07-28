@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace Core
 {
-	public class State
+    public class State
 	{
 		public static State Instance { get; internal set; } = new State(new List<Category>(), new SortedSet<Transaction>());
 
