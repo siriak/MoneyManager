@@ -52,6 +52,5 @@ namespace Core
 
 			State.Instance = new State(categories, transactions);			
 		}
-
 	}
 }

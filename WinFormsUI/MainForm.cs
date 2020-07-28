@@ -11,7 +11,8 @@ namespace WinFormsUI
 {
 	public partial class MainForm : Form
 	{
-		
+		const string stateFileName = "state.json";
+
 		private Date startDate, endDate;
 		private double smoothingRatio;
 
@@ -46,7 +47,6 @@ namespace WinFormsUI
 			dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
 			dateTimePickerEnd.Value = DateTime.Now.Date;
 
-			const string stateFileName = "state.json";
 			if (!File.Exists(stateFileName))
 			{
 				File.WriteAllText(stateFileName, StateManager.SaveToJson());
@@ -67,6 +67,7 @@ namespace WinFormsUI
 			var currentDirecory = Directory.GetCurrentDirectory();
 			var files = Directory.GetFiles(currentDirecory + "/pb").Select(f => ("pb", (Stream)File.OpenRead(f)));
 			StateManager.LoadTransactions(files);
+			File.WriteAllText(stateFileName, StateManager.SaveToJson());
 		}
 
 		private void RefreshCategories()
