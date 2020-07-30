@@ -11,7 +11,8 @@ namespace WinFormsUI
 {
 	public partial class MainForm : Form
 	{
-		const string stateFileName = "state.json";
+		const string categoriesFileName = "categories.json";
+		const string transactionsFileName = "transactions.json";
 
 		private Date startDate, endDate;
 		private double smoothingRatio;
@@ -47,19 +48,25 @@ namespace WinFormsUI
 			dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
 			dateTimePickerEnd.Value = DateTime.Now.Date;
 
-			if (!File.Exists(stateFileName))
-			{
-				File.WriteAllText(stateFileName, StateManager.SaveToJson());
-			}
-			StateManager.LoadState(File.ReadAllText(stateFileName));
+			LoadCategories();
 			LoadTransactions();
 
+			File.WriteAllText(categoriesFileName, StateManager.SaveCategoriesToJson());
 			var formattedRecords = State.Instance.Transactions.Select(DisplayManager.FormatLedgerRecord);
-			File.WriteAllLines("transactions.txt", formattedRecords);				
+			File.WriteAllLines(transactionsFileName, formattedRecords);
 
 			RefreshCategories();
 			RefreshChart();
 			RefreshList();
+		}
+
+		private void LoadCategories()
+		{
+			if (!File.Exists(categoriesFileName))
+			{
+				File.WriteAllText(categoriesFileName, StateManager.SaveCategoriesToJson());
+			}
+			StateManager.LoadCategories(File.ReadAllText(categoriesFileName));
 		}
 
 		private void LoadTransactions()
@@ -68,7 +75,6 @@ namespace WinFormsUI
 			//var files1 = Directory.GetFiles(currentDirecory + "/usb").Select(f => ("usb", (Stream)File.OpenRead(f)));
 			var files2 = Directory.GetFiles(currentDirecory + "/pb").Select(f => ("pb", (Stream)File.OpenRead(f)));
 			StateManager.LoadTransactions(files2);
-			File.WriteAllText(stateFileName, StateManager.SaveToJson());
 		}
 
 		private void RefreshCategories()

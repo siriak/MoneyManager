@@ -14,19 +14,20 @@ namespace Core
 			//["usb"] = new UkrSibTransactionsImporter()
 		};
 
-		public static void LoadState(string stateJson)
+		public static string SaveCategoriesToJson()
 		{
-			if (string.IsNullOrWhiteSpace(stateJson))
+			return JsonConvert.SerializeObject(State.Instance.Categories);
+		}
+
+		public static void LoadCategories(string categoriesJson)
+		{
+			if (string.IsNullOrWhiteSpace(categoriesJson))
 			{
 				return;
 			}
 
-			State.Instance = JsonConvert.DeserializeObject<State>(stateJson);
-		}
-
-		public static string SaveToJson()
-		{
-			return JsonConvert.SerializeObject(State.Instance);
+			var categories = JsonConvert.DeserializeObject<ICollection<Category>>(categoriesJson);
+			State.Instance = new State(categories, State.Instance.Transactions);
 		}
 
 		public static void LoadTransactions(IEnumerable<(string key, Stream stream)> files)

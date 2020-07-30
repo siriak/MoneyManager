@@ -12,7 +12,7 @@ namespace Core
 		public IReadOnlyCollection<Transaction> Transactions { get; }
 
 		[JsonConstructor]
-		public State(ICollection<Category> categories, ISet<Transaction> transactions)
+		public State(ICollection<Category> categories, IReadOnlyCollection<Transaction> transactions)
 		{
 			Transactions = new HashSet<Transaction>(transactions);
 			Categories = new List<Category>(categories);
