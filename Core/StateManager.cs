@@ -48,7 +48,7 @@ namespace Core
 			transactions.AddRange(State.Instance.Transactions);
 			transactions.AddRange(newTransactions);
 
-			State.Instance = new State(categories, transactions);			
+			State.Instance = new State(categories, transactions.ToHashSet());			
 		}
 	}
 }
