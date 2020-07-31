@@ -29,7 +29,7 @@ namespace Core.Importers
                 var amount = dataTable.Rows[i][5].ToString();
                 var currency = dataTable.Rows[i][6].ToString();
                 transactions.Add(new Transaction(cardNumber, Date.Parse(date), 
-                    new Money(double.Parse(amount), MoneyConverter.Convert(currency)), description, category));
+                    new Money(double.Parse(amount), MoneyManager.ParseCurrency(currency)), description, category));
             }
             Thread.CurrentThread.CurrentCulture = saved;
             return transactions;

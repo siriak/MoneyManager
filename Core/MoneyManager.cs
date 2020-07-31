@@ -2,7 +2,7 @@
 
 namespace Core
 {
-    public static class MoneyConverter
+    public static class MoneyManager
     {
         public static Money Convert(this Money money, Currency currency)
         {
@@ -13,7 +13,7 @@ namespace Core
             throw new ArgumentException("Invalid Currency");
         }
 
-        public static Currency Convert(string currency)
+        public static Currency ParseCurrency(string currency)
         {
             switch (currency.ToLowerInvariant())
             {
