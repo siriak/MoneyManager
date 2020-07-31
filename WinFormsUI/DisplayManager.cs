@@ -2,7 +2,7 @@
 
 namespace WinFormsUI
 {
-	public class DisplayManager
+	public static class DisplayManager
 	{
 		public static string FormatLedgerRecord(Transaction transaction)
 		{

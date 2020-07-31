@@ -9,7 +9,7 @@ namespace Core.Importers
 {
     public class PrivatTransactionsImporter : ITransactionsImporter
     {
-        public List<Transaction> Load(Stream file)
+        public IList<Transaction> Load(Stream file)
         {
             var saved = Thread.CurrentThread.CurrentCulture;
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");

@@ -10,7 +10,7 @@ namespace Core.Importers
 {
     public class UkrSibTransactionsImporter : ITransactionsImporter
     {
-        public List<Transaction> Load(Stream file)
+        public IList<Transaction> Load(Stream file)
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

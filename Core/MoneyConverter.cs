@@ -15,13 +15,13 @@ namespace Core
 
         public static Currency Convert(string currency)
         {
-            switch (currency.ToLower())
+            switch (currency.ToLowerInvariant())
             {
                 case "uah":
                 case "грн":
                     return Currency.UAH;
                 default:
-                    throw new ArgumentException();
+                    throw new NotSupportedException();
             }
         }
     }

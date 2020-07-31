@@ -5,6 +5,6 @@ namespace Core
 {
 	interface ITransactionsImporter
 	{
-		public List<Transaction> Load(Stream file);
+		public IList<Transaction> Load(Stream file);
 	}
 }
