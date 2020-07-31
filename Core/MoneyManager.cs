@@ -19,6 +19,10 @@ namespace Core
             { 
                 [Currency.UAH] = 25,
             };
+            if (!exchangeToUsd.ContainsKey(currency))
+            {
+                throw new NotSupportedException($"{currency} is not supported");
+            }
             var newAmount = money.Amount * exchangeToUsd[currency] / exchangeToUsd[money.Currency];
             return new Money(newAmount, currency);
         }
