@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Core
 {
@@ -6,11 +7,20 @@ namespace Core
     {
         public static Money Convert(this Money money, Currency currency)
         {
-            if (money.Currency == currency)
+            if (!Enum.IsDefined(typeof(Currency), (int)currency))
             {
-                return money;
+                throw new ArgumentException($"{nameof(currency)} is invalid");
             }
-            throw new ArgumentException("Invalid Currency");
+            if (!Enum.IsDefined(typeof(Currency), (int)money.Currency))
+            {
+                throw new ArgumentException($"{nameof(money.Currency)} is invalid");
+            }
+            var exchangeToUsd = new Dictionary<Currency, decimal> 
+            { 
+                [Currency.UAH] = 25,
+            };
+            var newAmount = money.Amount * exchangeToUsd[currency] / exchangeToUsd[money.Currency];
+            return new Money(newAmount, currency);
         }
 
         public static Currency ParseCurrency(string currency)

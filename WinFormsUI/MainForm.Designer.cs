@@ -125,7 +125,7 @@ namespace WinFormsUI
             this.tabLedger.Size = new System.Drawing.Size(1011, 631);
             this.tabLedger.TabIndex = 0;
             this.tabLedger.Text = "Ledger";
-            this.tabLedger.UseVisualStyleBackColor = true; 
+            this.tabLedger.UseVisualStyleBackColor = true;
             // 
             // lbTransactions
             // 

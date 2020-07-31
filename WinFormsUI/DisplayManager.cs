@@ -10,6 +10,5 @@ namespace WinFormsUI
 			return $"{transaction.Date.ToLongString()}:" + $"{transaction.Amount.Amount}".PadLeft(10) 
 				+ $" {transaction.Amount.Currency} [{string.Join(", ", categories)}] {transaction.Description}";
 		}
-
 	}
 }
