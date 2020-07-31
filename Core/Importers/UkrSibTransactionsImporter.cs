@@ -20,7 +20,7 @@ namespace Core.Importers
             var dataTable = dataSet.Tables[0];
 
             var transactions = new List<Transaction>();
-            for (var i = 2; i < dataTable.Rows.Count; i++)
+            for (var i = 1; i < dataTable.Rows.Count; i++)
             {
                 var date = dataTable.Rows[i][1].ToString();
                 var category = dataTable.Rows[i][4].ToString();

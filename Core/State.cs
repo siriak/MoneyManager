@@ -14,7 +14,7 @@ namespace Core
 		[JsonConstructor]
 		public State(ICollection<Category> categories, IReadOnlyCollection<Transaction> transactions)
 		{
-			Transactions = new HashSet<Transaction>(transactions);
+			Transactions = new SortedSet<Transaction>(transactions);
 			Categories = new List<Category>(categories);
 		}
 	}

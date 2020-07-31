@@ -125,7 +125,7 @@ namespace WinFormsUI
             this.tabLedger.Size = new System.Drawing.Size(1011, 631);
             this.tabLedger.TabIndex = 0;
             this.tabLedger.Text = "Ledger";
-            this.tabLedger.UseVisualStyleBackColor = true;
+            this.tabLedger.UseVisualStyleBackColor = true; 
             // 
             // lbTransactions
             // 
@@ -135,6 +135,7 @@ namespace WinFormsUI
             this.lbTransactions.Size = new System.Drawing.Size(999, 615);
             this.lbTransactions.TabIndex = 1;
             this.lbTransactions.Font = new System.Drawing.Font("Consolas", 14);
+            this.lbTransactions.HorizontalScrollbar = true;
             // 
             // dateTimePickerEnd
             // 
