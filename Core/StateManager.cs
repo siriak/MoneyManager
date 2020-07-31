@@ -39,7 +39,7 @@ namespace Core
 			}
 
 			var newCategories = newTransactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != c))
-				.Distinct().Select(c => new Category(c, new Rule[] { new Rule(".*", "*", ".*", c) }, 1, 10000)).ToList();
+				.Distinct().Select(c => new Category(c, new [] { new Rule(".*", "*", ".*", c) }, 1, 10000)).ToList();
 
 			var categories = new List<Category>(); 
 			categories.AddRange(State.Instance.Categories);

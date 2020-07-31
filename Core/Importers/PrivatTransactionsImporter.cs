@@ -12,7 +12,6 @@ namespace Core.Importers
         public IList<Transaction> Load(Stream file)
         {
             var saved = Thread.CurrentThread.CurrentCulture;
-            var transactions = new List<Transaction>();
 
             try
             {
@@ -23,6 +22,7 @@ namespace Core.Importers
                 var dataSet = reader.AsDataSet();
                 var dataTable = dataSet.Tables[0];
 
+                var transactions = new List<Transaction>();
                 for (var i = 2; i < dataTable.Rows.Count; i++)
                 {
                     var date = dataTable.Rows[i][0].ToString();
@@ -34,13 +34,13 @@ namespace Core.Importers
                     transactions.Add(new Transaction(cardNumber, Date.Parse(date),
                         new Money(double.Parse(amount), MoneyManager.ParseCurrency(currency)), description, category));
                 }
+            
+                return transactions;
             }
             finally
             {
                 Thread.CurrentThread.CurrentCulture = saved;
             }
-            
-            return transactions;
         }
     }
 }

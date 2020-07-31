@@ -15,10 +15,10 @@ namespace Core
 
         public static Currency ParseCurrency(string currency)
         {
-            switch (currency.ToLowerInvariant())
+            switch (currency.ToUpperInvariant())
             {
-                case "uah":
-                case "грн":
+                case "UAH":
+                case "ГРН":
                     return Currency.UAH;
                 default:
                     throw new NotSupportedException();
