@@ -1,90 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Core.Importers;
-using Core.TimeSeries;
 using Newtonsoft.Json;
 
 namespace Core
 {
-	public class StateManager
-	{
-		private static Dictionary<string, TransactionsImporter> importers = new Dictionary<string, TransactionsImporter>
-		{
-			["pb"] = new PrivatTransactionsImporter(),
-		};
+    public class StateManager
+    {
+        private static Dictionary<string, ITransactionsImporter> importers = new Dictionary<string, ITransactionsImporter>
+        {
+            ["pb"] = new PrivatTransactionsImporter(),
+            ["usb"] = new UkrSibTransactionsImporter()
+        };
 
-		public static void LoadState(string stateJson)
-		{
-			if (string.IsNullOrWhiteSpace(stateJson))
-			{
-				return;
-			}
+        public static string SaveCategoriesToJson()
+        {
+            return JsonConvert.SerializeObject(State.Instance.Categories);
+        }
 
-			State.Instance = JsonConvert.DeserializeObject<State>(stateJson);
-		}
+        public static void LoadCategories(string categoriesJson)
+        {
+            if (string.IsNullOrWhiteSpace(categoriesJson))
+            {
+                return;
+            }
 
-		public static string SaveToJson()
-		{
-			return JsonConvert.SerializeObject(State.Instance);
-		}
+            var categories = JsonConvert.DeserializeObject<ICollection<Category>>(categoriesJson);
+            State.Instance = new State(categories, State.Instance.Transactions);
+        }
 
-		public static void LoadTransactions(IEnumerable<(string key, Stream stream)> files)
-		{
-			var transactions = new List<Transaction>();
-			foreach (var file in files)
-			{
-				transactions.AddRange(importers[file.key].Load(file.stream));
-			}
+        public static void LoadTransactions(IEnumerable<(string key, Stream stream)> files)
+        {
+            var newTransactions = new List<Transaction>();
+            foreach (var file in files)
+            {
+                newTransactions.AddRange(importers[file.key].Load(file.stream));
+            }
 
-			foreach (var t in transactions)
-			{
-				State.Instance.Transactions.Add(t);
-			}
-		}
-		
-		public static SmoothedTimeSeries GetSmoothedTimeSeries(string category, double smoothingRatio)
-		{
-			var filteredTransactions = State.Instance.Transactions.Where(State.Instance.CategoryFilters[category]).ToList();
-			return new SmoothedTimeSeries(filteredTransactions, smoothingRatio);
-		}
+            var newCategories = newTransactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != c))
+                .Distinct().Select(c => new Category(c, new [] { new Rule(".*", "*", ".*", c) }, 1, 10000)).ToList();
 
-		public static CumulativeTimeSeries GetCumulativeTimeSeries(string category, double increment, double capacity)
-		{
-			var filteredTransactions = State.Instance.Transactions.Where(State.Instance.CategoryFilters[category]).ToList();
-			return new CumulativeTimeSeries(filteredTransactions, increment, capacity);
-		}
+            var categories = new List<Category>(); 
+            categories.AddRange(State.Instance.Categories);
+            categories.AddRange(newCategories);
 
-		public static SmoothedTimeSeries GetSmoothedTimeSeriesUnion(IEnumerable<string> categories, double smoothingRatio)
-		{
-			Func<Transaction, bool> filter = t => categories.Any(c => State.Instance.CategoryFilters[c](t));
-			var filteredTransactions = State.Instance.Transactions.Where(filter).ToList();
-			return new SmoothedTimeSeries(filteredTransactions, smoothingRatio);
-		}
+            var transactions = new List<Transaction>();
+            transactions.AddRange(State.Instance.Transactions);
+            transactions.AddRange(newTransactions);
 
-		public static CumulativeTimeSeries GetCumulativeTimeSeriesUnion(IEnumerable<string> categories, double smoothingRatio)
-		{
-			return new CumulativeTimeSeries(1, 1);
-		}
-
-		public static IEnumerable<Transaction> GetTransactions(string category, Date start, Date end)
-		{
-			var filteredTransactions = State.Instance.Transactions.SkipWhile(t => t.Date < start)
-			                                       .TakeWhile(t => t.Date <= end)
-			                                       .Where(State.Instance.CategoryFilters[category])
-			                                       .ToList();
-			return filteredTransactions;
-		}
-
-		public static IEnumerable<Transaction> GetTransactionsUnion(IEnumerable<string> categories, Date start, Date end)
-		{
-			Func<Transaction, bool> filter = t => categories.Any(c => State.Instance.CategoryFilters[c](t));
-			return State.Instance.Transactions.SkipWhile(t => t.Date < start)
-			                   .TakeWhile(t => t.Date <= end)
-			                   .Where(filter)
-			                   .ToList();
-		}
-
-	}
+            State.Instance = new State(categories, transactions.ToHashSet());
+        }
+    }
 }

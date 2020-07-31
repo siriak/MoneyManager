@@ -4,8 +4,8 @@ using System.Linq;
 
 namespace Core.TimeSeries
 {
-	public sealed class CumulativeTimeSeries : TimeSeries
-	{
+    public sealed class CumulativeTimeSeries : TimeSeries
+    {
         private List<double> AccumulatedSeries { get; } = new List<double>();
         public double Increment { get; }
         public double Capacity { get; }
@@ -51,5 +51,5 @@ namespace Core.TimeSeries
                 AccumulatedSeries.Add(accumulated);
             }
         }
-	}
+    }
 }

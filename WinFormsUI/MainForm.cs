@@ -9,187 +9,198 @@ using Core;
 
 namespace WinFormsUI
 {
-	public partial class MainForm : Form
-	{
-		
-		private Date startDate, endDate;
-		private double smoothingRatio;
+    public partial class MainForm : Form
+    {
+        const string categoriesFileName = "categories.json";
+        const string transactionsFileName = "transactions.json";
 
-		public MainForm() => InitializeComponent();
-		private event Action OnFilteringUpdated = () => { };
+        private Date startDate, endDate;
+        private double smoothingRatio;
 
-		private void MainForm_Load(object sender, EventArgs e)
-		{
-			OnFilteringUpdated += RefreshList;
-			OnFilteringUpdated += RefreshChart;
+        public MainForm() => InitializeComponent();
+        private event Action OnFilteringUpdated = () => { };
 
-			var cts = new CancellationTokenSource();
-			clbCategories.ItemCheck += async (o, e) => 
-			{
-				// No lock here because this code only executes in
-				// UI thread, which means critical section cannot
-				// be executed in different threads simultaneously
-				cts.Cancel();
-				cts = new CancellationTokenSource();
-				var ct = cts.Token;
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            OnFilteringUpdated += RefreshList;
+            OnFilteringUpdated += RefreshChart;
 
-				const int debounceDelayMs = 100;
-				await Task.Delay(debounceDelayMs);
-				if (ct.IsCancellationRequested)
-				{
-					return;
-				}
+            var cts = new CancellationTokenSource();
+            clbCategories.ItemCheck += async (o, e) => 
+            {
+                // No lock here because this code only executes in
+                // UI thread, which means critical section cannot
+                // be executed in different threads simultaneously
+                cts.Cancel();
+                cts = new CancellationTokenSource();
+                var ct = cts.Token;
 
-				OnFilteringUpdated();
-			};
+                const int debounceDelayMs = 100;
+                await Task.Delay(debounceDelayMs);
+                if (ct.IsCancellationRequested)
+                {
+                    return;
+                }
 
-			dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
-			dateTimePickerEnd.Value = DateTime.Now.Date;
+                OnFilteringUpdated();
+            };
 
-			const string stateFileName = "state.json";
-			if (!File.Exists(stateFileName))
-			{
-				File.WriteAllText(stateFileName, StateManager.SaveToJson());
-			}
-			StateManager.LoadState(File.ReadAllText(stateFileName));
-			LoadTransactions();
-			
-			RefreshCategories();
-			RefreshChart();
-			RefreshList();
-		}
+            dateTimePickerStart.Value = new DateTime(DateTime.Now.Year - 1, DateTime.Now.Month, DateTime.Now.Day);
+            dateTimePickerEnd.Value = DateTime.Now.Date;
 
-		private void LoadTransactions()
-		{
-			var currentDirecory = Directory.GetCurrentDirectory();
-			var files = Directory.GetFiles(currentDirecory + "/pb").Select(f => ("pb", (Stream)File.OpenRead(f)));
-			StateManager.LoadTransactions(files);
-		}
+            LoadCategories();
+            LoadTransactions();
 
-		private void RefreshCategories()
-		{
-			var isFirstLoad = clbCategories.Items.Count == 0;
+            File.WriteAllText(categoriesFileName, StateManager.SaveCategoriesToJson());
+            var formattedRecords = State.Instance.Transactions.Select(DisplayManager.FormatLedgerRecord);
+            File.WriteAllLines(transactionsFileName, formattedRecords);
 
-			var selectedCategories = clbCategories.CheckedItems
-												  .Cast<object>()
-												  .Select(clbCategories.GetItemText)
-												  .ToList();
+            RefreshCategories();
+            RefreshChart();
+            RefreshList();
+        }
 
-			clbCategories.Items.Clear();
-			clbCategories.Items.AddRange(State.Instance.CategoriesNames.OrderBy(c => c).ToArray());
+        private void LoadCategories()
+        {
+            if (!File.Exists(categoriesFileName))
+            {
+                File.WriteAllText(categoriesFileName, StateManager.SaveCategoriesToJson());
+            }
+            StateManager.LoadCategories(File.ReadAllText(categoriesFileName));
+        }
 
-			foreach (var c in selectedCategories)
-			{
-				clbCategories.SetItemChecked(clbCategories.FindStringExact(c), true);
-			}
+        private void LoadTransactions()
+        {
+            var currentDirecory = Directory.GetCurrentDirectory();
+            var filesUsb = Directory.GetFiles(currentDirecory + "/usb").Select(f => ("usb", (Stream)File.OpenRead(f)));
+            var filesPb = Directory.GetFiles(currentDirecory + "/pb").Select(f => ("pb", (Stream)File.OpenRead(f)));
+            StateManager.LoadTransactions(filesUsb.Concat(filesPb));
+        }
 
-			if (isFirstLoad)
-			{
-				clbCategories.SetItemChecked(0, true);
-			}
-		}
+        private void RefreshCategories()
+        {
+            var isFirstLoad = clbCategories.Items.Count == 0;
 
-		private void RefreshList()
-		{
-			lbTransactions.Items.Clear();
+            var selectedCategories = clbCategories.CheckedItems
+                                                  .Cast<object>()
+                                                  .Select(clbCategories.GetItemText)
+                                                  .ToList();
 
-			lbTransactions.Items.AddRange(
-				StateManager.GetTransactionsUnion(
-					      clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText),
-					      startDate,
-					      endDate)
-				     .Select(t => (object) t.ToString())
-				     .Reverse()
-				     .ToArray());
-		}
+            clbCategories.Items.Clear();
+            clbCategories.Items.AddRange(State.Instance.Categories.Select(c => c.Name).OrderBy(c => c).ToArray());
 
-		private void RefreshChart()
-		{
-			chartSeriesSmoothed.Series.Clear();
-			chartSeriesCumulative.Series.Clear();
+            foreach (var c in selectedCategories)
+            {
+                clbCategories.SetItemChecked(clbCategories.FindStringExact(c), true);
+            }
 
-			var selectedCategories = clbCategories.CheckedItems
-			                                      .Cast<object>()
-			                                      .Select(clbCategories.GetItemText)
-			                                      .ToList();
+            if (isFirstLoad)
+            {
+                clbCategories.SetItemChecked(0, true);
+            }
+        }
 
-			var smoothedSeriesToRemove = chartSeriesSmoothed.Series.Where(s => selectedCategories.All(c => c != s.Name));
-			var cumulativeSeriesToRemove = chartSeriesCumulative.Series.Where(s => selectedCategories.All(c => c != s.Name));
+        private void RefreshList()
+        {
+            lbTransactions.Items.Clear();
 
-			foreach (var s in smoothedSeriesToRemove)
-			{
-				chartSeriesSmoothed.Series.Remove(s);
-			}
+            lbTransactions.Items.AddRange(
+                StateHelper.GetTransactionsUnion(
+                          clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText),
+                          startDate,
+                          endDate)
+                     .Select(t => (object) DisplayManager.FormatLedgerRecord(t))
+                     .Reverse()
+                     .ToArray());
+        }
 
-			foreach (var s in cumulativeSeriesToRemove)
-			{
-				chartSeriesCumulative.Series.Remove(s);
-			}
+        private void RefreshChart()
+        {
+            chartSeriesSmoothed.Series.Clear();
+            chartSeriesCumulative.Series.Clear();
 
-			foreach (var c in selectedCategories)
-			{
-				if (chartSeriesSmoothed.Series.FindByName(c) is null)
-				{
-					var newSeries = new Series
-					{
-						Name = c,
-						ChartType = SeriesChartType.Line
-					};
-					chartSeriesSmoothed.Series.Add(newSeries);
-				}
+            var selectedCategories = clbCategories.CheckedItems
+                                                  .Cast<object>()
+                                                  .Select(clbCategories.GetItemText)
+                                                  .ToList();
 
-				if (chartSeriesCumulative.Series.FindByName(c) is null)
-				{
-					var newSeries = new Series
-					{
-						Name = c,
-						ChartType = SeriesChartType.Line
-					};
-					chartSeriesCumulative.Series.Add(newSeries);
-				}
+            var smoothedSeriesToRemove = chartSeriesSmoothed.Series.Where(s => selectedCategories.All(c => c != s.Name));
+            var cumulativeSeriesToRemove = chartSeriesCumulative.Series.Where(s => selectedCategories.All(c => c != s.Name));
 
-				var smoothedSeries = chartSeriesSmoothed.Series.FindByName(c);
-				smoothedSeries.Points.Clear();
+            foreach (var s in smoothedSeriesToRemove)
+            {
+                chartSeriesSmoothed.Series.Remove(s);
+            }
 
-				var cumulativeSeries = chartSeriesCumulative.Series.FindByName(c);
-				cumulativeSeries.Points.Clear();
+            foreach (var s in cumulativeSeriesToRemove)
+            {
+                chartSeriesCumulative.Series.Remove(s);
+            }
 
-				var category = State.Instance.Categories.First(category => category.Name == c);
-				var smoothedTimeSeries = StateManager.GetSmoothedTimeSeries(c, smoothingRatio);
-				var cumulativeTimeSeries = StateManager.GetCumulativeTimeSeries(c, category.Increment, category.Capacity);
+            foreach (var c in selectedCategories)
+            {
+                if (chartSeriesSmoothed.Series.FindByName(c) is null)
+                {
+                    var newSeries = new Series
+                    {
+                        Name = c,
+                        ChartType = SeriesChartType.Line
+                    };
+                    chartSeriesSmoothed.Series.Add(newSeries);
+                }
 
-				for (var date = startDate; date <= endDate; date = date.AddDays(1))
-				{
-					_ = smoothedSeries.Points.AddXY(date.ToString(), smoothedTimeSeries[date]);
-				}
+                if (chartSeriesCumulative.Series.FindByName(c) is null)
+                {
+                    var newSeries = new Series
+                    {
+                        Name = c,
+                        ChartType = SeriesChartType.Line
+                    };
+                    chartSeriesCumulative.Series.Add(newSeries);
+                }
 
-				for (var date = startDate; date <= endDate; date = date.AddDays(1))
-				{
-					_ = cumulativeSeries.Points.AddXY(date.ToString(), cumulativeTimeSeries[date]);
-				}
-			}
-		}
+                var smoothedSeries = chartSeriesSmoothed.Series.FindByName(c);
+                smoothedSeries.Points.Clear();
 
-		private void dateTimePickerStart_ValueChanged(object sender, EventArgs e)
-		{
-			startDate = dateTimePickerStart.Value.ToDate();
-			OnFilteringUpdated();
-		}
+                var cumulativeSeries = chartSeriesCumulative.Series.FindByName(c);
+                cumulativeSeries.Points.Clear();
 
-		private void dateTimePickerEnd_ValueChanged(object sender, EventArgs e)
-		{
-			endDate = dateTimePickerEnd.Value.ToDate();
-			OnFilteringUpdated();
-		}
+                var category = State.Instance.Categories.First(category => category.Name == c);
+                var smoothedTimeSeries = StateHelper.GetSmoothedTimeSeries(c, smoothingRatio);
+                var cumulativeTimeSeries = StateHelper.GetCumulativeTimeSeries(c, category.Increment, category.Capacity);
 
-		private void txtboxSmoothingRatio_TextChanged(object sender, EventArgs e)
-		{
-			if (double.TryParse(txtboxSmoothingRatio.Text, out var newSmoothingRatio)
-				&& newSmoothingRatio <= 1 && newSmoothingRatio >= 0)
-			{
-				smoothingRatio = newSmoothingRatio;
-				OnFilteringUpdated();
-			}
-		}
-	}
+                for (var date = startDate; date <= endDate; date = date.AddDays(1))
+                {
+                    _ = smoothedSeries.Points.AddXY(date.ToString(), smoothedTimeSeries[date]);
+                }
+
+                for (var date = startDate; date <= endDate; date = date.AddDays(1))
+                {
+                    _ = cumulativeSeries.Points.AddXY(date.ToString(), cumulativeTimeSeries[date]);
+                }
+            }
+        }
+
+        private void dateTimePickerStart_ValueChanged(object sender, EventArgs e)
+        {
+            startDate = dateTimePickerStart.Value.ToDate();
+            OnFilteringUpdated();
+        }
+
+        private void dateTimePickerEnd_ValueChanged(object sender, EventArgs e)
+        {
+            endDate = dateTimePickerEnd.Value.ToDate();
+            OnFilteringUpdated();
+        }
+
+        private void txtboxSmoothingRatio_TextChanged(object sender, EventArgs e)
+        {
+            if (double.TryParse(txtboxSmoothingRatio.Text, out var newSmoothingRatio)
+                && newSmoothingRatio <= 1 && newSmoothingRatio >= 0)
+            {
+                smoothingRatio = newSmoothingRatio;
+                OnFilteringUpdated();
+            }
+        }
+    }
 }
