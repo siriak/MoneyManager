@@ -23,6 +23,10 @@ namespace Core
             {
                 throw new NotSupportedException($"{currency} is not supported");
             }
+            if (!exchangeToUsd.ContainsKey(money.Currency))
+            {
+                throw new NotSupportedException($"{money.Currency} is not supported");
+            }
             var newAmount = money.Amount * exchangeToUsd[currency] / exchangeToUsd[money.Currency];
             return new Money(newAmount, currency);
         }
