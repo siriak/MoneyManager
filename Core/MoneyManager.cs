@@ -15,7 +15,7 @@ namespace Core
             {
                 throw new ArgumentException($"{nameof(money.Currency)} is invalid");
             }
-            var exchangeToUsd = new Dictionary<Currency, decimal> 
+            var exchangeToUsd = new Dictionary<Currency, double> 
             { 
                 [Currency.UAH] = 25,
             };

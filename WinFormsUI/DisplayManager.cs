@@ -7,7 +7,7 @@ namespace WinFormsUI
 		public static string FormatLedgerRecord(Transaction transaction)
 		{
 			var categories = State.Instance.GetAllMatchingCategories(transaction);
-			return $"{transaction.Date.ToLongString()}:" + $"{transaction.Amount.Amount}".PadLeft(10) 
+			return $"{transaction.Date.ToString("yyyy.MM.dd")}:" + $"{transaction.Amount.Amount}".PadLeft(10) 
 				+ $" {transaction.Amount.Currency} [{string.Join(", ", categories)}] {transaction.Description}";
 		}
 	}
