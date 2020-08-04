@@ -74,7 +74,8 @@ namespace WinFormsUI
             var currentDirecory = Directory.GetCurrentDirectory();
             var filesUsb = Directory.GetFiles(currentDirecory + "/usb").Select(f => ("usb", (Stream)File.OpenRead(f)));
             var filesPb = Directory.GetFiles(currentDirecory + "/pb").Select(f => ("pb", (Stream)File.OpenRead(f)));
-            StateManager.LoadTransactions(filesUsb.Concat(filesPb));
+            var filesKb = Directory.GetFiles(currentDirecory + "/kb").Select(f => ("kb", (Stream)File.OpenRead(f)));
+            StateManager.LoadTransactions(filesUsb.Concat(filesPb).Concat(filesKb));
         }
 
         private void RefreshCategories()
