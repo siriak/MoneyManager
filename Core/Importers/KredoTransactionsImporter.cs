@@ -42,10 +42,8 @@ namespace Core.Importers
                     {
                         var transactionData = actualText.Skip(2).TakeWhile(s => !Date.TryParse(s, out Date d)).ToArray();
 
-                        if (Date.TryParse(transactionData.Last().Trim('/'), out Date d))
-                        {
-                            transactionData = transactionData.SkipLast(1).ToArray();
-                        }
+                        transactionData = Date.TryParse(transactionData.Last().Trim('/'), out Date d)
+                            ? transactionData.SkipLast(1).ToArray() : transactionData;
 
                         var data = transactionData.First().Split();
                         var date = actualText[0].Trim('/');
