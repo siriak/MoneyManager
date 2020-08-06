@@ -35,7 +35,7 @@ namespace Core.Importers
 
                     var actualText = extractionStrategy.GetResultantText().Split("\n").Skip(28).SkipLast(2).ToArray();
                     var cardNumber = actualText[0];
-                    var category = "КредоБанк";
+                    const string category = "КредоБанк";
                     actualText = actualText.Skip(1).ToArray();
 
                     while (actualText.Length != 0)
