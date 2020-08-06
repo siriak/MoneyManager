@@ -12,7 +12,7 @@ namespace Core
         {
             ["pb"] = new PrivatTransactionsImporter(),
             ["usb"] = new UkrSibTransactionsImporter(),
-            ["kb"] = new KredoTransactionsImporter()
+            ["kb"] = new KredoTransactionsImporter(),
         };
 
         public static string SaveCategoriesToJson()
