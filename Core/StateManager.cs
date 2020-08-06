@@ -11,7 +11,8 @@ namespace Core
         private static Dictionary<string, ITransactionsImporter> importers = new Dictionary<string, ITransactionsImporter>
         {
             ["pb"] = new PrivatTransactionsImporter(),
-            ["usb"] = new UkrSibTransactionsImporter()
+            ["usb"] = new UkrSibTransactionsImporter(),
+            ["kb"] = new KredoTransactionsImporter(),
         };
 
         public static string SaveCategoriesToJson()
