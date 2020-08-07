@@ -82,6 +82,9 @@ namespace WinFormsUI
             // chartSeriesSmoothed
             // 
             chartArea1.Name = "Main Chart Area";
+            chartArea1.AxisX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Months;
+            chartArea1.AxisX.Interval = 1;
+            chartArea1.AxisX.LabelStyle.Format = "yyyy.MM.dd";
             this.chartSeriesSmoothed.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend";
             this.chartSeriesSmoothed.Legends.Add(legend1);
@@ -106,6 +109,9 @@ namespace WinFormsUI
             // chartSeriesCumulative
             // 
             chartArea2.Name = "Main Chart Area";
+            chartArea2.AxisX.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Months;
+            chartArea2.AxisX.Interval = 1;
+            chartArea2.AxisX.LabelStyle.Format = "yyyy.MM.dd";
             this.chartSeriesCumulative.ChartAreas.Add(chartArea2);
             legend2.Name = "Legend";
             this.chartSeriesCumulative.Legends.Add(legend2);
