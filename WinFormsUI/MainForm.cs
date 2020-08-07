@@ -72,9 +72,12 @@ namespace WinFormsUI
         private void LoadTransactions()
         {
             var currentDirecory = Directory.GetCurrentDirectory();
-            var filesUsb = Directory.GetFiles(currentDirecory + "/usb").Select(f => ("usb", (Stream)File.OpenRead(f)));
-            var filesPb = Directory.GetFiles(currentDirecory + "/pb").Select(f => ("pb", (Stream)File.OpenRead(f)));
-            var filesKb = Directory.GetFiles(currentDirecory + "/kb").Select(f => ("kb", (Stream)File.OpenRead(f)));
+            var filesUsb = Directory.GetFiles(currentDirecory + "/usb", "*.*", SearchOption.AllDirectories)
+                .Select(f => ("usb", (Stream)File.OpenRead(f)));
+            var filesPb = Directory.GetFiles(currentDirecory + "/pb", "*.*", SearchOption.AllDirectories)
+                .Select(f => ("pb", (Stream)File.OpenRead(f)));
+            var filesKb = Directory.GetFiles(currentDirecory + "/kb", "*.*", SearchOption.AllDirectories)
+                .Select(f => ("kb", (Stream)File.OpenRead(f)));
             StateManager.LoadTransactions(filesUsb.Concat(filesPb).Concat(filesKb));
         }
 
