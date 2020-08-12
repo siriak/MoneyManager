@@ -1,21 +1,22 @@
 ﻿using System.Collections.Generic;
+using Core.Categories;
 using Newtonsoft.Json;
 
 namespace Core
 {
     public class State
     {
-        public static State Instance { get; internal set; } = new State(new List<Category>(), new SortedSet<Transaction>());
+        public static State Instance { get; internal set; } = new State(new HashSet<ICategory>(), new SortedSet<Transaction>());
 
-        public IReadOnlyCollection<Category> Categories { get; }
+        public IReadOnlyCollection<ICategory> Categories { get; }
 
         public IReadOnlyCollection<Transaction> Transactions { get; }
 
         [JsonConstructor]
-        public State(ICollection<Category> categories, IReadOnlyCollection<Transaction> transactions)
+        public State(ISet<ICategory> categories, ISet<Transaction> transactions)
         {
             Transactions = new SortedSet<Transaction>(transactions);
-            Categories = new List<Category>(categories);
+            Categories = new List<ICategory>(categories);
         }
     }
 }

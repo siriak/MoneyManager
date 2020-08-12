@@ -11,7 +11,9 @@ namespace WinFormsUI
 {
     public partial class MainForm : Form
     {
-        const string categoriesFileName = "categories.json";
+        const string regexCategoriesFileName = "categories/regexCategories.json";
+        const string autoCategoriesFileName = "categories/autoCategories.json";
+        const string compositeCategoriesFileName = "categories/compositeCategories.json";
         const string transactionsFileName = "transactions.json";
 
         private Date startDate, endDate;
@@ -26,7 +28,7 @@ namespace WinFormsUI
             OnFilteringUpdated += RefreshChart;
 
             var cts = new CancellationTokenSource();
-            clbCategories.ItemCheck += async (o, e) => 
+            clbCategories.ItemCheck += async (o, e) =>
             {
                 // No lock here because this code only executes in
                 // UI thread, which means critical section cannot
@@ -51,7 +53,10 @@ namespace WinFormsUI
             LoadCategories();
             LoadTransactions();
 
-            File.WriteAllText(categoriesFileName, StateManager.SaveCategoriesToJson());
+            File.WriteAllText(autoCategoriesFileName, StateManager.SaveCategories().autoCategoriesJson);
+            File.WriteAllText(regexCategoriesFileName, StateManager.SaveCategories().regexCategoriesJson);
+            File.WriteAllText(compositeCategoriesFileName, StateManager.SaveCategories().compositeCategoriesJson);
+            
             var formattedRecords = State.Instance.Transactions.Select(DisplayManager.FormatLedgerRecord);
             File.WriteAllLines(transactionsFileName, formattedRecords);
 
@@ -62,13 +67,29 @@ namespace WinFormsUI
 
         private void LoadCategories()
         {
-            if (!File.Exists(categoriesFileName))
+            if (!File.Exists(regexCategoriesFileName))
             {
-                File.WriteAllText(categoriesFileName, StateManager.SaveCategoriesToJson());
+                File.WriteAllText(regexCategoriesFileName, StateManager.SaveRegex());
             }
-            StateManager.LoadCategories(File.ReadAllText(categoriesFileName));
-        }
+            var regexCategoriesJson = File.ReadAllText(regexCategoriesFileName);
 
+            if (!File.Exists(autoCategoriesFileName))
+            {
+                File.WriteAllText(autoCategoriesFileName, StateManager.SaveAuto());
+            }
+
+            var autoCategoriesJson = File.ReadAllText(autoCategoriesFileName);
+
+            if (!File.Exists(compositeCategoriesFileName))
+            {
+                File.WriteAllText(compositeCategoriesFileName, StateManager.SaveComposite());
+            }
+
+            var compositeCategoriesJson = File.ReadAllText(compositeCategoriesFileName);
+
+            StateManager.LoadCategories(regexCategoriesJson, autoCategoriesJson, compositeCategoriesJson);
+        }
+        
         private void LoadTransactions()
         {
             var currentDirecory = Directory.GetCurrentDirectory();

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Core.Categories;
 using Core.Importers;
 using Newtonsoft.Json;
 
@@ -15,20 +16,65 @@ namespace Core
             ["kb"] = new KredoTransactionsImporter(),
         };
 
-        public static string SaveCategoriesToJson()
+        public static (string regexCategoriesJson, string autoCategoriesJson, string compositeCategoriesJson) SaveCategories()
         {
-            return JsonConvert.SerializeObject(State.Instance.Categories);
+            var regexCategoriesJson = SaveRegex();
+            var autoCategoriesJson = SaveAuto();
+            var compositeCategoriesJson = SaveComposite();
+
+            return (regexCategoriesJson, autoCategoriesJson, compositeCategoriesJson);
         }
 
-        public static void LoadCategories(string categoriesJson)
+        public static string SaveRegex()
         {
-            if (string.IsNullOrWhiteSpace(categoriesJson))
+            return JsonConvert.SerializeObject(State.Instance.Categories.Where(c => c is RegexCategory));
+        }
+        public static string SaveAuto()
+        {
+            return JsonConvert.SerializeObject(State.Instance.Categories.Where(c => c is AutoCategory));
+        }
+        public static string SaveComposite()
+        {
+            return JsonConvert.SerializeObject(State.Instance.Categories.Where(c => c is CompositeCategory));
+        }
+
+        public static void LoadCategories(string regexCategoriesFileName, string autoCategoriesFileName, string compositeCategoriesFileName)
+        {
+            var regex = LoadRegex(regexCategoriesFileName);
+            var auto = LoadAuto(autoCategoriesFileName);
+            var composite = LoadComposite(compositeCategoriesFileName);
+
+            State.Instance = new State(regex.Cast<ICategory>().Concat(auto).Concat(composite).ToHashSet(new CategoryComparer()), State.Instance.Transactions.ToHashSet());
+        }
+
+        public static ICollection<RegexCategory> LoadRegex(string regexCategoriesJson)
+        {
+            if (string.IsNullOrWhiteSpace(regexCategoriesJson))
             {
-                return;
+                return new List<RegexCategory>();
             }
 
-            var categories = JsonConvert.DeserializeObject<ICollection<Category>>(categoriesJson);
-            State.Instance = new State(categories, State.Instance.Transactions);
+            return JsonConvert.DeserializeObject<ICollection<RegexCategory>>(regexCategoriesJson);
+        }
+
+        public static ICollection<AutoCategory> LoadAuto(string autoCategoriesJson)
+        {           
+            if (string.IsNullOrWhiteSpace(autoCategoriesJson))
+            {
+                return new List<AutoCategory>();
+            }
+
+            return JsonConvert.DeserializeObject<ICollection<AutoCategory>>(autoCategoriesJson);
+        }
+
+        public static ICollection<CompositeCategory> LoadComposite(string compositeCategoriesJson)
+        {           
+            if (string.IsNullOrWhiteSpace(compositeCategoriesJson))
+            {
+                return new List<CompositeCategory>();
+            }
+
+            return JsonConvert.DeserializeObject<ICollection<CompositeCategory>>(compositeCategoriesJson);
         }
 
         public static void LoadTransactions(IEnumerable<(string key, Stream stream)> files)
@@ -40,9 +86,9 @@ namespace Core
             }
 
             var newCategories = newTransactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != c))
-                .Distinct().Select(c => new Category(c, new [] { new Rule(".*", "*", ".*", c) }, 1, 10000)).ToList();
+                .Select(c => new AutoCategory(string.Join(' ', "zzz[Auto]", c), 1, 10000, c)).Distinct(new CategoryComparer()).ToList();
 
-            var categories = new List<Category>(); 
+            var categories = new List<ICategory>(); 
             categories.AddRange(State.Instance.Categories);
             categories.AddRange(newCategories);
 
@@ -50,7 +96,7 @@ namespace Core
             transactions.AddRange(State.Instance.Transactions);
             transactions.AddRange(newTransactions);
 
-            State.Instance = new State(categories, transactions.ToHashSet());
+            State.Instance = new State(categories.ToHashSet(new CategoryComparer()), transactions.ToHashSet());
         }
     }
 }

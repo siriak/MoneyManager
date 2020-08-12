@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Core.Categories;
+using System.Collections.Generic;
 
 namespace Core
 {
-    public class Category
+    public class RegexCategory : ICategory
     {
-        public Category(string name, IReadOnlyCollection<Rule> rules, double increment, double capacity)
+        public RegexCategory(string name, IReadOnlyCollection<Rule> rules, double increment, double capacity)
         {
             Name = name;
             Rules = rules;
@@ -17,4 +18,5 @@ namespace Core
         public double Increment { get; }
         public double Capacity { get; }
     }
+
 }
