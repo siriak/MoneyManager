@@ -22,13 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
+using Newtonsoft.Json;
 using System;
 using System.Globalization;
 using System.Runtime.Serialization;
 
 namespace Core
 {
-    [Serializable]
     public struct Date : IComparable, IFormattable, ISerializable, IComparable<Date>, IEquatable<Date>
     {
         private readonly DateTime _dt;
@@ -36,12 +36,10 @@ namespace Core
         public static readonly Date MaxValue = new Date(DateTime.MaxValue);
         public static readonly Date MinValue = new Date(DateTime.MinValue);
 
+        [JsonConstructor]
         public Date(int year, int month, int day) => _dt = new DateTime(year, month, day);
 
         public Date(DateTime dateTime) => _dt = dateTime.AddTicks(-dateTime.Ticks % TimeSpan.TicksPerDay);
-
-        private Date(SerializationInfo info, StreamingContext context) =>
-            _dt = new DateTime(info.GetInt64("ticks"));
 
         public static TimeSpan operator -(Date d1, Date d2) => d1._dt - d2._dt;
 

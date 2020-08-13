@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Core.Categories;
@@ -79,7 +80,7 @@ namespace Core
             return JsonConvert.DeserializeObject<ICollection<CompositeCategory>>(compositeCategoriesJson);
         }
 
-        public static void LoadTransactions(IEnumerable<(string key, Stream stream)> files)
+        public static void LoadTransactions(IEnumerable<(string key, Stream stream)> files, string customTransactionsJson)
         {
             var newTransactions = new List<Transaction>();
             foreach (var file in files)
@@ -87,6 +88,7 @@ namespace Core
                 newTransactions.AddRange(importers[file.key].Load(file.stream));
             }
 
+            newTransactions.AddRange(LoadCustomTransactions(customTransactionsJson));
             var newCategories = newTransactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != c))
                 .Select(c => new AutoCategory($"[Auto] {c}", 1, 10000, c)).ToList();
 
@@ -99,6 +101,16 @@ namespace Core
             transactions.AddRange(newTransactions);
 
             State.Instance = new State(categories.ToHashSet(), transactions.ToHashSet());
+        }
+
+        private static IEnumerable<Transaction> LoadCustomTransactions(string customTransactionsJson)
+        {
+            if (string.IsNullOrWhiteSpace(customTransactionsJson))
+            {
+                return new List<Transaction>();
+            }
+
+            return JsonConvert.DeserializeObject<ICollection<Transaction>>(customTransactionsJson);
         }
     }
 }
