@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Core;
+using Core.Categories;
 
 namespace WinFormsUI
 {
     public partial class MainForm : Form
     {
-        const string categoriesFileName = "categories.json";
+        const string regexCategoriesFileName = "categories/regexCategories.json";
+        const string autoCategoriesFileName = "categories/autoCategories.json";
+        const string compositeCategoriesFileName = "categories/compositeCategories.json";
         const string transactionsFileName = "transactions.json";
 
         private Date startDate, endDate;
@@ -26,7 +29,7 @@ namespace WinFormsUI
             OnFilteringUpdated += RefreshChart;
 
             var cts = new CancellationTokenSource();
-            clbCategories.ItemCheck += async (o, e) => 
+            clbCategories.ItemCheck += async (o, e) =>
             {
                 // No lock here because this code only executes in
                 // UI thread, which means critical section cannot
@@ -51,7 +54,10 @@ namespace WinFormsUI
             LoadCategories();
             LoadTransactions();
 
-            File.WriteAllText(categoriesFileName, StateManager.SaveCategoriesToJson());
+            File.WriteAllText(autoCategoriesFileName, StateManager.SaveCategories().autoCategoriesJson);
+            File.WriteAllText(regexCategoriesFileName, StateManager.SaveCategories().regexCategoriesJson);
+            File.WriteAllText(compositeCategoriesFileName, StateManager.SaveCategories().compositeCategoriesJson);
+            
             var formattedRecords = State.Instance.Transactions.Select(DisplayManager.FormatLedgerRecord);
             File.WriteAllLines(transactionsFileName, formattedRecords);
 
@@ -62,19 +68,38 @@ namespace WinFormsUI
 
         private void LoadCategories()
         {
-            if (!File.Exists(categoriesFileName))
+            if (!File.Exists(regexCategoriesFileName))
             {
-                File.WriteAllText(categoriesFileName, StateManager.SaveCategoriesToJson());
+                File.WriteAllText(regexCategoriesFileName, "[]");
             }
-            StateManager.LoadCategories(File.ReadAllText(categoriesFileName));
-        }
+            var regexCategoriesJson = File.ReadAllText(regexCategoriesFileName);
 
+            if (!File.Exists(autoCategoriesFileName))
+            {
+                File.WriteAllText(autoCategoriesFileName, "[]");
+            }
+
+            var autoCategoriesJson = File.ReadAllText(autoCategoriesFileName);
+
+            if (!File.Exists(compositeCategoriesFileName))
+            {
+                File.WriteAllText(compositeCategoriesFileName, "[]");
+            }
+
+            var compositeCategoriesJson = File.ReadAllText(compositeCategoriesFileName);
+
+            StateManager.LoadCategories(regexCategoriesJson, autoCategoriesJson, compositeCategoriesJson);
+        }
+        
         private void LoadTransactions()
         {
             var currentDirecory = Directory.GetCurrentDirectory();
-            var filesUsb = Directory.GetFiles(currentDirecory + "/usb").Select(f => ("usb", (Stream)File.OpenRead(f)));
-            var filesPb = Directory.GetFiles(currentDirecory + "/pb").Select(f => ("pb", (Stream)File.OpenRead(f)));
-            var filesKb = Directory.GetFiles(currentDirecory + "/kb").Select(f => ("kb", (Stream)File.OpenRead(f)));
+            var filesUsb = Directory.GetFiles(currentDirecory + "/usb", "*.*", SearchOption.AllDirectories)
+                .Select(f => ("usb", (Stream)File.OpenRead(f)));
+            var filesPb = Directory.GetFiles(currentDirecory + "/pb", "*.*", SearchOption.AllDirectories)
+                .Select(f => ("pb", (Stream)File.OpenRead(f)));
+            var filesKb = Directory.GetFiles(currentDirecory + "/kb", "*.*", SearchOption.AllDirectories)
+                .Select(f => ("kb", (Stream)File.OpenRead(f)));
             StateManager.LoadTransactions(filesUsb.Concat(filesPb).Concat(filesKb));
         }
 
@@ -88,7 +113,7 @@ namespace WinFormsUI
                                                   .ToList();
 
             clbCategories.Items.Clear();
-            clbCategories.Items.AddRange(State.Instance.Categories.Select(c => c.Name).OrderBy(c => c).ToArray());
+            clbCategories.Items.AddRange(State.Instance.Categories.OrderBy(CategoriesOrederer).Select(c => c.Name).ToArray());
 
             foreach (var c in selectedCategories)
             {
@@ -99,6 +124,17 @@ namespace WinFormsUI
             {
                 clbCategories.SetItemChecked(0, true);
             }
+        }
+
+        private string CategoriesOrederer(Category category)
+        {
+            return category switch
+            {
+                CompositeCategory cc => "1" + category.Name,
+                RegexCategory rc => "2" + category.Name,
+                AutoCategory ac => "3" + category.Name,
+                _ => throw new NotSupportedException(),
+            };
         }
 
         private void RefreshList()

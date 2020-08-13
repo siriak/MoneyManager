@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Core.TimeSeries;
 using System.Text.RegularExpressions;
+using Core.Categories;
 
 namespace Core
 {
@@ -11,19 +12,38 @@ namespace Core
         public static Func<Transaction, bool> GetFilterForCategory(string categoryName)
         {
             var c = State.Instance.Categories.Single(c => c.Name == categoryName);
-            return t => c.Rules.Any(r => Regex.IsMatch(t.CardNumber, r.CardNumber)
-                                            && Regex.IsMatch(t.Description, r.Description)
-                                            && (r.Category is "*" || t.Category == r.Category)
-                                            && r.Amount[1..] is var ruleAmount
-                                            && r.Amount[0] switch
-                                            {
-                                                '>' => t.Amount.Amount > int.Parse(ruleAmount),
-                                                '<' => t.Amount.Amount < int.Parse(ruleAmount),
-                                                '=' => t.Amount.Amount == int.Parse(ruleAmount),
-                                                '*' => true,
-                                                _ => throw new NotSupportedException()
-                                            }
-                                            );
+            switch (c)
+            {
+                case AutoCategory autoCategory:
+                    {
+                        return t => t.Category == autoCategory.Category;
+                    }
+
+                case RegexCategory regexCategory:
+                    {
+                        return t => regexCategory.Rules.Any(r => Regex.IsMatch(t.CardNumber, r.CardNumber)
+                                                    && Regex.IsMatch(t.Description, r.Description)
+                                                    && Regex.IsMatch(t.Category, r.Category)
+                                                    && r.Amount[1..] is var ruleAmount
+                                                    && r.Amount[0] switch
+                                                    {
+                                                        '>' => t.Amount.Amount > int.Parse(ruleAmount),
+                                                        '<' => t.Amount.Amount < int.Parse(ruleAmount),
+                                                        '=' => t.Amount.Amount == int.Parse(ruleAmount),
+                                                        '*' => true,
+                                                        _ => throw new NotSupportedException()
+                                                    }
+                                                    );
+                    }
+
+                case CompositeCategory compositeCategory:
+                    {
+                        var filters = compositeCategory.Categories.Select(GetFilterForCategory).ToArray();
+                        return t => filters.Any(f => f(t));
+                    }
+                default:
+                    throw new NotSupportedException($"Category type {c.GetType()} is not supported");
+            }
         }
 
         public static IEnumerable<string> GetAllMatchingCategories(this State state, Transaction transaction)
