@@ -4,7 +4,7 @@ namespace Core.Categories
 {
     public class Category
     {
-        protected Category(string name, double increment, double capacity)
+        protected Category(string name, int increment, int capacity)
         {
             Name = name;
             Increment = increment;
@@ -12,15 +12,15 @@ namespace Core.Categories
         }
 
         public string Name { get; }
-        public double Increment { get; }
-        public double Capacity { get; }
+        public int Increment { get; }
+        public int Capacity { get; }
         
         public override bool Equals(object? obj)
         {
             return obj is Category category &&
                    Name == category.Name &&
-                   Increment - category.Increment < 0.01 &&
-                   Capacity - category.Capacity < 0.01;
+                   Increment == category.Increment &&
+                   Capacity == category.Capacity;
         }
         
         public override int GetHashCode()

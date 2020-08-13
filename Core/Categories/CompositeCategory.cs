@@ -1,13 +1,15 @@
-﻿namespace Core.Categories
+﻿using System.Collections.Generic;
+
+namespace Core.Categories
 {
     public class CompositeCategory : Category
     {
-        public CompositeCategory(string name, double increment, double capacity, string[] categories) 
+        public CompositeCategory(string name, int increment, int capacity, IReadOnlyCollection<string> categories) 
             : base(name, increment, capacity)
         {
             Categories = categories;
         }
 
-        public string[] Categories { get; }
+        public IReadOnlyCollection<string> Categories { get; }
     }
 }

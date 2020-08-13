@@ -88,7 +88,7 @@ namespace Core
             }
 
             var newCategories = newTransactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != c))
-                .Select(c => new AutoCategory(string.Join(' ', "[Auto]", c), 1, 10000, c)).Distinct().ToList();
+                .Select(c => new AutoCategory($"[Auto] {c}", 1, 10000, c)).ToList();
 
             var categories = new List<Category>(); 
             categories.AddRange(State.Instance.Categories);
