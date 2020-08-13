@@ -2,9 +2,9 @@
 
 namespace Core.Categories
 {
-    public abstract class Category
+    public class Category
     {
-        public Category(string name, double increment, double capacity)
+        protected Category(string name, double increment, double capacity)
         {
             Name = name;
             Increment = increment;
@@ -19,8 +19,8 @@ namespace Core.Categories
         {
             return obj is Category category &&
                    Name == category.Name &&
-                   Increment == category.Increment &&
-                   Capacity == category.Capacity;
+                   Increment - category.Increment < 0.01 &&
+                   Capacity - category.Capacity < 0.01;
         }
         
         public override int GetHashCode()
