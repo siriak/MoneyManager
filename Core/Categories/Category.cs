@@ -18,14 +18,12 @@ namespace Core.Categories
         public override bool Equals(object? obj)
         {
             return obj is Category category &&
-                   Name == category.Name &&
-                   Increment == category.Increment &&
-                   Capacity == category.Capacity;
+                   Name == category.Name;
         }
         
         public override int GetHashCode()
         {
-            return HashCode.Combine(Name, Increment, Capacity);
+            return Name.GetHashCode();
         }
     }
 }
