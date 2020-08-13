@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Core;
+using Core.Categories;
 
 namespace WinFormsUI
 {
@@ -69,20 +70,20 @@ namespace WinFormsUI
         {
             if (!File.Exists(regexCategoriesFileName))
             {
-                File.WriteAllText(regexCategoriesFileName, StateManager.SaveRegex());
+                File.WriteAllText(regexCategoriesFileName, "[]");
             }
             var regexCategoriesJson = File.ReadAllText(regexCategoriesFileName);
 
             if (!File.Exists(autoCategoriesFileName))
             {
-                File.WriteAllText(autoCategoriesFileName, StateManager.SaveAuto());
+                File.WriteAllText(autoCategoriesFileName, "[]");
             }
 
             var autoCategoriesJson = File.ReadAllText(autoCategoriesFileName);
 
             if (!File.Exists(compositeCategoriesFileName))
             {
-                File.WriteAllText(compositeCategoriesFileName, StateManager.SaveComposite());
+                File.WriteAllText(compositeCategoriesFileName, "[]");
             }
 
             var compositeCategoriesJson = File.ReadAllText(compositeCategoriesFileName);
@@ -112,7 +113,7 @@ namespace WinFormsUI
                                                   .ToList();
 
             clbCategories.Items.Clear();
-            clbCategories.Items.AddRange(State.Instance.Categories.Select(c => c.Name).OrderBy(c => c).ToArray());
+            clbCategories.Items.AddRange(State.Instance.Categories.OrderBy(CategoriesOrederer).Select(c => c.Name).ToArray());
 
             foreach (var c in selectedCategories)
             {
@@ -123,6 +124,17 @@ namespace WinFormsUI
             {
                 clbCategories.SetItemChecked(0, true);
             }
+        }
+
+        private string CategoriesOrederer(Category category)
+        {
+            return category switch
+            {
+                CompositeCategory cc => "1" + category.Name,
+                RegexCategory rc => "2" + category.Name,
+                AutoCategory ac => "3" + category.Name,
+                _ => throw new NotSupportedException(),
+            };
         }
 
         private void RefreshList()

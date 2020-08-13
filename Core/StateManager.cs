@@ -29,10 +29,12 @@ namespace Core
         {
             return JsonConvert.SerializeObject(State.Instance.Categories.Where(c => c is RegexCategory));
         }
+
         public static string SaveAuto()
         {
             return JsonConvert.SerializeObject(State.Instance.Categories.Where(c => c is AutoCategory));
         }
+
         public static string SaveComposite()
         {
             return JsonConvert.SerializeObject(State.Instance.Categories.Where(c => c is CompositeCategory));
@@ -44,7 +46,7 @@ namespace Core
             var auto = LoadAuto(autoCategoriesFileName);
             var composite = LoadComposite(compositeCategoriesFileName);
 
-            State.Instance = new State(regex.Cast<ICategory>().Concat(auto).Concat(composite).ToHashSet(new CategoryComparer()), State.Instance.Transactions.ToHashSet());
+            State.Instance = new State(regex.Cast<Category>().Concat(auto).Concat(composite).ToHashSet(), State.Instance.Transactions.ToHashSet());
         }
 
         public static ICollection<RegexCategory> LoadRegex(string regexCategoriesJson)
@@ -86,9 +88,9 @@ namespace Core
             }
 
             var newCategories = newTransactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != c))
-                .Select(c => new AutoCategory(string.Join(' ', "zzz[Auto]", c), 1, 10000, c)).Distinct(new CategoryComparer()).ToList();
+                .Select(c => new AutoCategory(string.Join(' ', "[Auto]", c), 1, 10000, c)).Distinct().ToList();
 
-            var categories = new List<ICategory>(); 
+            var categories = new List<Category>(); 
             categories.AddRange(State.Instance.Categories);
             categories.AddRange(newCategories);
 
@@ -96,7 +98,7 @@ namespace Core
             transactions.AddRange(State.Instance.Transactions);
             transactions.AddRange(newTransactions);
 
-            State.Instance = new State(categories.ToHashSet(new CategoryComparer()), transactions.ToHashSet());
+            State.Instance = new State(categories.ToHashSet(), transactions.ToHashSet());
         }
     }
 }

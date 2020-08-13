@@ -6,17 +6,17 @@ namespace Core
 {
     public class State
     {
-        public static State Instance { get; internal set; } = new State(new HashSet<ICategory>(), new SortedSet<Transaction>());
+        public static State Instance { get; internal set; } = new State(new HashSet<Category>(), new SortedSet<Transaction>());
 
-        public IReadOnlyCollection<ICategory> Categories { get; }
+        public IReadOnlyCollection<Category> Categories { get; }
 
         public IReadOnlyCollection<Transaction> Transactions { get; }
 
         [JsonConstructor]
-        public State(ISet<ICategory> categories, ISet<Transaction> transactions)
+        public State(ISet<Category> categories, ISet<Transaction> transactions)
         {
             Transactions = new SortedSet<Transaction>(transactions);
-            Categories = new List<ICategory>(categories);
+            Categories = new List<Category>(categories);
         }
     }
 }

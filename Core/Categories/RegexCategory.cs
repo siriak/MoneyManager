@@ -3,20 +3,15 @@ using System.Collections.Generic;
 
 namespace Core
 {
-    public class RegexCategory : ICategory
+    public class RegexCategory : Category
     {
         public RegexCategory(string name, IReadOnlyCollection<Rule> rules, double increment, double capacity)
+            :base(name, increment, capacity)
         {
-            Name = name;
             Rules = rules;
-            Increment = increment;
-            Capacity = capacity;
         }
 
-        public string Name { get; }
         public IReadOnlyCollection<Rule> Rules { get; }
-        public double Increment { get; }
-        public double Capacity { get; }
     }
 
 }
