@@ -16,6 +16,7 @@ namespace WinFormsUI
         const string autoCategoriesFileName = "categories/autoCategories.json";
         const string compositeCategoriesFileName = "categories/compositeCategories.json";
         const string transactionsFileName = "transactions.json";
+        const string customTransactionsFileName = "customTransactions.json";
 
         private Date startDate, endDate;
         private double smoothingRatio;
@@ -100,7 +101,14 @@ namespace WinFormsUI
                 .Select(f => ("pb", (Stream)File.OpenRead(f)));
             var filesKb = Directory.GetFiles(currentDirecory + "/kb", "*.*", SearchOption.AllDirectories)
                 .Select(f => ("kb", (Stream)File.OpenRead(f)));
-            StateManager.LoadTransactions(filesUsb.Concat(filesPb).Concat(filesKb));
+
+            if (!File.Exists(customTransactionsFileName))
+            {
+                File.WriteAllText(customTransactionsFileName, "[]");
+            }
+            var customTransactions = File.ReadAllText(customTransactionsFileName);
+
+            StateManager.LoadTransactions(filesUsb.Concat(filesPb).Concat(filesKb), customTransactions);
         }
 
         private void RefreshCategories()
