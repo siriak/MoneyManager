@@ -56,8 +56,6 @@ namespace WinFormsUI
             LoadTransactions();
 
             File.WriteAllText(autoCategoriesFileName, StateManager.SaveCategories().autoCategoriesJson);
-            File.WriteAllText(regexCategoriesFileName, StateManager.SaveCategories().regexCategoriesJson);
-            File.WriteAllText(compositeCategoriesFileName, StateManager.SaveCategories().compositeCategoriesJson);
             
             var formattedRecords = State.Instance.Transactions.Select(DisplayManager.FormatLedgerRecord);
             File.WriteAllLines(transactionsFileName, formattedRecords);

@@ -28,17 +28,17 @@ namespace Core
 
         public static string SaveRegex()
         {
-            return JsonConvert.SerializeObject(State.Instance.Categories.Where(c => c is RegexCategory));
+            return JsonConvert.SerializeObject(State.Instance.Categories.Where(c => c is RegexCategory), Formatting.Indented);
         }
 
         public static string SaveAuto()
         {
-            return JsonConvert.SerializeObject(State.Instance.Categories.Where(c => c is AutoCategory));
+            return JsonConvert.SerializeObject(State.Instance.Categories.Where(c => c is AutoCategory), Formatting.Indented);
         }
 
         public static string SaveComposite()
         {
-            return JsonConvert.SerializeObject(State.Instance.Categories.Where(c => c is CompositeCategory));
+            return JsonConvert.SerializeObject(State.Instance.Categories.Where(c => c is CompositeCategory), Formatting.Indented);
         }
 
         public static void LoadCategories(string regexCategoriesFileName, string autoCategoriesFileName, string compositeCategoriesFileName)
@@ -50,47 +50,33 @@ namespace Core
             State.Instance = new State(regex.Cast<Category>().Concat(auto).Concat(composite).ToHashSet(), State.Instance.Transactions.ToHashSet());
         }
 
-        public static ICollection<RegexCategory> LoadRegex(string regexCategoriesJson)
-        {
-            if (string.IsNullOrWhiteSpace(regexCategoriesJson))
-            {
-                return new List<RegexCategory>();
-            }
+        public static IEnumerable<RegexCategory> LoadRegex(string regexCategoriesJson) =>
+            string.IsNullOrWhiteSpace(regexCategoriesJson)
+                ? Array.Empty<RegexCategory>()
+                : JsonConvert.DeserializeObject<RegexCategory[]>(regexCategoriesJson);
 
-            return JsonConvert.DeserializeObject<ICollection<RegexCategory>>(regexCategoriesJson);
-        }
+        public static IEnumerable<AutoCategory> LoadAuto(string autoCategoriesJson) =>
+            string.IsNullOrWhiteSpace(autoCategoriesJson)
+                ? Array.Empty<AutoCategory>()
+                : JsonConvert.DeserializeObject<AutoCategory[]>(autoCategoriesJson);
 
-        public static ICollection<AutoCategory> LoadAuto(string autoCategoriesJson)
-        {           
-            if (string.IsNullOrWhiteSpace(autoCategoriesJson))
-            {
-                return new List<AutoCategory>();
-            }
-
-            return JsonConvert.DeserializeObject<ICollection<AutoCategory>>(autoCategoriesJson);
-        }
-
-        public static ICollection<CompositeCategory> LoadComposite(string compositeCategoriesJson)
-        {           
-            if (string.IsNullOrWhiteSpace(compositeCategoriesJson))
-            {
-                return new List<CompositeCategory>();
-            }
-
-            return JsonConvert.DeserializeObject<ICollection<CompositeCategory>>(compositeCategoriesJson);
-        }
+        public static IEnumerable<CompositeCategory> LoadComposite(string compositeCategoriesJson) =>
+            string.IsNullOrWhiteSpace(compositeCategoriesJson)
+                ? Array.Empty<CompositeCategory>()
+                : JsonConvert.DeserializeObject<CompositeCategory[]>(compositeCategoriesJson);
 
         public static void LoadTransactions(IEnumerable<(string key, Stream stream)> files, string customTransactionsJson)
         {
             var newTransactions = new List<Transaction>();
-            foreach (var file in files)
+            foreach (var (key, stream) in files)
             {
-                newTransactions.AddRange(importers[file.key].Load(file.stream));
+                newTransactions.AddRange(importers[key].Load(stream));
             }
 
             newTransactions.AddRange(LoadCustomTransactions(customTransactionsJson));
-            var newCategories = newTransactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != c))
-                .Select(c => new AutoCategory($"[Auto] {c}", 1, 10000, c)).ToList();
+            Func<string, string> suggestName = s => $"[Auto] {s}";
+            var newCategories = newTransactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != suggestName(c)))
+                .Select(c => new AutoCategory(suggestName(c), 1, 10000, c)).ToList();
 
             var categories = new List<Category>(); 
             categories.AddRange(State.Instance.Categories);
@@ -103,14 +89,9 @@ namespace Core
             State.Instance = new State(categories.ToHashSet(), transactions.ToHashSet());
         }
 
-        private static IEnumerable<Transaction> LoadCustomTransactions(string customTransactionsJson)
-        {
-            if (string.IsNullOrWhiteSpace(customTransactionsJson))
-            {
-                return new List<Transaction>();
-            }
-
-            return JsonConvert.DeserializeObject<ICollection<Transaction>>(customTransactionsJson);
-        }
+        private static IEnumerable<Transaction> LoadCustomTransactions(string customTransactionsJson) =>
+            string.IsNullOrWhiteSpace(customTransactionsJson)
+                ? new List<Transaction>()
+                : JsonConvert.DeserializeObject<ICollection<Transaction>>(customTransactionsJson);
     }
 }

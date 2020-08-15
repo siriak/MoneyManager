@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Core.Categories
+﻿namespace Core.Categories
 {
     public class Category
     {
