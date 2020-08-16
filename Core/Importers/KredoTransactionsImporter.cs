@@ -1,7 +1,6 @@
 ﻿using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
-using iText.Layout;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
