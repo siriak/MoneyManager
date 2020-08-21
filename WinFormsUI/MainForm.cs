@@ -15,10 +15,7 @@ namespace WinFormsUI
         const string regexCategoriesFileName = "categories/regexCategories.json";
         const string autoCategoriesFileName = "categories/autoCategories.json";
         const string compositeCategoriesFileName = "categories/compositeCategories.json";
-        const string transactionsFileName = "transactions.json";
         const string customTransactionsFileName = "customTransactions.json";
-
-        Func<Transaction, object> formatter = DisplayManager.FormatLedgerRecordOnlyCustom;
 
         private Date startDate, endDate;
         private double smoothingRatio;
@@ -58,9 +55,6 @@ namespace WinFormsUI
             LoadTransactions();
 
             File.WriteAllText(autoCategoriesFileName, StateManager.SaveCategories().autoCategoriesJson);
-            
-            var formattedRecords = State.Instance.Transactions.Select(DisplayManager.FormatLedgerRecord);
-            File.WriteAllLines(transactionsFileName, formattedRecords);
 
             RefreshCategories();
             RefreshChart();
@@ -154,7 +148,13 @@ namespace WinFormsUI
                           clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText),
                           startDate,
                           endDate)
-                     .Select(t => formatter(t))
+                     .Select(t =>
+                     {
+                         var categories = chboxAllCategories.Checked
+                             ? State.Instance.GetAllMatchingCategories(t)
+                             : State.Instance.GetAllMatchingCategoriesOfType<CompositeCategory>(t);
+                         return DisplayManager.FormatLedgerRecord(t, categories);
+                     })
                      .Reverse()
                      .ToArray());
         }
@@ -250,14 +250,6 @@ namespace WinFormsUI
 
         private void chboxAllCategories_CheckedChanged(object sender, EventArgs e)
         {
-            if (chboxAllCategories.Checked)
-            {
-                formatter = DisplayManager.FormatLedgerRecord;
-            }
-            else
-            {
-                formatter = DisplayManager.FormatLedgerRecordOnlyCustom;
-            }
             RefreshList();
         }
     }

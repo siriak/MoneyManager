@@ -48,13 +48,13 @@ namespace Core
 
         public static IEnumerable<string> GetAllMatchingCategories(this State state, Transaction transaction)
         {
-            return State.Instance.Categories.Select(c => c.Name).Where(c => GetFilterForCategory(c)(transaction)).ToList();
+            return state.Categories.Select(c => c.Name).Where(c => GetFilterForCategory(c)(transaction)).ToList();
         }
 
-        public static IEnumerable<string> GetOnlyCustomCategories(this State state, Transaction transaction)
+        public static IEnumerable<string> GetAllMatchingCategoriesOfType<T>(this State state, Transaction transaction) where T : Category
         {
-            return State.Instance.Categories
-                .OfType<CompositeCategory>()
+            return state.Categories
+                .OfType<T>()
                 .Select(c => c.Name)
                 .Where(c => GetFilterForCategory(c)(transaction))
                 .ToList();
