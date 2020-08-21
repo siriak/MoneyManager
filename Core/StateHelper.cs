@@ -47,7 +47,7 @@ namespace Core
         }
 
         public static IEnumerable<string> GetAllMatchingCategories(this State state, Transaction transaction)
-        {
+        { 
             return state.Categories
                 .Where(c => GetFilterForCategory(c.Name)(transaction))
                 .Select(c => c.Name)
