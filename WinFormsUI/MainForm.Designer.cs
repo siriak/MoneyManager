@@ -44,6 +44,7 @@ namespace WinFormsUI
             this.lbTransactions = new System.Windows.Forms.ListBox();
             this.dateTimePickerEnd = new System.Windows.Forms.DateTimePicker();
             this.dateTimePickerStart = new System.Windows.Forms.DateTimePicker();
+            this.chboxAllCategories = new System.Windows.Forms.CheckBox();
             this.lblEndDate = new System.Windows.Forms.Label();
             this.lblStartDate = new System.Windows.Forms.Label();
             this.lblSmoothingRatio = new System.Windows.Forms.Label();
@@ -182,11 +183,22 @@ namespace WinFormsUI
             this.lblStartDate.Size = new System.Drawing.Size(53, 13);
             this.lblStartDate.TabIndex = 11;
             this.lblStartDate.Text = "Start date";
+            //
+            // cbxIsOnlyCustom
+            //
+            this.chboxAllCategories.AutoSize = true;
+            this.chboxAllCategories.Location = new System.Drawing.Point(12, 425);
+            this.chboxAllCategories.Name = "cbxAllCategories";
+            this.chboxAllCategories.Size = new System.Drawing.Size(50, 13);
+            this.chboxAllCategories.TabIndex = 12;
+            this.chboxAllCategories.Text = "Show All Categories";
+            this.chboxAllCategories.Checked = false;
+            this.chboxAllCategories.CheckedChanged += new System.EventHandler(this.chboxAllCategories_CheckedChanged);
             // 
             // lblSmoothingRatio
             // 
             this.lblSmoothingRatio.AutoSize = true;
-            this.lblSmoothingRatio.Location = new System.Drawing.Point(12, 434);
+            this.lblSmoothingRatio.Location = new System.Drawing.Point(12, 480);
             this.lblSmoothingRatio.Name = "lblSmoothingRatio";
             this.lblSmoothingRatio.Size = new System.Drawing.Size(53, 13);
             this.lblSmoothingRatio.TabIndex = 11;
@@ -195,7 +207,7 @@ namespace WinFormsUI
             // txtboxSmoothingRatio
             // 
             this.txtboxSmoothingRatio.AutoSize = true;
-            this.txtboxSmoothingRatio.Location = new System.Drawing.Point(12, 454);
+            this.txtboxSmoothingRatio.Location = new System.Drawing.Point(12, 500);
             this.txtboxSmoothingRatio.Name = "txtboxSmoothingRatio";
             this.txtboxSmoothingRatio.Size = new System.Drawing.Size(93, 23);
             this.txtboxSmoothingRatio.TabIndex = 11;
@@ -224,6 +236,7 @@ namespace WinFormsUI
             this.Controls.Add(this.txtboxSmoothingRatio);
             this.Controls.Add(this.lblEndDate);
             this.Controls.Add(this.dateTimePickerStart);
+            this.Controls.Add(this.chboxAllCategories);
             this.Name = "MainForm";
             this.Text = "Money Manager";
             this.Load += new System.EventHandler(this.MainForm_Load);
@@ -240,6 +253,7 @@ namespace WinFormsUI
         private System.Windows.Forms.DataVisualization.Charting.Chart chartSeriesCumulative;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartSeriesSmoothed;
         private System.Windows.Forms.CheckedListBox clbCategories;
+        private System.Windows.Forms.CheckBox chboxAllCategories;
         private System.Windows.Forms.DateTimePicker dateTimePickerEnd;
         private System.Windows.Forms.DateTimePicker dateTimePickerStart;
         private System.Windows.Forms.Label lblEndDate;

@@ -48,7 +48,19 @@ namespace Core
 
         public static IEnumerable<string> GetAllMatchingCategories(this State state, Transaction transaction)
         {
-            return State.Instance.Categories.Select(c => c.Name).Where(c => GetFilterForCategory(c)(transaction)).ToList();
+            return state.Categories
+                .Where(c => GetFilterForCategory(c.Name)(transaction))
+                .Select(c => c.Name)
+                .ToList();
+        }
+
+        public static IEnumerable<string> GetAllMatchingCategoriesOfType<T>(this State state, Transaction transaction) where T : Category
+        {
+            return state.Categories
+                .OfType<T>()
+                .Where(c => GetFilterForCategory(c.Name)(transaction))
+                .Select(c => c.Name)
+                .ToList();
         }
 
         public static SmoothedTimeSeries GetSmoothedTimeSeries(string category, double smoothingRatio)
