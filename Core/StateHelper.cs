@@ -51,6 +51,15 @@ namespace Core
             return State.Instance.Categories.Select(c => c.Name).Where(c => GetFilterForCategory(c)(transaction)).ToList();
         }
 
+        public static IEnumerable<string> GetOnlyCustomCategories(this State state, Transaction transaction)
+        {
+            return State.Instance.Categories
+                .OfType<CompositeCategory>()
+                .Select(c => c.Name)
+                .Where(c => GetFilterForCategory(c)(transaction))
+                .ToList();
+        }
+
         public static SmoothedTimeSeries GetSmoothedTimeSeries(string category, double smoothingRatio)
         {
             var filteredTransactions = State.Instance.Transactions.Where(GetFilterForCategory(category)).ToList();

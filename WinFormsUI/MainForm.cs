@@ -18,6 +18,8 @@ namespace WinFormsUI
         const string transactionsFileName = "transactions.json";
         const string customTransactionsFileName = "customTransactions.json";
 
+        Func<Transaction, object> formatter = DisplayManager.FormatLedgerRecordOnlyCustom;
+
         private Date startDate, endDate;
         private double smoothingRatio;
 
@@ -152,7 +154,7 @@ namespace WinFormsUI
                           clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText),
                           startDate,
                           endDate)
-                     .Select(t => (object) DisplayManager.FormatLedgerRecord(t))
+                     .Select(t => formatter(t))
                      .Reverse()
                      .ToArray());
         }
@@ -244,6 +246,19 @@ namespace WinFormsUI
                 smoothingRatio = newSmoothingRatio;
                 OnFilteringUpdated();
             }
+        }
+
+        private void chboxAllCategories_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chboxAllCategories.Checked)
+            {
+                formatter = DisplayManager.FormatLedgerRecord;
+            }
+            else
+            {
+                formatter = DisplayManager.FormatLedgerRecordOnlyCustom;
+            }
+            RefreshList();
         }
     }
 }
