@@ -143,6 +143,7 @@ namespace WinFormsUI
             this.lbTransactions.TabIndex = 1;
             this.lbTransactions.Font = new System.Drawing.Font("Consolas", 14);
             this.lbTransactions.HorizontalScrollbar = true;
+            this.lbTransactions.DoubleClick += new System.EventHandler(this.lb_DoubleClick);
             // 
             // dateTimePickerEnd
             // 

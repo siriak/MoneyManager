@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -19,6 +20,7 @@ namespace WinFormsUI
 
         private Date startDate, endDate;
         private double smoothingRatio;
+        private IReadOnlyList<Transaction> displayedTransactions;
 
         public MainForm() => InitializeComponent();
         private event Action OnFilteringUpdated = () => { };
@@ -143,11 +145,12 @@ namespace WinFormsUI
         {
             lbTransactions.Items.Clear();
 
-            lbTransactions.Items.AddRange(
-                StateHelper.GetTransactionsUnion(
+            displayedTransactions = StateHelper.GetTransactionsUnion(
                           clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText),
                           startDate,
-                          endDate)
+                          endDate).Reverse().ToArray();
+
+            lbTransactions.Items.AddRange(displayedTransactions
                      .Select(t =>
                      {
                          var categories = chboxAllCategories.Checked
@@ -155,7 +158,6 @@ namespace WinFormsUI
                              : State.Instance.GetAllMatchingCategoriesOfType<CompositeCategory>(t);
                          return DisplayManager.FormatLedgerRecord(t, categories);
                      })
-                     .Reverse()
                      .ToArray());
         }
 
@@ -251,6 +253,18 @@ namespace WinFormsUI
         private void chboxAllCategories_CheckedChanged(object sender, EventArgs e)
         {
             RefreshList();
+        }
+
+        private void lb_DoubleClick(object sender, EventArgs e)
+        {
+            var transactionRecordIndex = lbTransactions.SelectedIndex;
+            var transaction = displayedTransactions[transactionRecordIndex];
+
+            var transactionEditor = new TransactionEditor();
+            transactionEditor.txtboxCardNumber.Text = transaction.CardNumber;
+            transactionEditor.txtboxCategory.Text = transaction.Category;
+            transactionEditor.txtboxDescription.Text = transaction.Description;
+            transactionEditor.Show();
         }
     }
 }
