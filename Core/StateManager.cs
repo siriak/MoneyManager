@@ -87,11 +87,35 @@ namespace Core
             transactions.AddRange(newTransactions);
 
             State.Instance = new State(categories.ToHashSet(), transactions.ToHashSet());
+
+            var transactionsWithoutCategory = transactions.Where(t => string.IsNullOrWhiteSpace(t.Category));
+
+            foreach (var t in transactionsWithoutCategory)
+            {
+                var c = State.Instance.GetAllMatchingCategoriesOfType<CompositeCategory>(t).ToList();
+                if (c.Count == 1)
+                {
+                    var newTransaction = new Transaction(t.CardNumber, t.Date, t.Amount, t.Description, c[0], t.GetHashCode());
+                    UpdateTransaction(newTransaction);
+                }
+            }
         }
 
         private static IEnumerable<Transaction> LoadCustomTransactions(string customTransactionsJson) =>
             string.IsNullOrWhiteSpace(customTransactionsJson)
                 ? new List<Transaction>()
                 : JsonConvert.DeserializeObject<ICollection<Transaction>>(customTransactionsJson);
+
+        public static void UpdateTransaction(Transaction transaction)
+        {
+            var transactions = State.Instance.Transactions.ToHashSet();
+            if (!transactions.Contains(transaction))
+            {
+                throw new ArgumentException($"{nameof(transaction)} not found");
+            }
+            transactions.Remove(transaction);
+            transactions.Add(transaction);
+            State.Instance = new State(State.Instance.Categories.ToHashSet(), transactions);
+        }
     }
 }

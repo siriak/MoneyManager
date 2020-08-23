@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Forms;
 
 namespace WinFormsUI
 {
@@ -28,8 +29,10 @@ namespace WinFormsUI
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
+        private void InitializeComponent(MainForm form)
         {
+            this.mainForm = form;
+
             this.lblCardNumber = new System.Windows.Forms.Label();
             this.lblCategory = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
@@ -51,7 +54,6 @@ namespace WinFormsUI
             this.txtboxCardNumber.Name = "txtboxCardNumber";
             this.txtboxCardNumber.Size = new System.Drawing.Size(360, 20);
             this.txtboxCardNumber.TabIndex = 11;
-            this.txtboxCardNumber.TextChanged += new System.EventHandler(this.txtboxCardNumber_TextChanged);
 
             // lblCategory
             this.lblCategory.AutoSize = true;
@@ -67,7 +69,6 @@ namespace WinFormsUI
             this.txtboxCategory.Size = new System.Drawing.Size(360,70);
             this.txtboxCategory.TabIndex = 11;
             this.txtboxCategory.Multiline = true;
-            this.txtboxCategory.TextChanged += new System.EventHandler(this.txtboxCategory_TextChanged);
 
             // lblDescription
             this.lblDescription.AutoSize = true;
@@ -83,7 +84,6 @@ namespace WinFormsUI
             this.txtboxDescription.Size = new System.Drawing.Size(360,85);
             this.txtboxDescription.TabIndex = 11;
             this.txtboxDescription.Multiline = true;
-            this.txtboxDescription.TextChanged += new System.EventHandler(this.txtboxDescription_TextChanged);
 
             //btnSave
             this.btnSave.Location = new System.Drawing.Point(20, 350);
@@ -110,6 +110,8 @@ namespace WinFormsUI
         public System.Windows.Forms.TextBox txtboxCategory;
         public System.Windows.Forms.TextBox txtboxDescription;
         public System.Windows.Forms.Button btnSave;
+
+        private MainForm mainForm;
         #endregion
     }
 }

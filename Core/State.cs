@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Core.Categories;
 using Newtonsoft.Json;
 
@@ -6,7 +7,19 @@ namespace Core
 {
     public class State
     {
-        public static State Instance { get; internal set; } = new State(new HashSet<Category>(), new SortedSet<Transaction>());
+        private static State instance = new State(new HashSet<Category>(), new SortedSet<Transaction>());
+
+        public static State Instance
+        {
+            get => instance;
+            internal set
+            {
+                instance = value;
+                OnStateChanged();
+            }
+        }
+
+        public static event Action OnStateChanged = () => { };
 
         public IReadOnlyCollection<Category> Categories { get; }
 

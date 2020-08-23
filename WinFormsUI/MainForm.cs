@@ -20,7 +20,7 @@ namespace WinFormsUI
 
         private Date startDate, endDate;
         private double smoothingRatio;
-        private IReadOnlyList<Transaction> displayedTransactions;
+        public IReadOnlyList<Transaction> displayedTransactions;
 
         public MainForm() => InitializeComponent();
         private event Action OnFilteringUpdated = () => { };
@@ -29,6 +29,9 @@ namespace WinFormsUI
         {
             OnFilteringUpdated += RefreshList;
             OnFilteringUpdated += RefreshChart;
+            State.OnStateChanged += RefreshCategories;
+            State.OnStateChanged += RefreshList;
+            State.OnStateChanged += RefreshChart;
 
             var cts = new CancellationTokenSource();
             clbCategories.ItemCheck += async (o, e) =>
@@ -57,10 +60,6 @@ namespace WinFormsUI
             LoadTransactions();
 
             File.WriteAllText(autoCategoriesFileName, StateManager.SaveCategories().autoCategoriesJson);
-
-            RefreshCategories();
-            RefreshChart();
-            RefreshList();
         }
 
         private void LoadCategories()
@@ -260,11 +259,11 @@ namespace WinFormsUI
             var transactionRecordIndex = lbTransactions.SelectedIndex;
             var transaction = displayedTransactions[transactionRecordIndex];
 
-            var transactionEditor = new TransactionEditor();
+            var transactionEditor = new TransactionEditor(this);
             transactionEditor.txtboxCardNumber.Text = transaction.CardNumber;
             transactionEditor.txtboxCategory.Text = transaction.Category;
             transactionEditor.txtboxDescription.Text = transaction.Description;
-            transactionEditor.Show();
+            transactionEditor.ShowDialog();
         }
     }
 }

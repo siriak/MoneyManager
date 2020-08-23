@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,29 +11,21 @@ namespace WinFormsUI
 {
     public partial class TransactionEditor : Form
     {
-        private string cardNumber;
-        private string[] categories;
-        private string description;
-
-        public TransactionEditor() => InitializeComponent();
-
-        private void txtboxDescription_TextChanged(object sender, EventArgs e)
-        {
-            cardNumber = txtboxCardNumber.Text;
-        }
-
-        private void txtboxCategory_TextChanged(object sender, EventArgs e)
-        {
-            categories = txtboxCategory.Text.Split(", ");
-        }
-
-        private void txtboxCardNumber_TextChanged(object sender, EventArgs e)
-        {
-            description = txtboxDescription.Text;
-        }
+        public TransactionEditor(MainForm mainForm) => InitializeComponent(mainForm);
 
         private void btnSave_Clicked(object sender, EventArgs e)
         {
+            var cardNumber = txtboxCardNumber.Text;
+            var category = txtboxCategory.Text;
+            var description = txtboxDescription.Text;
+
+            var transactionRecordIndex = mainForm.lbTransactions.SelectedIndex;
+            var transaction = mainForm.displayedTransactions[transactionRecordIndex];
+            
+            var newTransaction = new Transaction(cardNumber, transaction.Date, transaction.Amount, description, category, transaction.GetHashCode());
+
+            StateManager.UpdateTransaction(newTransaction);
+            Close();
         }
     }
 }
