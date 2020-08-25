@@ -37,8 +37,7 @@ namespace Core
 
         public override bool Equals(object obj)
         {
-            return obj is Transaction other
-                && Date == other.Date && Hash == other.Hash;
+            return obj is Transaction other && Date == other.Date && Hash == other.Hash;
         }
 
         private int GetInitialHashCode()
