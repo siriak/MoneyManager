@@ -65,7 +65,8 @@ namespace Core
                 ? Array.Empty<CompositeCategory>()
                 : JsonConvert.DeserializeObject<CompositeCategory[]>(compositeCategoriesJson);
 
-        public static void LoadTransactions(IEnumerable<(string key, Stream stream)> files, string customTransactionsJson)
+        public static void LoadTransactions(IEnumerable<(string key, Stream stream)> files, string customTransactionsJson, 
+            string modifiedTransactionsJson)
         {
             var newTransactions = new List<Transaction>();
             foreach (var (key, stream) in files)
@@ -73,7 +74,7 @@ namespace Core
                 newTransactions.AddRange(importers[key].Load(stream));
             }
 
-            newTransactions.AddRange(LoadCustomTransactions(customTransactionsJson));
+            newTransactions.AddRange(LoadTransactionsFromJson(customTransactionsJson));
             Func<string, string> suggestName = s => $"[Auto] {s}";
             var newCategories = newTransactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != suggestName(c)))
                 .Select(c => new AutoCategory(suggestName(c), 1, 10000, c)).ToList();
@@ -83,6 +84,7 @@ namespace Core
             categories.AddRange(newCategories);
 
             var transactions = new List<Transaction>();
+            transactions.AddRange(LoadTransactionsFromJson(modifiedTransactionsJson));
             transactions.AddRange(State.Instance.Transactions);
             transactions.AddRange(newTransactions);
 
@@ -101,10 +103,10 @@ namespace Core
             }
         }
 
-        private static IEnumerable<Transaction> LoadCustomTransactions(string customTransactionsJson) =>
-            string.IsNullOrWhiteSpace(customTransactionsJson)
+        private static IEnumerable<Transaction> LoadTransactionsFromJson(string transactionsJson) =>
+            string.IsNullOrWhiteSpace(transactionsJson)
                 ? new List<Transaction>()
-                : JsonConvert.DeserializeObject<ICollection<Transaction>>(customTransactionsJson);
+                : JsonConvert.DeserializeObject<ICollection<Transaction>>(transactionsJson);
 
         public static void UpdateTransaction(Transaction transaction)
         {
@@ -116,6 +118,11 @@ namespace Core
             transactions.Remove(transaction);
             transactions.Add(transaction);
             State.Instance = new State(State.Instance.Categories.ToHashSet(), transactions);
+        }
+
+        public static string SaveTransactionsToJson()
+        {
+            return JsonConvert.SerializeObject(State.Instance.Transactions, Formatting.Indented);
         }
     }
 }

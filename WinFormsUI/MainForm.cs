@@ -17,6 +17,7 @@ namespace WinFormsUI
         const string autoCategoriesFileName = "categories/autoCategories.json";
         const string compositeCategoriesFileName = "categories/compositeCategories.json";
         const string customTransactionsFileName = "customTransactions.json";
+        const string modifiedTransactionsFileName = "modifiedTransactions.json";
 
         private Date startDate, endDate;
         private double smoothingRatio;
@@ -59,7 +60,13 @@ namespace WinFormsUI
             LoadCategories();
             LoadTransactions();
 
-            File.WriteAllText(autoCategoriesFileName, StateManager.SaveCategories().autoCategoriesJson);
+            State.OnStateChanged += SaveUpdatedTransactions;
+            File.WriteAllText(autoCategoriesFileName, StateManager.SaveCategories().autoCategoriesJson);            
+        }
+
+        private void SaveUpdatedTransactions()
+        {
+            File.WriteAllText(modifiedTransactionsFileName, StateManager.SaveTransactionsToJson());
         }
 
         private void LoadCategories()
@@ -102,8 +109,13 @@ namespace WinFormsUI
                 File.WriteAllText(customTransactionsFileName, "[]");
             }
             var customTransactions = File.ReadAllText(customTransactionsFileName);
+            if (!File.Exists(modifiedTransactionsFileName))
+            {
+                File.WriteAllText(modifiedTransactionsFileName, "[]");
+            }
+            var modifiedTransactions = File.ReadAllText(modifiedTransactionsFileName);
 
-            StateManager.LoadTransactions(filesUsb.Concat(filesPb).Concat(filesKb), customTransactions);
+            StateManager.LoadTransactions(filesUsb.Concat(filesPb).Concat(filesKb), customTransactions, modifiedTransactions);
         }
 
         private void RefreshCategories()
