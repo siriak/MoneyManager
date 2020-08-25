@@ -53,6 +53,7 @@ namespace Core.Tests
 			var transaction1 = new Transaction("1111", new Date(2000, 12, 31), new Money(1.99, Currency.UAH), "food", "Groceries");
 			var transaction2 = new Transaction("1111", new Date(2000, 12, 31), new Money(1.99, Currency.UAH), "food", "Groceries");
 			transaction1.Equals(transaction2).Should().Be(true);
+			transaction2.Equals(transaction1).Should().Be(true);
 		}
 
 		[Fact]
@@ -61,6 +62,7 @@ namespace Core.Tests
 			var transaction1 = new Transaction("1111", new Date(2000, 12, 31), new Money(1.99, Currency.UAH), "food", "Groceries");
 			var transaction2 = new Transaction("1111", new Date(2020, 12, 31), new Money(1.99, Currency.UAH), "food", "Groceries");
 			transaction1.Equals(transaction2).Should().Be(false);
+			transaction2.Equals(transaction1).Should().Be(false);
 		}
 	}
 }

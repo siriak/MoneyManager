@@ -65,8 +65,7 @@ namespace Core
                 ? Array.Empty<CompositeCategory>()
                 : JsonConvert.DeserializeObject<CompositeCategory[]>(compositeCategoriesJson);
 
-        public static void LoadTransactions(IEnumerable<(string key, Stream stream)> files, string customTransactionsJson, 
-            string modifiedTransactionsJson)
+        public static void LoadTransactions(IEnumerable<(string key, Stream stream)> files, string transactionsJson)
         {
             var newTransactions = new List<Transaction>();
             foreach (var (key, stream) in files)
@@ -74,7 +73,6 @@ namespace Core
                 newTransactions.AddRange(importers[key].Load(stream));
             }
 
-            newTransactions.AddRange(LoadTransactionsFromJson(customTransactionsJson));
             Func<string, string> suggestName = s => $"[Auto] {s}";
             var newCategories = newTransactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != suggestName(c)))
                 .Select(c => new AutoCategory(suggestName(c), 1, 10000, c)).ToList();
@@ -84,7 +82,7 @@ namespace Core
             categories.AddRange(newCategories);
 
             var transactions = new List<Transaction>();
-            transactions.AddRange(LoadTransactionsFromJson(modifiedTransactionsJson));
+            transactions.AddRange(LoadTransactionsFromJson(transactionsJson));
             transactions.AddRange(State.Instance.Transactions);
             transactions.AddRange(newTransactions);
 

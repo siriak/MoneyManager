@@ -16,12 +16,10 @@ namespace WinFormsUI
         const string regexCategoriesFileName = "categories/regexCategories.json";
         const string autoCategoriesFileName = "categories/autoCategories.json";
         const string compositeCategoriesFileName = "categories/compositeCategories.json";
-        const string customTransactionsFileName = "customTransactions.json";
-        const string modifiedTransactionsFileName = "modifiedTransactions.json";
+        const string transactionsFileName = "transactions.json";
 
         private Date startDate, endDate;
         private double smoothingRatio;
-        public IReadOnlyList<Transaction> displayedTransactions;
 
         public MainForm() => InitializeComponent();
         private event Action OnFilteringUpdated = () => { };
@@ -66,7 +64,7 @@ namespace WinFormsUI
 
         private void SaveUpdatedTransactions()
         {
-            File.WriteAllText(modifiedTransactionsFileName, StateManager.SaveTransactionsToJson());
+            File.WriteAllText(transactionsFileName, StateManager.SaveTransactionsToJson());
         }
 
         private void LoadCategories()
@@ -104,18 +102,13 @@ namespace WinFormsUI
             var filesKb = Directory.GetFiles(currentDirecory + "/kb", "*.*", SearchOption.AllDirectories)
                 .Select(f => ("kb", (Stream)File.OpenRead(f)));
 
-            if (!File.Exists(customTransactionsFileName))
+            if (!File.Exists(transactionsFileName))
             {
-                File.WriteAllText(customTransactionsFileName, "[]");
+                File.WriteAllText(transactionsFileName, "[]");
             }
-            var customTransactions = File.ReadAllText(customTransactionsFileName);
-            if (!File.Exists(modifiedTransactionsFileName))
-            {
-                File.WriteAllText(modifiedTransactionsFileName, "[]");
-            }
-            var modifiedTransactions = File.ReadAllText(modifiedTransactionsFileName);
+            var modifiedTransactions = File.ReadAllText(transactionsFileName);
 
-            StateManager.LoadTransactions(filesUsb.Concat(filesPb).Concat(filesKb), customTransactions, modifiedTransactions);
+            StateManager.LoadTransactions(filesUsb.Concat(filesPb).Concat(filesKb), modifiedTransactions);
         }
 
         private void RefreshCategories()
@@ -156,10 +149,7 @@ namespace WinFormsUI
         {
             lbTransactions.Items.Clear();
 
-            displayedTransactions = StateHelper.GetTransactionsUnion(
-                          clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText),
-                          startDate,
-                          endDate).Reverse().ToArray();
+            var displayedTransactions = GetTransactionsToDisplay();
 
             lbTransactions.Items.AddRange(displayedTransactions
                      .Select(t =>
@@ -170,6 +160,14 @@ namespace WinFormsUI
                          return DisplayManager.FormatLedgerRecord(t, categories);
                      })
                      .ToArray());
+        }
+
+        private Transaction[] GetTransactionsToDisplay()
+        {
+            return StateHelper.GetTransactionsUnion(
+                          clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText),
+                          startDate,
+                          endDate).Reverse().ToArray();
         }
 
         private void RefreshChart()
@@ -269,9 +267,9 @@ namespace WinFormsUI
         private void lb_DoubleClick(object sender, EventArgs e)
         {
             var transactionRecordIndex = lbTransactions.SelectedIndex;
-            var transaction = displayedTransactions[transactionRecordIndex];
+            var transaction = GetTransactionsToDisplay()[transactionRecordIndex];
 
-            var transactionEditor = new TransactionEditor(this);
+            var transactionEditor = new TransactionEditor(transaction);
             transactionEditor.txtboxCardNumber.Text = transaction.CardNumber;
             transactionEditor.txtboxCategory.Text = transaction.Category;
             transactionEditor.txtboxDescription.Text = transaction.Description;

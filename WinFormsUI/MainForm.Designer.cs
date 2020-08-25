@@ -261,7 +261,7 @@ namespace WinFormsUI
         private System.Windows.Forms.Label lblStartDate;
         private System.Windows.Forms.Label lblSmoothingRatio;
         private System.Windows.Forms.TextBox txtboxSmoothingRatio;
-        public System.Windows.Forms.ListBox lbTransactions;
+        private System.Windows.Forms.ListBox lbTransactions;
         private System.Windows.Forms.TabPage tabCumulativeTrends;
         private System.Windows.Forms.TabPage tabLedger;
         private System.Windows.Forms.TabControl tabs;

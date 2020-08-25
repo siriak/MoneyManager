@@ -29,10 +29,8 @@ namespace WinFormsUI
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent(MainForm form)
+        private void InitializeComponent()
         {
-            this.mainForm = form;
-
             this.lblCardNumber = new System.Windows.Forms.Label();
             this.lblCategory = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
@@ -110,8 +108,6 @@ namespace WinFormsUI
         public System.Windows.Forms.TextBox txtboxCategory;
         public System.Windows.Forms.TextBox txtboxDescription;
         public System.Windows.Forms.Button btnSave;
-
-        private MainForm mainForm;
         #endregion
     }
 }
