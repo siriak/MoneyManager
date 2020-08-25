@@ -4,6 +4,7 @@ using System.Linq;
 using Core.TimeSeries;
 using System.Text.RegularExpressions;
 using Core.Categories;
+using Newtonsoft.Json;
 
 namespace Core
 {
@@ -104,5 +105,15 @@ namespace Core
                                .Where(filter)
                                .ToList();
         }
+
+        public static string SaveTransactionsToJson(this State state)
+        {
+            return JsonConvert.SerializeObject(state.Transactions, Formatting.Indented);
+        }
+
+        public static IEnumerable<Transaction> ParseTransactions(string transactionsJson) =>
+            string.IsNullOrWhiteSpace(transactionsJson)
+                ? new List<Transaction>()
+                : JsonConvert.DeserializeObject<ICollection<Transaction>>(transactionsJson);
     }
 }

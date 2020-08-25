@@ -15,7 +15,7 @@ namespace WinFormsUI
         const string regexCategoriesFileName = "categories/regexCategories.json";
         const string autoCategoriesFileName = "categories/autoCategories.json";
         const string compositeCategoriesFileName = "categories/compositeCategories.json";
-        const string customTransactionsFileName = "customTransactions.json";
+        const string transactionsFileName = "transactions.json";
 
         private Date startDate, endDate;
         private double smoothingRatio;
@@ -27,6 +27,9 @@ namespace WinFormsUI
         {
             OnFilteringUpdated += RefreshList;
             OnFilteringUpdated += RefreshChart;
+            State.OnStateChanged += RefreshCategories;
+            State.OnStateChanged += RefreshList;
+            State.OnStateChanged += RefreshChart;
 
             var cts = new CancellationTokenSource();
             clbCategories.ItemCheck += async (o, e) =>
@@ -54,11 +57,13 @@ namespace WinFormsUI
             LoadCategories();
             LoadTransactions();
 
-            File.WriteAllText(autoCategoriesFileName, StateManager.SaveCategories().autoCategoriesJson);
+            State.OnStateChanged += SaveUpdatedTransactions;
+            File.WriteAllText(autoCategoriesFileName, StateManager.SaveCategories().autoCategoriesJson);            
+        }
 
-            RefreshCategories();
-            RefreshChart();
-            RefreshList();
+        private void SaveUpdatedTransactions()
+        {
+            File.WriteAllText(transactionsFileName, State.Instance.SaveTransactionsToJson());
         }
 
         private void LoadCategories()
@@ -96,13 +101,13 @@ namespace WinFormsUI
             var filesKb = Directory.GetFiles(currentDirecory + "/kb", "*.*", SearchOption.AllDirectories)
                 .Select(f => ("kb", (Stream)File.OpenRead(f)));
 
-            if (!File.Exists(customTransactionsFileName))
+            if (!File.Exists(transactionsFileName))
             {
-                File.WriteAllText(customTransactionsFileName, "[]");
+                File.WriteAllText(transactionsFileName, "[]");
             }
-            var customTransactions = File.ReadAllText(customTransactionsFileName);
+            var modifiedTransactions = File.ReadAllText(transactionsFileName);
 
-            StateManager.LoadTransactions(filesUsb.Concat(filesPb).Concat(filesKb), customTransactions);
+            StateManager.LoadTransactions(filesUsb.Concat(filesPb).Concat(filesKb), modifiedTransactions);
         }
 
         private void RefreshCategories()
@@ -143,11 +148,9 @@ namespace WinFormsUI
         {
             lbTransactions.Items.Clear();
 
-            lbTransactions.Items.AddRange(
-                StateHelper.GetTransactionsUnion(
-                          clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText),
-                          startDate,
-                          endDate)
+            var displayedTransactions = GetTransactionsToDisplay();
+
+            lbTransactions.Items.AddRange(displayedTransactions
                      .Select(t =>
                      {
                          var categories = chboxAllCategories.Checked
@@ -155,8 +158,15 @@ namespace WinFormsUI
                              : State.Instance.GetAllMatchingCategoriesOfType<CompositeCategory>(t);
                          return DisplayManager.FormatLedgerRecord(t, categories);
                      })
-                     .Reverse()
                      .ToArray());
+        }
+
+        private Transaction[] GetTransactionsToDisplay()
+        {
+            return StateHelper.GetTransactionsUnion(
+                          clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText),
+                          startDate,
+                          endDate).Reverse().ToArray();
         }
 
         private void RefreshChart()
@@ -251,6 +261,18 @@ namespace WinFormsUI
         private void chboxAllCategories_CheckedChanged(object sender, EventArgs e)
         {
             RefreshList();
+        }
+
+        private void lb_DoubleClick(object sender, EventArgs e)
+        {
+            var transactionRecordIndex = lbTransactions.SelectedIndex;
+            var transaction = GetTransactionsToDisplay()[transactionRecordIndex];
+
+            var transactionEditor = new TransactionEditor(transaction);
+            transactionEditor.txtboxCardNumber.Text = transaction.CardNumber;
+            transactionEditor.txtboxCategory.Text = transaction.Category;
+            transactionEditor.txtboxDescription.Text = transaction.Description;
+            transactionEditor.ShowDialog();
         }
     }
 }

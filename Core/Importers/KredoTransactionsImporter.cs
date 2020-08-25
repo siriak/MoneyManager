@@ -34,7 +34,6 @@ namespace Core.Importers
 
                     var actualText = extractionStrategy.GetResultantText().Split("\n").Skip(28).SkipLast(2).ToArray();
                     var cardNumber = actualText[0];
-                    const string category = "КредоБанк";
                     actualText = actualText.Skip(1).ToArray();
 
                     while (actualText.Length != 0)
@@ -51,7 +50,7 @@ namespace Core.Importers
                         var amount = data.TakeLast(3).First();
                         var currency = data.TakeLast(2).First();
                         transactions.Add(new Transaction(cardNumber, Date.Parse(date),
-                            new Money(double.Parse(amount), MoneyManager.ParseCurrency(currency)), description, category));
+                            new Money(double.Parse(amount), MoneyManager.ParseCurrency(currency)), description, string.Empty));
 
                         actualText = actualText.TakeLast(actualText.Length - transactionData.Length - 2).ToArray();
                     }

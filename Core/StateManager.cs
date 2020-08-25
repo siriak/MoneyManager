@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace Core
 {
-    public class StateManager
+    public static class StateManager
     {
         private static Dictionary<string, ITransactionsImporter> importers = new Dictionary<string, ITransactionsImporter>
         {
@@ -65,7 +65,7 @@ namespace Core
                 ? Array.Empty<CompositeCategory>()
                 : JsonConvert.DeserializeObject<CompositeCategory[]>(compositeCategoriesJson);
 
-        public static void LoadTransactions(IEnumerable<(string key, Stream stream)> files, string customTransactionsJson)
+        public static void LoadTransactions(IEnumerable<(string key, Stream stream)> files, string transactionsJson)
         {
             var newTransactions = new List<Transaction>();
             foreach (var (key, stream) in files)
@@ -73,7 +73,6 @@ namespace Core
                 newTransactions.AddRange(importers[key].Load(stream));
             }
 
-            newTransactions.AddRange(LoadCustomTransactions(customTransactionsJson));
             Func<string, string> suggestName = s => $"[Auto] {s}";
             var newCategories = newTransactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != suggestName(c)))
                 .Select(c => new AutoCategory(suggestName(c), 1, 10000, c)).ToList();
@@ -83,15 +82,35 @@ namespace Core
             categories.AddRange(newCategories);
 
             var transactions = new List<Transaction>();
+            transactions.AddRange(StateHelper.ParseTransactions(transactionsJson));
             transactions.AddRange(State.Instance.Transactions);
             transactions.AddRange(newTransactions);
 
             State.Instance = new State(categories.ToHashSet(), transactions.ToHashSet());
+
+            var transactionsWithoutCategory = transactions.Where(t => string.IsNullOrWhiteSpace(t.Category));
+
+            foreach (var t in transactionsWithoutCategory)
+            {
+                var c = State.Instance.GetAllMatchingCategoriesOfType<CompositeCategory>(t).ToList();
+                if (c.Count == 1)
+                {
+                    var newTransaction = new Transaction(t.CardNumber, t.Date, t.Amount, t.Description, c[0], t.GetHashCode());
+                    UpdateTransaction(newTransaction);
+                }
+            }
         }
 
-        private static IEnumerable<Transaction> LoadCustomTransactions(string customTransactionsJson) =>
-            string.IsNullOrWhiteSpace(customTransactionsJson)
-                ? new List<Transaction>()
-                : JsonConvert.DeserializeObject<ICollection<Transaction>>(customTransactionsJson);
+        public static void UpdateTransaction(Transaction transaction)
+        {
+            var transactions = State.Instance.Transactions.ToHashSet();
+            if (!transactions.Contains(transaction))
+            {
+                throw new ArgumentException($"{nameof(transaction)} not found");
+            }
+            transactions.Remove(transaction);
+            transactions.Add(transaction);
+            State.Instance = new State(State.Instance.Categories.ToHashSet(), transactions);
+        }
     }
 }
