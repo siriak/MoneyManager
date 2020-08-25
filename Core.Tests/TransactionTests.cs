@@ -44,6 +44,7 @@ namespace Core.Tests
 			var transaction1 = new Transaction("1111", new Date(2000, 12, 31), new Money(1.99, Currency.UAH), "food", "Groceries");
 			var transaction2 = new Transaction("1111", new Date(2000, 12, 31), new Money(1.99, Currency.UAH), "food", "Groceries");
 			transaction1.CompareTo(transaction2).Should().Be(0);
+			transaction2.CompareTo(transaction1).Should().Be(0);
 		}
 
 		[Fact]
