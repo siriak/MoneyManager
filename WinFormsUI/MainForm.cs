@@ -64,7 +64,7 @@ namespace WinFormsUI
 
         private void SaveUpdatedTransactions()
         {
-            File.WriteAllText(transactionsFileName, StateManager.SaveTransactionsToJson());
+            File.WriteAllText(transactionsFileName, StateHelper.SaveTransactionsToJson());
         }
 
         private void LoadCategories()

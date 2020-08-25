@@ -82,7 +82,7 @@ namespace Core
             categories.AddRange(newCategories);
 
             var transactions = new List<Transaction>();
-            transactions.AddRange(LoadTransactionsFromJson(transactionsJson));
+            transactions.AddRange(StateHelper.ParseTransactions(transactionsJson));
             transactions.AddRange(State.Instance.Transactions);
             transactions.AddRange(newTransactions);
 
@@ -101,11 +101,6 @@ namespace Core
             }
         }
 
-        private static IEnumerable<Transaction> LoadTransactionsFromJson(string transactionsJson) =>
-            string.IsNullOrWhiteSpace(transactionsJson)
-                ? new List<Transaction>()
-                : JsonConvert.DeserializeObject<ICollection<Transaction>>(transactionsJson);
-
         public static void UpdateTransaction(Transaction transaction)
         {
             var transactions = State.Instance.Transactions.ToHashSet();
@@ -116,11 +111,6 @@ namespace Core
             transactions.Remove(transaction);
             transactions.Add(transaction);
             State.Instance = new State(State.Instance.Categories.ToHashSet(), transactions);
-        }
-
-        public static string SaveTransactionsToJson()
-        {
-            return JsonConvert.SerializeObject(State.Instance.Transactions, Formatting.Indented);
         }
     }
 }
