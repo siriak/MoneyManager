@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace Core
 {
-    public class StateManager
+    public static class StateManager
     {
         private static Dictionary<string, ITransactionsImporter> importers = new Dictionary<string, ITransactionsImporter>
         {
