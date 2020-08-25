@@ -106,9 +106,9 @@ namespace Core
                                .ToList();
         }
 
-        public static string SaveTransactionsToJson()
+        public static string SaveTransactionsToJson(this State state)
         {
-            return JsonConvert.SerializeObject(State.Instance.Transactions, Formatting.Indented);
+            return JsonConvert.SerializeObject(state.Transactions, Formatting.Indented);
         }
 
         public static IEnumerable<Transaction> ParseTransactions(string transactionsJson) =>
