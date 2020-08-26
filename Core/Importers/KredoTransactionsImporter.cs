@@ -28,7 +28,7 @@ namespace Core.Importers
                 var transactions = new List<Transaction>();
                 var pagesAmount = pdfDoc.GetNumberOfPages();
 
-                for (int i = 0; i < pagesAmount; i++)
+                for (var i = 0; i < pagesAmount; i++)
                 {
                     new PdfCanvasProcessor(listener).ProcessPageContent(pdfDoc.GetPage(i + 1));
 
@@ -38,15 +38,15 @@ namespace Core.Importers
 
                     while (actualText.Length != 0)
                     {
-                        var transactionData = actualText.Skip(2).TakeWhile(s => !Date.TryParse(s, out Date d)).ToArray();
+                        var transactionData = actualText.Skip(2).TakeWhile(s => !Date.TryParse(s, out var d)).ToArray();
 
-                        transactionData = Date.TryParse(transactionData.Last().Trim('/'), out Date d)
+                        transactionData = Date.TryParse(transactionData.Last().Trim('/'), out var d)
                             ? transactionData.SkipLast(1).ToArray() : transactionData;
 
                         var data = transactionData.First().Split();
                         var date = actualText[0].Trim('/');
                         var description = string.Join(' ', data.Skip(1)
-                            .TakeWhile(s => !double.TryParse(s.Split()[0], out double d)));
+                            .TakeWhile(s => !double.TryParse(s.Split()[0], out var d)));
                         var amount = data.TakeLast(3).First();
                         var currency = data.TakeLast(2).First();
                         transactions.Add(new Transaction(cardNumber, Date.Parse(date),
