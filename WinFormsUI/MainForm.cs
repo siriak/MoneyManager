@@ -58,6 +58,7 @@ namespace WinFormsUI
             LoadTransactions();
 
             State.OnStateChanged += SaveUpdatedTransactions;
+            SaveUpdatedTransactions();
             File.WriteAllText(autoCategoriesFileName, StateManager.SaveCategories().autoCategoriesJson);            
         }
 
