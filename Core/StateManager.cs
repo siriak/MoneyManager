@@ -88,7 +88,7 @@ namespace Core
 
             State.Instance = new State(categories.ToHashSet(), transactions.ToHashSet());
 
-            var transactionsWithoutCategory = transactions.Where(t => string.IsNullOrWhiteSpace(t.Category));
+            var transactionsWithoutCategory = State.Instance.Transactions.Where(t => string.IsNullOrWhiteSpace(t.Category));
 
             foreach (var t in transactionsWithoutCategory)
             {
