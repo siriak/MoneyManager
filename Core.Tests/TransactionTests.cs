@@ -33,24 +33,6 @@ namespace Core.Tests
 		}
 
 		[Fact]
-		public void CompareTo_DatesAreDifferent_OrderIsCorrect()
-		{
-			var transaction1 = new Transaction(card, new Date(2020, 12, 31), new Money(1.99, Currency.UAH), description, category);
-			var transaction2 = new Transaction(card, new Date(2000, 12, 31), new Money(1.99, Currency.UAH), description, category);
-			transaction1.CompareTo(transaction2).Should().Be(1);
-			transaction2.CompareTo(transaction1).Should().Be(-1);
-		}
-
-		[Fact]
-		public void CompareTo_DatesAreSame_OrderIsCorrect()
-		{
-			var transaction1 = new Transaction(card, new Date(2000, 12, 31), new Money(1.99, Currency.UAH), description, category);
-			var transaction2 = new Transaction(card, new Date(2000, 12, 31), new Money(1.99, Currency.UAH), description, category);
-			transaction1.CompareTo(transaction2).Should().Be(0);
-			transaction2.CompareTo(transaction1).Should().Be(0);
-		}
-
-		[Fact]
 		public void Equals_TransactionsAreEqual_True()
 		{
 			var transaction1 = new Transaction(card, new Date(2000, 12, 31), new Money(1.99, Currency.UAH), description, category);

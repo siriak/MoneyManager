@@ -47,7 +47,7 @@ namespace Core
             var auto = LoadAuto(autoCategoriesFileName);
             var composite = LoadComposite(compositeCategoriesFileName);
 
-            State.Instance = new State(regex.Cast<Category>().Concat(auto).Concat(composite).ToHashSet(), State.Instance.Transactions.ToHashSet());
+            State.Instance = new State(regex.Cast<Category>().Concat(auto).Concat(composite).Concat(State.Instance.Categories).ToHashSet(), State.Instance.Transactions.ToHashSet());
         }
 
         public static IEnumerable<RegexCategory> LoadRegex(string regexCategoriesJson) =>
@@ -73,22 +73,22 @@ namespace Core
                 newTransactions.AddRange(importers[key].Load(stream));
             }
 
+            var transactions = new List<Transaction>();
+            transactions.AddRange(StateHelper.ParseTransactions(transactionsJson));
+            transactions.AddRange(newTransactions);
+            transactions.AddRange(State.Instance.Transactions);
+
             Func<string, string> suggestName = s => $"[Auto] {s}";
-            var newCategories = newTransactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != suggestName(c)))
+            var newCategories = transactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != suggestName(c)))
                 .Select(c => new AutoCategory(suggestName(c), 1, 10000, c)).ToList();
 
             var categories = new List<Category>(); 
             categories.AddRange(State.Instance.Categories);
             categories.AddRange(newCategories);
 
-            var transactions = new List<Transaction>();
-            transactions.AddRange(StateHelper.ParseTransactions(transactionsJson));
-            transactions.AddRange(State.Instance.Transactions);
-            transactions.AddRange(newTransactions);
-
             State.Instance = new State(categories.ToHashSet(), transactions.ToHashSet());
 
-            var transactionsWithoutCategory = transactions.Where(t => string.IsNullOrWhiteSpace(t.Category));
+            var transactionsWithoutCategory = State.Instance.Transactions.Where(t => string.IsNullOrWhiteSpace(t.Category));
 
             foreach (var t in transactionsWithoutCategory)
             {

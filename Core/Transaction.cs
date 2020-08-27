@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Core
 {
-    public class Transaction : IComparable<Transaction>
+    public class Transaction
     {
         [JsonConstructor]
         public Transaction(string cardNumber, Date date, Money amount, string description, string category, int? hash = null)
@@ -25,10 +25,7 @@ namespace Core
 
         public string Description { get; }
         public string Category { get; }
-
-        private int Hash { get; }
-
-        public int CompareTo(Transaction other) => Date.CompareTo(other.Date);
+        public int Hash { get; }
 
         public override int GetHashCode()
         {
@@ -42,12 +39,13 @@ namespace Core
 
         private int GetInitialHashCode()
         {
-            const int k = 17;
-            var hash = Date.GetHashCode();
-            hash = k * hash + Category.GetHashCode();
-            hash = k * hash + Amount.GetHashCode();
-            hash = k * hash + CardNumber.GetHashCode();
-            hash = k * hash + Description.GetHashCode();
+            // Implemented this way to provide consistent hash codes between builds and runs
+            const int k = 31;
+            var hash = Date.GetStableHashCode();
+            hash = k * hash + Amount.GetStableHashCode();
+            hash = k * hash + Category.GetStableHashCode();
+            hash = k * hash + CardNumber.GetStableHashCode();
+            hash = k * hash + Description.GetStableHashCode();
             return hash;
         }
     }

@@ -7,7 +7,7 @@ namespace Core
 {
     public class State
     {
-        private static State instance = new State(new HashSet<Category>(), new SortedSet<Transaction>());
+        private static State instance = new State(new HashSet<Category>(), new HashSet<Transaction>());
 
         public static State Instance
         {
@@ -26,10 +26,10 @@ namespace Core
         public IReadOnlyCollection<Transaction> Transactions { get; }
 
         [JsonConstructor]
-        public State(ISet<Category> categories, ISet<Transaction> transactions)
+        public State(HashSet<Category> categories, HashSet<Transaction> transactions)
         {
-            Transactions = new SortedSet<Transaction>(transactions);
-            Categories = new List<Category>(categories);
+            Transactions = transactions;
+            Categories = categories;
         }
     }
 }

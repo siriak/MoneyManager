@@ -90,9 +90,10 @@ namespace Core
 
         public static IEnumerable<Transaction> GetTransactions(string category, Date start, Date end)
         {
-            var filteredTransactions = State.Instance.Transactions.SkipWhile(t => t.Date < start)
-                                                   .TakeWhile(t => t.Date <= end)
+            var filteredTransactions = State.Instance.Transactions
+                                                   .Where(t => t.Date >= start && t.Date <= end)
                                                    .Where(GetFilterForCategory(category))
+                                                   .OrderBy(t => t.Date)
                                                    .ToList();
             return filteredTransactions;
         }
@@ -100,9 +101,10 @@ namespace Core
         public static IEnumerable<Transaction> GetTransactionsUnion(IEnumerable<string> categories, Date start, Date end)
         {
             Func<Transaction, bool> filter = t => categories.Any(c => GetFilterForCategory(c)(t));
-            return State.Instance.Transactions.SkipWhile(t => t.Date < start)
-                               .TakeWhile(t => t.Date <= end)
+            return State.Instance.Transactions
+                               .Where(t => t.Date >= start && t.Date <= end)
                                .Where(filter)
+                               .OrderBy(t => t.Date)
                                .ToList();
         }
 

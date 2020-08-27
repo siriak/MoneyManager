@@ -25,12 +25,6 @@ namespace WinFormsUI
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            OnFilteringUpdated += RefreshList;
-            OnFilteringUpdated += RefreshChart;
-            State.OnStateChanged += RefreshCategories;
-            State.OnStateChanged += RefreshList;
-            State.OnStateChanged += RefreshChart;
-
             var cts = new CancellationTokenSource();
             clbCategories.ItemCheck += async (o, e) =>
             {
@@ -57,8 +51,19 @@ namespace WinFormsUI
             LoadCategories();
             LoadTransactions();
 
+            OnFilteringUpdated += RefreshList;
+            OnFilteringUpdated += RefreshChart;
             State.OnStateChanged += SaveUpdatedTransactions;
+            State.OnStateChanged += RefreshCategories;
+            State.OnStateChanged += RefreshList;
+            State.OnStateChanged += RefreshChart;
+
+            SaveUpdatedTransactions();
             File.WriteAllText(autoCategoriesFileName, StateManager.SaveCategories().autoCategoriesJson);            
+            
+            RefreshCategories();
+            RefreshList();
+            RefreshChart();
         }
 
         private void SaveUpdatedTransactions()
