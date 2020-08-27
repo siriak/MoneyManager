@@ -1,22 +1,23 @@
 ﻿using FluentAssertions;
-using Xunit;
+using NUnit.Framework;
 
 namespace Core.Tests
 {
+	[TestFixture]
 	public class TransactionTests
 	{
 		private const string category = "Groceries";
 		private const string description = "Food";
 		private const string card = "1111";
 
-		[Fact]
+		[Test]
 		public void Constructor_TransactionIsLoaded_HashIsSet()
 		{
 			var transaction = new Transaction(card, new Date(2000, 12, 31), new Money(1.99, Currency.UAH), description, category);
 			transaction.GetHashCode().Should().NotBe(0);
 		}
 
-		[Fact]
+		[Test]
 		public void Constructor_TransactionsDataAreSame_HashesAreEqual()
 		{
 			var transaction1 = new Transaction(card, new Date(2000, 12, 31), new Money(1.99, Currency.UAH), description, category);
@@ -24,7 +25,7 @@ namespace Core.Tests
 			transaction1.GetHashCode().Should().Be(transaction2.GetHashCode());
 		}
 
-		[Fact]
+		[Test]
 		public void Constructor_HashIsProvided_HashIsCorrect()
 		{
 			const int expectedHash = 123;
@@ -32,7 +33,7 @@ namespace Core.Tests
 			transaction.GetHashCode().Should().Be(expectedHash);
 		}
 
-		[Fact]
+		[Test]
 		public void Equals_TransactionsAreEqual_True()
 		{
 			var transaction1 = new Transaction(card, new Date(2000, 12, 31), new Money(1.99, Currency.UAH), description, category);
@@ -41,7 +42,7 @@ namespace Core.Tests
 			transaction2.Equals(transaction1).Should().Be(true);
 		}
 
-		[Fact]
+		[Test]
 		public void Equals_TransactionsAreDifferent_False()
 		{
 			var transaction1 = new Transaction(card, new Date(2000, 12, 31), new Money(1.99, Currency.UAH), description, category);
