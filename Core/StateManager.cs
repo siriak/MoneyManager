@@ -47,7 +47,7 @@ namespace Core
             var auto = LoadAuto(autoCategoriesFileName);
             var composite = LoadComposite(compositeCategoriesFileName);
 
-            State.Instance = new State(regex.Cast<Category>().Concat(auto).Concat(composite).ToHashSet(), State.Instance.Transactions.ToHashSet());
+            State.Instance = new State(regex.Cast<Category>().Concat(auto).Concat(composite).Concat(State.Instance.Categories).ToHashSet(), State.Instance.Transactions.ToHashSet());
         }
 
         public static IEnumerable<RegexCategory> LoadRegex(string regexCategoriesJson) =>
@@ -73,18 +73,18 @@ namespace Core
                 newTransactions.AddRange(importers[key].Load(stream));
             }
 
-            Func<string, string> suggestName = s => $"[Auto] {s}";
-            var newCategories = newTransactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != suggestName(c)))
-                .Select(c => new AutoCategory(suggestName(c), 1, 10000, c)).ToList();
-
             var categories = new List<Category>(); 
             categories.AddRange(State.Instance.Categories);
-            categories.AddRange(newCategories);
 
             var transactions = new List<Transaction>();
-            transactions.AddRange(StateHelper.ParseTransactions(transactionsJson));
             transactions.AddRange(State.Instance.Transactions);
+            transactions.AddRange(StateHelper.ParseTransactions(transactionsJson));
             transactions.AddRange(newTransactions);
+
+            Func<string, string> suggestName = s => $"[Auto] {s}";
+            var newCategories = transactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != suggestName(c)))
+                .Select(c => new AutoCategory(suggestName(c), 1, 10000, c)).ToList();
+            categories.AddRange(newCategories);
 
             State.Instance = new State(categories.ToHashSet(), transactions.ToHashSet());
 
