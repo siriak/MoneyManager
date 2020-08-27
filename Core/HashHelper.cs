@@ -1,6 +1,6 @@
 ﻿namespace Core
 {
-    public static class StringHelper
+    public static class HashHelper
     {
         public static int GetStableHashCode(this string str)
         {
@@ -21,6 +21,25 @@
                 }
 
                 return hash1 + hash2 * 1_566_083_941;
+            }
+        }
+
+        public static int GetStableHashCode(this Money money)
+        {
+            unchecked
+            {
+                return 31 * (int) money.Amount + (int) money.Currency;
+            }
+        }
+
+        public static int GetStableHashCode(this Date date)
+        {
+            unchecked
+            {
+                var hash = date.Year;
+                hash = 31 * hash + date.Month;
+                hash = 31 * hash + date.Day;
+                return hash;
             }
         }
     }

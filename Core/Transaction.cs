@@ -39,9 +39,10 @@ namespace Core
 
         private int GetInitialHashCode()
         {
+            // Implemented this way to provide consistent hash codes between builds and runs
             const int k = 31;
-            var hash = Date.GetHashCode();
-            hash = k * hash + Amount.GetHashCode();
+            var hash = Date.GetStableHashCode();
+            hash = k * hash + Amount.GetStableHashCode();
             hash = k * hash + Category.GetStableHashCode();
             hash = k * hash + CardNumber.GetStableHashCode();
             hash = k * hash + Description.GetStableHashCode();
