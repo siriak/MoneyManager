@@ -20,7 +20,7 @@ namespace Core.Tests
 			var t1Json = File.ReadAllText(t1File);
 			t1 = StateHelper.ParseTransactions(t1Json).ToList();
 			t1.Should().HaveCount(2);
-			t1[0].CardNumber.Should().NotBe(t1[1].Hash);
+			//t1[0].CardNumber.Should().NotBe(t1[1].Hash);
 			t1[0].Hash.Should().NotBe(t1[1].Hash);
 			t1[0].Hash.Should().NotBe(t1[1].Hash);
 			t1[0].Hash.Should().NotBe(t1[1].Hash);
