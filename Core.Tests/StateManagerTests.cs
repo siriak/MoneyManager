@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,30 +12,32 @@ namespace Core.Tests
 	public class StateManagerTests
 	{
 		const string t1File = "test/t1.json";
-		List<Transaction> t1 = new List<Transaction>();
+
 
 		[Test]
 		[Order(0)]
 		public void Import()
 		{
 			var t1Json = File.ReadAllText(t1File);
-			t1 = StateHelper.ParseTransactions(t1Json).ToList();
-			t1.Should().HaveCount(2);
-			//t1[0].CardNumber.Should().NotBe(t1[1].Hash);
-			t1[0].Hash.Should().NotBe(t1[1].Hash);
-			t1[0].Hash.Should().NotBe(t1[1].Hash);
-			t1[0].Hash.Should().NotBe(t1[1].Hash);
-			t1[0].Hash.Should().NotBe(t1[1].Hash);
+			StateManager.LoadTransactions(Enumerable.Empty<(string, Stream)>(), t1Json);
+			State.Instance.Transactions.Should().HaveCount(2);
 		}
 
 		[Test]
 		[Order(1)]
 		public void Edit()
 		{
-			StateManager.UpdateTransaction(new Transaction(t1[0].CardNumber, t1[0].Date, t1[0].Amount,
-				t1[0].Description, "Restaurants", t1[0].Hash));
-			t1.Should().HaveCount(2);
-			t1[0].Hash.Should().NotBe(t1[1].Hash);
+			var rndCategory = Randomizer.CreateRandomizer().GetString(100);
+			var t1 = State.Instance.Transactions.First();
+			var tNew = new Transaction(t1.CardNumber, t1.Date, t1.Amount,
+				t1.Description, rndCategory, t1.Hash);
+
+			StateManager.UpdateTransaction(tNew);
+
+			State.Instance.Transactions.Should().HaveCount(2);
+			State.Instance.Transactions.Should().Contain(tNew);
+			var updatedTransaction = State.Instance.Transactions.First(tNew.Equals);
+			updatedTransaction.Category.Should().Be(rndCategory);
 		}
 
 
@@ -42,7 +45,11 @@ namespace Core.Tests
 		[Order(2)]
 		public void Save()
 		{
-			File.WriteAllText(t1File, JsonConvert.SerializeObject(t1, Formatting.Indented));
+			var t1 = State.Instance.SaveTransactionsToJson();
+			var oldState = State.Instance;
+			StateManager.LoadTransactions(Enumerable.Empty<(string, Stream)>(), t1);
+
+			State.Instance.Transactions.Should().BeEquivalentTo(oldState.Transactions);
 		}
 	}
 }

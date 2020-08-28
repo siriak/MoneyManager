@@ -12,6 +12,10 @@ namespace Core
     {
         public static Func<Transaction, bool> GetFilterForCategory(string categoryName)
         {
+            if (State.Instance.Categories.All(c=>c.Name != categoryName))
+            {
+                return t => false;
+            }
             var c = State.Instance.Categories.Single(c => c.Name == categoryName);
             switch (c)
             {
