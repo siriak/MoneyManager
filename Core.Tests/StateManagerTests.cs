@@ -1,8 +1,6 @@
 using FluentAssertions;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
