@@ -11,7 +11,7 @@ namespace Core.Tests
 	[TestFixture]
 	public class StateManagerTests
 	{
-		const string t1File = "\\test\\t1.json";
+		const string t1File = "\\..\\..\\..\\TestData\\transactions.json";
 
 		[Test]
 		[Order(0)]
