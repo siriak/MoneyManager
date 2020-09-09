@@ -87,9 +87,9 @@ namespace Core
             var categories = new List<Category>(); 
             categories.AddRange(State.Instance.Categories);
             categories.AddRange(newCategories);
-            
+
             State.Instance = new State(categories.ToHashSet(), State.Instance.Transactions.ToHashSet());
-            
+
             var transactionsWithoutCategory = State.Instance.Transactions.Where(t => string.IsNullOrWhiteSpace(t.Category));
 
             foreach (var t in transactionsWithoutCategory)
