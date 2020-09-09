@@ -78,15 +78,17 @@ namespace Core
             transactions.AddRange(newTransactions);
             transactions.AddRange(State.Instance.Transactions);
 
+            State.Instance = new State(State.Instance.Categories.ToHashSet(), transactions.ToHashSet());
+
             Func<string, string> suggestName = s => $"[Auto] {s}";
-            var newCategories = transactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != suggestName(c)))
+            var newCategories = State.Instance.Transactions.Select(t => t.Category).Where(c => c is { } && State.Instance.Categories.All(sc => sc.Name != suggestName(c)))
                 .Select(c => new AutoCategory(suggestName(c), 1, 10000, c)).ToList();
 
             var categories = new List<Category>(); 
             categories.AddRange(State.Instance.Categories);
             categories.AddRange(newCategories);
 
-            State.Instance = new State(categories.ToHashSet(), transactions.ToHashSet());
+            State.Instance = new State(categories.ToHashSet(), State.Instance.Transactions.ToHashSet());
 
             var transactionsWithoutCategory = State.Instance.Transactions.Where(t => string.IsNullOrWhiteSpace(t.Category));
 

@@ -1,0 +1,32 @@
+[
+  {
+    "CardNumber": "1111",
+    "Date": {
+      "Day": 30,
+      "Month": 7,
+      "Year": 2020
+    },
+    "Amount": {
+      "Amount": -20.0,
+      "Currency": 0
+    },
+    "Description": "Milk",
+    "Category": "Restaurants",
+    "Hash": 174654399
+  },
+  {
+    "CardNumber": "2222",
+    "Date": {
+      "Day": 15,
+      "Month": 7,
+      "Year": 2020
+    },
+    "Amount": {
+      "Amount": 320.0,
+      "Currency": 0
+    },
+    "Description": "Personal transfer",
+    "Category": "Salary and social income",
+    "Hash": 160801584
+  }
+]
