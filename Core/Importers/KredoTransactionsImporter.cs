@@ -1,6 +1,7 @@
 ﻿using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -22,19 +23,30 @@ namespace Core.Importers
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
                 var pdfDoc = new PdfDocument(new PdfReader(file));
-                var listener = new FilteredEventListener();
-                var extractionStrategy = listener.AttachEventListener(new SimpleTextExtractionStrategy());
 
                 var transactions = new List<Transaction>();
+                var cardNumber = string.Empty;
                 var pagesAmount = pdfDoc.GetNumberOfPages();
 
                 for (var i = 0; i < pagesAmount; i++)
                 {
-                    new PdfCanvasProcessor(listener).ProcessPageContent(pdfDoc.GetPage(i + 1));
+                    var listener = new FilteredEventListener();
+                    var extractionStrategy = listener.AttachEventListener(new SimpleTextExtractionStrategy());
 
-                    var actualText = extractionStrategy.GetResultantText().Split("\n").Skip(28).SkipLast(2).ToArray();
-                    var cardNumber = actualText[0];
-                    actualText = actualText.Skip(1).ToArray();
+                    var actualText = PdfTextExtractor.GetTextFromPage(pdfDoc.GetPage(i + 1), extractionStrategy)
+                        .Split("\n").ToArray();
+
+                    actualText = actualText.Skip(13).ToArray();
+                    if (i == 0)
+                    {
+                        actualText = actualText.Skip(15).ToArray();
+                        cardNumber = actualText[0];
+                        actualText = actualText.Skip(1).ToArray();
+                    }
+                    if (i == pagesAmount-1)
+                    {
+                        actualText = actualText.SkipLast(2).ToArray();
+                    }                    
 
                     while (actualText.Length != 0)
                     {
