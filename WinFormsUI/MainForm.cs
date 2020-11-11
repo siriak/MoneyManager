@@ -104,7 +104,7 @@ namespace WinFormsUI
         
         private void LoadTransactions()
         {
-            var filesUsb = Directory.GetFiles(UsbDirectory, " *.*", SearchOption.AllDirectories)
+            var filesUsb = Directory.GetFiles(UsbDirectory, "*.*", SearchOption.AllDirectories)
                 .Select(f => ("usb", (Stream)File.OpenRead(f)));
             var filesPb = Directory.GetFiles(PrivatebankDirectory, "*.*", SearchOption.AllDirectories)
                 .Select(f => ("pb", (Stream)File.OpenRead(f)));
