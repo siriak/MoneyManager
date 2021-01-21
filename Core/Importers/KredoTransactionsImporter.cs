@@ -1,7 +1,6 @@
 ﻿using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -48,17 +47,19 @@ namespace Core.Importers
                         cardNumber = actualText[0];
                         actualText = actualText.Skip(1).ToArray();
                     }
-                    if (i == pagesAmount-1)
+
+                    if (i == pagesAmount - 1)
                     {
                         actualText = actualText.SkipLast(2).ToArray();
-                    }                    
+                    }
 
                     while (actualText.Length != 0)
                     {
                         var transactionData = actualText.Skip(2).TakeWhile(s => !Date.TryParse(s, out var d)).ToArray();
 
                         transactionData = Date.TryParse(transactionData.Last().Trim('/'), out var d)
-                            ? transactionData.SkipLast(1).ToArray() : transactionData;
+                            ? transactionData.SkipLast(1).ToArray()
+                            : transactionData;
 
                         var data = string.Join(' ', transactionData).Split();
                         var date = actualText[0].Trim('/');
@@ -66,15 +67,20 @@ namespace Core.Importers
                             .TakeWhile(s => !double.TryParse(s.Split()[0], out var d)));
                         var amount = data.TakeLast(3).First();
                         var currency = data.TakeLast(2).First();
-                        transactions.Add(new Transaction(cardNumber, Date.Parse(date),
-                            new Money(double.Parse(amount), MoneyManager.ParseCurrency(currency)), description, string.Empty));
+                        transactions.Add(new Transaction(
+                            cardNumber,
+                            Date.Parse(date),
+                            new Money(double.Parse(amount),
+                            MoneyManager.ParseCurrency(currency)),
+                            description,
+                            string.Empty));
 
                         actualText = actualText.TakeLast(actualText.Length - transactionData.Length - 2).ToArray();
                     }
                 }
 
                 pdfDoc.Close();
-                       
+
                 return transactions;
             }
             finally

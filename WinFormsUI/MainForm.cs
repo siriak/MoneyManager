@@ -12,10 +12,16 @@ namespace WinFormsUI
 {
     public partial class MainForm : Form
     {
-        const string regexCategoriesFileName = "categories/regexCategories.json";
-        const string autoCategoriesFileName = "categories/autoCategories.json";
-        const string compositeCategoriesFileName = "categories/compositeCategories.json";
-        const string transactionsFileName = "transactions.json";
+        string WorkingDirectory => Directory.GetCurrentDirectory() + "/data/";
+        string CategoriesDirectory => WorkingDirectory + "categories/";
+        string AutoCategoriesFileName => CategoriesDirectory + "autoCategories.json";
+        string CompositeCategoriesFileName => CategoriesDirectory + "compositeCategories.json";
+        string RegexCategoriesFileName => CategoriesDirectory + "regexCategories.json";
+        string TransactionsFileName => WorkingDirectory + "transactions.json";
+
+        string UsbDirectory => WorkingDirectory + "ukrsibbank/";
+        string KredobankDirectory => WorkingDirectory + "kredobank/";
+        string PrivatebankDirectory => WorkingDirectory + "privatbank/";
 
         private Date startDate, endDate;
         private double smoothingRatio;
@@ -59,7 +65,7 @@ namespace WinFormsUI
             State.OnStateChanged += RefreshChart;
 
             SaveUpdatedTransactions();
-            File.WriteAllText(autoCategoriesFileName, StateManager.SaveCategories().autoCategoriesJson);            
+            File.WriteAllText(AutoCategoriesFileName, StateManager.SaveCategories().autoCategoriesJson);            
             
             RefreshCategories();
             RefreshList();
@@ -68,49 +74,48 @@ namespace WinFormsUI
 
         private void SaveUpdatedTransactions()
         {
-            File.WriteAllText(transactionsFileName, State.Instance.SaveTransactionsToJson());
+            File.WriteAllText(TransactionsFileName, State.Instance.SaveTransactionsToJson());
         }
 
         private void LoadCategories()
         {
-            if (!File.Exists(regexCategoriesFileName))
+            if (!File.Exists(RegexCategoriesFileName))
             {
-                File.WriteAllText(regexCategoriesFileName, "[]");
+                File.WriteAllText(RegexCategoriesFileName, "[]");
             }
-            var regexCategoriesJson = File.ReadAllText(regexCategoriesFileName);
+            var regexCategoriesJson = File.ReadAllText(RegexCategoriesFileName);
 
-            if (!File.Exists(autoCategoriesFileName))
+            if (!File.Exists(AutoCategoriesFileName))
             {
-                File.WriteAllText(autoCategoriesFileName, "[]");
-            }
-
-            var autoCategoriesJson = File.ReadAllText(autoCategoriesFileName);
-
-            if (!File.Exists(compositeCategoriesFileName))
-            {
-                File.WriteAllText(compositeCategoriesFileName, "[]");
+                File.WriteAllText(AutoCategoriesFileName, "[]");
             }
 
-            var compositeCategoriesJson = File.ReadAllText(compositeCategoriesFileName);
+            var autoCategoriesJson = File.ReadAllText(AutoCategoriesFileName);
+
+            if (!File.Exists(CompositeCategoriesFileName))
+            {
+                File.WriteAllText(CompositeCategoriesFileName, "[]");
+            }
+
+            var compositeCategoriesJson = File.ReadAllText(CompositeCategoriesFileName);
 
             StateManager.LoadCategories(regexCategoriesJson, autoCategoriesJson, compositeCategoriesJson);
         }
         
         private void LoadTransactions()
         {
-            var currentDirecory = Directory.GetCurrentDirectory();
-            var filesUsb = Directory.GetFiles(currentDirecory + "/usb", "*.*", SearchOption.AllDirectories)
+            var filesUsb = Directory.GetFiles(UsbDirectory, "*.*", SearchOption.AllDirectories)
                 .Select(f => ("usb", (Stream)File.OpenRead(f)));
-            var filesPb = Directory.GetFiles(currentDirecory + "/pb", "*.*", SearchOption.AllDirectories)
+            var filesPb = Directory.GetFiles(PrivatebankDirectory, "*.*", SearchOption.AllDirectories)
                 .Select(f => ("pb", (Stream)File.OpenRead(f)));
-            var filesKb = Directory.GetFiles(currentDirecory + "/kb", "*.*", SearchOption.AllDirectories)
+            var filesKb = Directory.GetFiles(KredobankDirectory, "*.*", SearchOption.AllDirectories)
                 .Select(f => ("kb", (Stream)File.OpenRead(f)));
 
-            if (!File.Exists(transactionsFileName))
+            if (!File.Exists(TransactionsFileName))
             {
-                File.WriteAllText(transactionsFileName, "[]");
+                File.WriteAllText(TransactionsFileName, "[]");
             }
-            var modifiedTransactions = File.ReadAllText(transactionsFileName);
+            var modifiedTransactions = File.ReadAllText(TransactionsFileName);
 
             StateManager.LoadTransactions(filesUsb.Concat(filesPb).Concat(filesKb), modifiedTransactions);
         }
