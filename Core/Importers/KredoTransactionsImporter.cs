@@ -36,6 +36,11 @@ namespace Core.Importers
                     var actualText = PdfTextExtractor.GetTextFromPage(pdfDoc.GetPage(i + 1), extractionStrategy)
                         .Split("\n").ToArray();
 
+                    if (!actualText[0].Contains("Виписка за карткою"))
+                    {
+                        return Enumerable.Empty<Transaction>().ToList();
+                    }
+
                     actualText = actualText.Skip(13).ToArray();
                     if (i == 0)
                     {
@@ -55,7 +60,7 @@ namespace Core.Importers
                         transactionData = Date.TryParse(transactionData.Last().Trim('/'), out var d)
                             ? transactionData.SkipLast(1).ToArray() : transactionData;
 
-                        var data = transactionData.First().Split();
+                        var data = string.Join(' ', transactionData).Split();
                         var date = actualText[0].Trim('/');
                         var description = string.Join(' ', data.Skip(1)
                             .TakeWhile(s => !double.TryParse(s.Split()[0], out var d)));
