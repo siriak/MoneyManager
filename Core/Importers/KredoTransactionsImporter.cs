@@ -35,11 +35,6 @@ namespace Core.Importers
                     var actualText = PdfTextExtractor.GetTextFromPage(pdfDoc.GetPage(i + 1), extractionStrategy)
                         .Split("\n").ToArray();
 
-                    if (!actualText[0].Contains("Виписка за карткою"))
-                    {
-                        return Enumerable.Empty<Transaction>().ToList();
-                    }
-
                     actualText = actualText.Skip(13).ToArray();
                     if (i == 0)
                     {
