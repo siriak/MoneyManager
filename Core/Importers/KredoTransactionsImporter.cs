@@ -56,7 +56,7 @@ namespace Core.Importers
                             ? transactionData.SkipLast(1).ToArray()
                             : transactionData;
 
-                        var data = transactionData.First().Split();
+                        var data = string.Join(' ', transactionData).Split();
                         var date = actualText[0].Trim('/');
                         var description = string.Join(' ', data.Skip(1)
                             .TakeWhile(s => !double.TryParse(s.Split()[0], out var d)));
