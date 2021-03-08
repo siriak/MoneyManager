@@ -125,12 +125,32 @@ namespace WinFormsUI
             var isFirstLoad = clbCategories.Items.Count == 0;
 
             var selectedCategories = clbCategories.CheckedItems
-                                                  .Cast<object>()
-                                                  .Select(clbCategories.GetItemText)
-                                                  .ToList();
+                                                 .Cast<object>()
+                                                 .Select(clbCategories.GetItemText)
+                                                 .ToList();
 
             clbCategories.Items.Clear();
-            clbCategories.Items.AddRange(State.Instance.Categories.OrderBy(CategoriesOrederer).Select(c => c.Name).ToArray());
+
+            var orderedCategories = State.Instance.Categories.OrderBy(CategoriesOrederer).ToArray();
+            string prefix = string.Empty;
+
+            for (int i = 0; i < orderedCategories.Length; i++)
+            {
+                var c = orderedCategories[i];
+                var timeSeries = StateHelper.GetCumulativeTimeSeries(c.Name, c.Increment, c.Capacity);
+                var todayData = timeSeries[Date.Today];
+                var todayRelative = todayData / c.Capacity;
+
+                prefix = todayRelative switch
+                {
+                    _ when todayRelative <= 0 => "EMPTY",
+                    _ when todayRelative <= 0.1 => "LOW",
+                    _ when todayRelative < 1 => "", 
+                    _ => "FULL",                    
+                };
+
+                clbCategories.Items.Add(string.IsNullOrEmpty(prefix) ? c.Name : string.Concat($"({prefix}) ", c.Name));
+            }
 
             foreach (var c in selectedCategories)
             {
@@ -173,8 +193,11 @@ namespace WinFormsUI
 
         private Transaction[] GetTransactionsToDisplay()
         {
+            var text = clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText);
+            var tt = text.Select(c => c.Substring(c.IndexOf(' ') + 1)).ToList();
+
             return StateHelper.GetTransactionsUnion(
-                          clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText),
+                          tt,
                           startDate,
                           endDate).Reverse().ToArray();
         }
@@ -185,9 +208,9 @@ namespace WinFormsUI
             chartSeriesCumulative.Series.Clear();
 
             var selectedCategories = clbCategories.CheckedItems
-                                                  .Cast<object>()
-                                                  .Select(clbCategories.GetItemText)
-                                                  .ToList();
+                                             .Cast<object>()
+                                             .Select(clbCategories.GetItemText)
+                                             .ToList();
 
             var smoothedSeriesToRemove = chartSeriesSmoothed.Series.Where(s => selectedCategories.All(c => c != s.Name));
             var cumulativeSeriesToRemove = chartSeriesCumulative.Series.Where(s => selectedCategories.All(c => c != s.Name));
@@ -230,9 +253,10 @@ namespace WinFormsUI
                 var cumulativeSeries = chartSeriesCumulative.Series.FindByName(c);
                 cumulativeSeries.Points.Clear();
 
-                var category = State.Instance.Categories.First(category => category.Name == c);
-                var smoothedTimeSeries = StateHelper.GetSmoothedTimeSeries(c, smoothingRatio);
-                var cumulativeTimeSeries = StateHelper.GetCumulativeTimeSeries(c, category.Increment, category.Capacity);
+                var name = c.Substring(c.IndexOf(' ')+1);
+                var category = State.Instance.Categories.First(category => category.Name == name);
+                var smoothedTimeSeries = StateHelper.GetSmoothedTimeSeries(name, smoothingRatio);
+                var cumulativeTimeSeries = StateHelper.GetCumulativeTimeSeries(name, category.Increment, category.Capacity);
 
                 for (var date = startDate; date <= endDate; date = date.AddDays(1))
                 {
