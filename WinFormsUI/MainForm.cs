@@ -143,10 +143,10 @@ namespace WinFormsUI
 
                 prefix = todayRelative switch
                 {
-                    _ when todayRelative <= 0 => "EMPTY",
-                    _ when todayRelative <= 0.1 => "LOW",
+                    _ when todayRelative <= 0 => Levels.EMPTY.ToString(),
+                    _ when todayRelative <= 0.1 => Levels.LOW.ToString(),
                     _ when todayRelative < 1 => "", 
-                    _ => "FULL",                    
+                    _ => Levels.FULL.ToString(),                    
                 };
 
                 clbCategories.Items.Add(string.IsNullOrEmpty(prefix) ? c.Name : string.Concat($"({prefix}) ", c.Name));
@@ -194,7 +194,9 @@ namespace WinFormsUI
         private Transaction[] GetTransactionsToDisplay()
         {
             var text = clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText);
-            var tt = text.Select(c => c.Substring(c.IndexOf(' ') + 1)).ToList();
+            var tt = text.Select(c => c.Replace($"({Levels.EMPTY}) ", "")
+                    .Replace($"({Levels.LOW}) ", "")
+                    .Replace($"({Levels.FULL}) ", "")).ToList();
 
             return StateHelper.GetTransactionsUnion(
                           tt,
@@ -253,7 +255,11 @@ namespace WinFormsUI
                 var cumulativeSeries = chartSeriesCumulative.Series.FindByName(c);
                 cumulativeSeries.Points.Clear();
 
-                var name = c.Substring(c.IndexOf(' ')+1);
+                var name = c.Replace($"({Levels.EMPTY}) ", "")
+                    .Replace($"({Levels.LOW}) ", "")
+                    .Replace($"({Levels.FULL}) ", "");
+
+                    c.Substring(c.IndexOf(' ')+1);
                 var category = State.Instance.Categories.First(category => category.Name == name);
                 var smoothedTimeSeries = StateHelper.GetSmoothedTimeSeries(name, smoothingRatio);
                 var cumulativeTimeSeries = StateHelper.GetCumulativeTimeSeries(name, category.Increment, category.Capacity);
