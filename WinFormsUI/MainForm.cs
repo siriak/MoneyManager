@@ -196,13 +196,9 @@ namespace WinFormsUI
 
         private Transaction[] GetTransactionsToDisplay()
         {
-            var indices = clbCategories.CheckedIndices.Cast<int>();
-
-            var categoriesNames = new List<string>();
-            foreach (var i in indices)
-            {
-                categoriesNames.Add(_orderedCategories[i].Name);
-            }
+            var categoriesNames = clbCategories.CheckedIndices
+                .Cast<int>()
+                .Select(i => _orderedCategories[i].Name);          
 
             return StateHelper.GetTransactionsUnion(
                           categoriesNames,
@@ -215,13 +211,9 @@ namespace WinFormsUI
             chartSeriesSmoothed.Series.Clear();
             chartSeriesCumulative.Series.Clear();
             
-            var indices = clbCategories.CheckedIndices.Cast<int>();
-
-            var selectedCategories = new List<string>();
-            foreach (var i in indices)
-            {
-                selectedCategories.Add(_orderedCategories[i].Name);
-            }
+            var selectedCategories = clbCategories.CheckedIndices
+                .Cast<int>()
+                .Select(i => _orderedCategories[i].Name);
 
             var smoothedSeriesToRemove = chartSeriesSmoothed.Series.Where(s => selectedCategories.All(c => c != s.Name));
             var cumulativeSeriesToRemove = chartSeriesCumulative.Series.Where(s => selectedCategories.All(c => c != s.Name));
