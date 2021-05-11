@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace Core
 {
     public enum Levels
     {
-        EMPTY,
-        LOW,
-        FULL
+        Empty,
+        Low,
+        Normal,
+        Full,
     }
 }

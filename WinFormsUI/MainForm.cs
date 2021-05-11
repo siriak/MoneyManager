@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -25,6 +26,7 @@ namespace WinFormsUI
 
         private Date startDate, endDate;
         private double smoothingRatio;
+        private Category[] _orderedCategories;
 
         public MainForm() => InitializeComponent();
         private event Action OnFilteringUpdated = () => { };
@@ -131,22 +133,23 @@ namespace WinFormsUI
 
             clbCategories.Items.Clear();
 
-            var orderedCategories = State.Instance.Categories.OrderBy(CategoriesOrederer).ToArray();
+            _orderedCategories = State.Instance.Categories.OrderBy(CategoriesOrederer).ToArray();
+            
             string prefix = string.Empty;
 
-            for (int i = 0; i < orderedCategories.Length; i++)
+            for (int i = 0; i < _orderedCategories.Length; i++)
             {
-                var c = orderedCategories[i];
+                var c = _orderedCategories[i];
                 var timeSeries = StateHelper.GetCumulativeTimeSeries(c.Name, c.Increment, c.Capacity);
                 var todayData = timeSeries[Date.Today];
                 var todayRelative = todayData / c.Capacity;
 
                 prefix = todayRelative switch
                 {
-                    _ when todayRelative <= 0 => Levels.EMPTY.ToString(),
-                    _ when todayRelative <= 0.1 => Levels.LOW.ToString(),
+                    _ when todayRelative <= 0 => Levels.Empty.ToString(),
+                    _ when todayRelative <= 0.1 => Levels.Low.ToString(),
                     _ when todayRelative < 1 => "", 
-                    _ => Levels.FULL.ToString(),                    
+                    _ => Levels.Full.ToString(),                    
                 };
 
                 clbCategories.Items.Add(string.IsNullOrEmpty(prefix) ? c.Name : string.Concat($"({prefix}) ", c.Name));
@@ -193,13 +196,16 @@ namespace WinFormsUI
 
         private Transaction[] GetTransactionsToDisplay()
         {
-            var text = clbCategories.CheckedItems.Cast<object>().Select(clbCategories.GetItemText);
-            var tt = text.Select(c => c.Replace($"({Levels.EMPTY}) ", "")
-                    .Replace($"({Levels.LOW}) ", "")
-                    .Replace($"({Levels.FULL}) ", "")).ToList();
+            var indices = clbCategories.CheckedIndices.Cast<int>();
+
+            var categoriesNames = new List<string>();
+            foreach (var i in indices)
+            {
+                categoriesNames.Add(_orderedCategories[i].Name);
+            }
 
             return StateHelper.GetTransactionsUnion(
-                          tt,
+                          categoriesNames,
                           startDate,
                           endDate).Reverse().ToArray();
         }
@@ -208,11 +214,14 @@ namespace WinFormsUI
         {
             chartSeriesSmoothed.Series.Clear();
             chartSeriesCumulative.Series.Clear();
+            
+            var indices = clbCategories.CheckedIndices.Cast<int>();
 
-            var selectedCategories = clbCategories.CheckedItems
-                                             .Cast<object>()
-                                             .Select(clbCategories.GetItemText)
-                                             .ToList();
+            var selectedCategories = new List<string>();
+            foreach (var i in indices)
+            {
+                selectedCategories.Add(_orderedCategories[i].Name);
+            }
 
             var smoothedSeriesToRemove = chartSeriesSmoothed.Series.Where(s => selectedCategories.All(c => c != s.Name));
             var cumulativeSeriesToRemove = chartSeriesCumulative.Series.Where(s => selectedCategories.All(c => c != s.Name));
@@ -255,11 +264,10 @@ namespace WinFormsUI
                 var cumulativeSeries = chartSeriesCumulative.Series.FindByName(c);
                 cumulativeSeries.Points.Clear();
 
-                var name = c.Replace($"({Levels.EMPTY}) ", "")
-                    .Replace($"({Levels.LOW}) ", "")
-                    .Replace($"({Levels.FULL}) ", "");
-
-                    c.Substring(c.IndexOf(' ')+1);
+                var name = c.Replace($"({Levels.Empty}) ", "")
+                    .Replace($"({Levels.Low}) ", "")
+                    .Replace($"({Levels.Full}) ", "");
+                
                 var category = State.Instance.Categories.First(category => category.Name == name);
                 var smoothedTimeSeries = StateHelper.GetSmoothedTimeSeries(name, smoothingRatio);
                 var cumulativeTimeSeries = StateHelper.GetCumulativeTimeSeries(name, category.Increment, category.Capacity);
