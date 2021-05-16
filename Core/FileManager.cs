@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace Core
 {
-    public class FileManager
+    public static class FileManager
     {
         static string WorkingDirectory => Directory.GetCurrentDirectory() + "/data/";
         static string CategoriesDirectory => WorkingDirectory + "categories/";
@@ -29,42 +27,25 @@ namespace Core
             File.WriteAllText(TransactionsFileName, State.Instance.SaveTransactionsToJson());
         }
 
-        public static string GetRegexCategories()
+        public static string GetRegexCategories() =>
+            ReadFile(RegexCategoriesFileName);
+
+        public static string GetAutoCategories() =>
+            ReadFile(AutoCategoriesFileName);
+
+        public static string GetCompositeCategories() =>
+            ReadFile(CompositeCategoriesFileName);
+
+        public static string GetTransactions() =>
+            ReadFile(TransactionsFileName);        
+
+        private static string ReadFile(string fileName)
         {
-            if (!File.Exists(RegexCategoriesFileName))
+            if (!File.Exists(fileName))
             {
-                File.WriteAllText(RegexCategoriesFileName, "[]");
+                File.WriteAllText(fileName, "[]");
             }
-            return File.ReadAllText(RegexCategoriesFileName);
-        }
-
-        public static string GetAutoCategories()
-        {
-            if (!File.Exists(AutoCategoriesFileName))
-            {
-                File.WriteAllText(AutoCategoriesFileName, "[]");
-            }
-
-            return File.ReadAllText(AutoCategoriesFileName);
-        }
-
-        public static string GetCompositeCategories()
-        {
-            if (!File.Exists(CompositeCategoriesFileName))
-            {
-                File.WriteAllText(CompositeCategoriesFileName, "[]");
-            }
-
-            return File.ReadAllText(CompositeCategoriesFileName);
-        }
-
-        public static string GetTransactions()
-        {
-            if (!File.Exists(TransactionsFileName))
-            {
-                File.WriteAllText(TransactionsFileName, "[]");
-            }
-            return File.ReadAllText(TransactionsFileName);
+            return File.ReadAllText(fileName);
         }
 
         public static IEnumerable<(string, Stream)> GetUsbFiles() =>
