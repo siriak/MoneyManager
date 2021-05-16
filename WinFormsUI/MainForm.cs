@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -12,20 +14,10 @@ namespace WinFormsUI
 {
     public partial class MainForm : Form
     {
-        string WorkingDirectory => Directory.GetCurrentDirectory() + "/data/";
-        string CategoriesDirectory => WorkingDirectory + "categories/";
-        string AutoCategoriesFileName => CategoriesDirectory + "autoCategories.json";
-        string CompositeCategoriesFileName => CategoriesDirectory + "compositeCategories.json";
-        string RegexCategoriesFileName => CategoriesDirectory + "regexCategories.json";
-        string TransactionsFileName => WorkingDirectory + "transactions.json";
-
-        string UsbDirectory => WorkingDirectory + "ukrsibbank/";
-        string KredobankDirectory => WorkingDirectory + "kredobank/";
-        string PrivatebankDirectory => WorkingDirectory + "privatbank/";
-
         private Date startDate, endDate;
         private double smoothingRatio;
         private Category[] _orderedCategories;
+        private int _listPosition;
 
         public MainForm() => InitializeComponent();
         private event Action OnFilteringUpdated = () => { };
@@ -60,63 +52,41 @@ namespace WinFormsUI
 
             OnFilteringUpdated += RefreshList;
             OnFilteringUpdated += RefreshChart;
-            State.OnStateChanged += SaveUpdatedTransactions;
+            OnFilteringUpdated += RestoreScrollPosition;
+            State.OnStateChanged += FileManager.SaveUpdatedTransactions;
             State.OnStateChanged += RefreshCategories;
             State.OnStateChanged += RefreshList;
             State.OnStateChanged += RefreshChart;
 
-            SaveUpdatedTransactions();
-            File.WriteAllText(AutoCategoriesFileName, StateManager.SaveCategories().autoCategoriesJson);            
+            FileManager.SaveUpdatedTransactions();
+            FileManager.SaveAutoCategoriesToFile();           
             
             RefreshCategories();
             RefreshList();
             RefreshChart();
         }
 
-        private void SaveUpdatedTransactions()
+        private void RestoreScrollPosition()
         {
-            File.WriteAllText(TransactionsFileName, State.Instance.SaveTransactionsToJson());
+            lbTransactions.SelectedIndex = _listPosition;
         }
 
         private void LoadCategories()
         {
-            if (!File.Exists(RegexCategoriesFileName))
-            {
-                File.WriteAllText(RegexCategoriesFileName, "[]");
-            }
-            var regexCategoriesJson = File.ReadAllText(RegexCategoriesFileName);
-
-            if (!File.Exists(AutoCategoriesFileName))
-            {
-                File.WriteAllText(AutoCategoriesFileName, "[]");
-            }
-
-            var autoCategoriesJson = File.ReadAllText(AutoCategoriesFileName);
-
-            if (!File.Exists(CompositeCategoriesFileName))
-            {
-                File.WriteAllText(CompositeCategoriesFileName, "[]");
-            }
-
-            var compositeCategoriesJson = File.ReadAllText(CompositeCategoriesFileName);
+            var regexCategoriesJson = FileManager.GetRegexCategories();
+            var autoCategoriesJson = FileManager.GetAutoCategories();
+            var compositeCategoriesJson = FileManager.GetCompositeCategories();
 
             StateManager.LoadCategories(regexCategoriesJson, autoCategoriesJson, compositeCategoriesJson);
         }
         
         private void LoadTransactions()
         {
-            var filesUsb = Directory.GetFiles(UsbDirectory, "*.*", SearchOption.AllDirectories)
-                .Select(f => ("usb", (Stream)File.OpenRead(f)));
-            var filesPb = Directory.GetFiles(PrivatebankDirectory, "*.*", SearchOption.AllDirectories)
-                .Select(f => ("pb", (Stream)File.OpenRead(f)));
-            var filesKb = Directory.GetFiles(KredobankDirectory, "*.*", SearchOption.AllDirectories)
-                .Select(f => ("kb", (Stream)File.OpenRead(f)));
+            var filesUsb = FileManager.GetUsbFiles();
+            var filesPb = FileManager.GetPbFiles();
+            var filesKb = FileManager.GetKbFiles();
 
-            if (!File.Exists(TransactionsFileName))
-            {
-                File.WriteAllText(TransactionsFileName, "[]");
-            }
-            var modifiedTransactions = File.ReadAllText(TransactionsFileName);
+            var modifiedTransactions = FileManager.GetTransactions();
 
             StateManager.LoadTransactions(filesUsb.Concat(filesPb).Concat(filesKb), modifiedTransactions);
         }
@@ -125,16 +95,19 @@ namespace WinFormsUI
         {
             var isFirstLoad = clbCategories.Items.Count == 0;
 
-            var selectedCategories = clbCategories.CheckedItems
-                                                 .Cast<object>()
-                                                 .Select(clbCategories.GetItemText)
-                                                 .ToList();
+            var selectedCategories = clbCategories.CheckedIndices
+                .Cast<int>()
+                .Select(i => _orderedCategories[i].Name)
+                .ToList();
 
             clbCategories.Items.Clear();
 
-            _orderedCategories = State.Instance.Categories.OrderBy(CategoriesOrederer).ToArray();
+            _orderedCategories = State.Instance.Categories
+                .OrderBy(CategoriesExtensions.CategoriesOrederer)
+                .ToArray();
             
-            string prefix = string.Empty;
+            string categoryWithPrefix = string.Empty;
+            var indicesToCheck = new List<int>();
 
             for (int i = 0; i < _orderedCategories.Length; i++)
             {
@@ -143,37 +116,25 @@ namespace WinFormsUI
                 var todayData = timeSeries[Date.Today];
                 var todayRelative = todayData / c.Capacity;
 
-                prefix = todayRelative switch
-                {
-                    _ when todayRelative <= 0 => Levels.Empty.ToString(),
-                    _ when todayRelative <= 0.1 => Levels.Low.ToString(),
-                    _ when todayRelative < 1 => "", 
-                    _ => Levels.Full.ToString(),                    
-                };
+                categoryWithPrefix = DisplayManager.AddPrefixToCategory(todayRelative, c);
 
-                clbCategories.Items.Add(string.IsNullOrEmpty(prefix) ? c.Name : string.Concat($"({prefix}) ", c.Name));
+                clbCategories.Items.Add(categoryWithPrefix);
+
+                if (selectedCategories.FirstOrDefault(sc => sc == _orderedCategories[i].Name) != null)
+                {
+                    indicesToCheck.Add(i);
+                }
             }
 
-            foreach (var c in selectedCategories)
+            foreach (var i in indicesToCheck)
             {
-                clbCategories.SetItemChecked(clbCategories.FindStringExact(c), true);
+                clbCategories.SetItemChecked(i, true);
             }
 
             if (isFirstLoad)
             {
                 clbCategories.SetItemChecked(0, true);
             }
-        }
-
-        private string CategoriesOrederer(Category category)
-        {
-            return category switch
-            {
-                CompositeCategory cc => "1" + category.Name,
-                RegexCategory rc => "2" + category.Name,
-                AutoCategory ac => "3" + category.Name,
-                _ => throw new NotSupportedException(),
-            };
         }
 
         private void RefreshList()
@@ -183,14 +144,14 @@ namespace WinFormsUI
             var displayedTransactions = GetTransactionsToDisplay();
 
             lbTransactions.Items.AddRange(displayedTransactions
-                     .Select(t =>
-                     {
-                         var categories = chboxAllCategories.Checked
-                             ? State.Instance.GetAllMatchingCategories(t)
-                             : State.Instance.GetAllMatchingCategoriesOfType<CompositeCategory>(t);
-                         return DisplayManager.FormatLedgerRecord(t, categories);
-                     })
-                     .ToArray());
+                .Select(t =>
+                {
+                    var categories = chboxAllCategories.Checked
+                        ? State.Instance.GetAllMatchingCategories(t)
+                        : State.Instance.GetAllMatchingCategoriesOfType<CompositeCategory>(t);
+                    return DisplayManager.FormatLedgerRecord(t, categories);
+                })
+                .ToArray());
         }
 
         private Transaction[] GetTransactionsToDisplay()
@@ -302,8 +263,10 @@ namespace WinFormsUI
             RefreshList();
         }
 
-        private void lb_DoubleClick(object sender, EventArgs e)
+        private void lb_DoubleClick(object sender, MouseEventArgs e)
         {
+            _listPosition = lbTransactions.SelectedIndex;
+
             var transactionRecordIndex = lbTransactions.SelectedIndex;
             var transaction = GetTransactionsToDisplay()[transactionRecordIndex];
 
