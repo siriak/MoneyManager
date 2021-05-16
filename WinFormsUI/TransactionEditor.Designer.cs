@@ -52,6 +52,7 @@ namespace WinFormsUI
             this.txtboxCardNumber.Name = "txtboxCardNumber";
             this.txtboxCardNumber.Size = new System.Drawing.Size(360, 20);
             this.txtboxCardNumber.TabIndex = 11;
+            this.txtboxCardNumber.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CheckEnterKeyPress);
 
             // lblCategory
             this.lblCategory.AutoSize = true;
@@ -67,6 +68,7 @@ namespace WinFormsUI
             this.txtboxCategory.Size = new System.Drawing.Size(360,70);
             this.txtboxCategory.TabIndex = 11;
             this.txtboxCategory.Multiline = true;
+            this.txtboxCategory.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CheckEnterKeyPress);
 
             // lblDescription
             this.lblDescription.AutoSize = true;
@@ -82,6 +84,7 @@ namespace WinFormsUI
             this.txtboxDescription.Size = new System.Drawing.Size(360,85);
             this.txtboxDescription.TabIndex = 11;
             this.txtboxDescription.Multiline = true;
+            this.txtboxDescription.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.CheckEnterKeyPress);
 
             //btnSave
             this.btnSave.Location = new System.Drawing.Point(20, 350);
@@ -100,7 +103,7 @@ namespace WinFormsUI
             this.Controls.Add(this.txtboxDescription);
             this.Controls.Add(this.btnSave);
         }
-
+                
         public System.Windows.Forms.Label lblCardNumber;
         public System.Windows.Forms.Label lblCategory;
         public System.Windows.Forms.Label lblDescription;

@@ -14,6 +14,14 @@ namespace WinFormsUI
             InitializeComponent();
         }
 
+        private void CheckEnterKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                btnSave_Clicked(null, null);
+            }
+        }
+
         private void btnSave_Clicked(object sender, EventArgs e)
         {
             var cardNumber = txtboxCardNumber.Text;
