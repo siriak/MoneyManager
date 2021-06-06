@@ -44,7 +44,6 @@ namespace Core.Importers
                         actualText = actualText.Skip(1).ToList();
                     }
                                         
-                    var toSkip = actualText.Where(a => a.Contains("Разом")).ToList();
                     actualText.RemoveAll(a => a.Contains("Разом"));
                     
                     while (actualText.Any())
