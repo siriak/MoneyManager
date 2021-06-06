@@ -68,7 +68,7 @@ namespace Core.Importers
                             description,
                             string.Empty));
 
-                        actualText = actualText.TakeLast(actualText.Count() - transactionData.Length - 2).ToList();
+                        actualText = actualText.TakeLast(actualText.Count - transactionData.Length - 2).ToList();
                     }
                 }
 
