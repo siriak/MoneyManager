@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 
 namespace Core.Importers
@@ -33,22 +34,20 @@ namespace Core.Importers
                     var extractionStrategy = listener.AttachEventListener(new SimpleTextExtractionStrategy());
 
                     var actualText = PdfTextExtractor.GetTextFromPage(pdfDoc.GetPage(i + 1), extractionStrategy)
-                        .Split("\n").ToArray();
+                        .Split("\n").ToList();
 
-                    actualText = actualText.Skip(13).ToArray();
+                    actualText = actualText.Skip(13).ToList();
                     if (i == 0)
                     {
-                        actualText = actualText.Skip(15).ToArray();
+                        actualText = actualText.Skip(15).ToList();
                         cardNumber = actualText[0];
-                        actualText = actualText.Skip(1).ToArray();
+                        actualText = actualText.Skip(1).ToList();
                     }
-
-                    if (i == pagesAmount - 1)
-                    {
-                        actualText = actualText.SkipLast(2).ToArray();
-                    }
-
-                    while (actualText.Length != 0)
+                                        
+                    var toSkip = actualText.Where(a => a.Contains("Разом")).ToList();
+                    actualText.RemoveAll(a => a.Contains("Разом"));
+                    
+                    while (actualText.Any())
                     {
                         var transactionData = actualText.Skip(2).TakeWhile(s => !Date.TryParse(s, out var d)).ToArray();
 
@@ -70,7 +69,7 @@ namespace Core.Importers
                             description,
                             string.Empty));
 
-                        actualText = actualText.TakeLast(actualText.Length - transactionData.Length - 2).ToArray();
+                        actualText = actualText.TakeLast(actualText.Count() - transactionData.Length - 2).ToList();
                     }
                 }
 
